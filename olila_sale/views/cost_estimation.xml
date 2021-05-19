@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id='document_cost_estimation_tree' model='ir.ui.view'>
+            <field name="name">cost.estimation.tree</field>
+            <field name="model">cost.estimation</field>
+            <field name="arch" type="xml">
+                <tree string="Cost Estimation">
+                    <field name="name"/>
+                    <field name="date"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id='document_cost_estimation_form' model='ir.ui.view'>
+            <field name="name">cost.estimation.form</field>
+            <field name="model">cost.estimation</field>
+            <field name="arch" type="xml">
+                <form string="Cost Estimation">
+                    <header>
+                        <button name="button_approved" string="Approved" type="object" class="btn-primary"/>
+                        <button name="button_launch" string="Launch" type="object" class="btn-primary"/>
+                        <field name="state"  widget="statusbar" statusbar_visible="draft,approved,launch"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="date"/>
+                            </group>
+                            <group>
+                                <field name="order_id"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Cost Estimation Line" name="Cost Estimation Line">
+                                <field name="estimation_line_ids">
+                                   <tree editable="bottom">
+                                        <field name="product_id"/>
+                                        <field name="product_qty"/>
+                                        <field name="product_uom_id"/>
+                                        <field name="price_unit"/>
+                                        <field name="price_subtotal"/>
+                                        <field name="estimation_id" invisible="1"/>
+                                    </tree>
+                                </field>
+                                <group name="note_group" col="6" class="mt-2 mt-md-0">
+                                    <group colspan="4">
+                                        <field name="note" nolabel="1" placeholder="Terms and conditions..."/>
+                                    </group>
+                                    <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                                        <field name="total_estimation"/>
+                                    </group>
+                                    <div class="oe_clear"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id='cost_estimation_action' model='ir.actions.act_window'>
+            <field name="name">Cost Estimation</field>
+            <field name="res_model">cost.estimation</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p>
+                    Let's create your Cost Estimation.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="cost_estimation_menu"
+            action="cost_estimation_action" 
+            parent="sale.sale_order_menu"
+            sequence="15"/>
+    </data>
+</odoo>

@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_purchase_request,access_purchase_request,model_purchase_request,base.group_user,1,1,1,1
+access_committee_committee,access_committee_committee,model_committee_committee,base.group_user,1,1,1,1
+access_purchase_request_line,access_purchase_request_line,model_purchase_request_line,base.group_user,1,1,1,1
+access_order_approval_line,access_order_approval_line,model_order_approval_line,base.group_user,1,1,1,1
+access_purchase_request_wizard,access_purchase_request_wizard,model_purchase_request_wizard,base.group_user,1,1,1,1

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_committee_tree">
+        <field name="name">committee.committee.tree</field>
+        <field name="model">committee.committee</field>
+        <field name="arch" type="xml">
+            <tree string="Committee">
+                <field name="name"/>
+                <field name="manager_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_committee_from">
+        <field name="name">committee.committee.form</field>
+        <field name="model">committee.committee</field>
+        <field name="arch" type="xml">
+            <form string="Committee">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Committee Name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Managers">
+                            <field name="manager_id" required="1"/>
+                        </group>
+                        <group string="Members">
+                            <field name="user_ids" nolabel="1" widget="many2many_tags" required='1'/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Purchase Request Action --> 
+    <record id='committee_action' model='ir.actions.act_window'>
+        <field name="name">Purchase Request</field>
+        <field name="res_model">committee.committee</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p>
+                Let's Create your Committee.
+            </p>
+        </field>
+    </record>
+
+    <record id="order_approval_line_view_tree" model="ir.ui.view">
+        <field name="name">order.approval.line.view.tree</field>
+        <field name="model">order.approval.line</field>
+        <field name="arch" type="xml">
+            <tree string="Approval Lines">
+                <field name="member_id"/>
+                <field name="approval"/>
+                <field name="res_model"/>
+                <field name="res_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="order_approval_line_view_from" model="ir.ui.view">
+        <field name="name">order.approval.line.view.form</field>
+        <field name="model">order.approval.line</field>
+        <field name="arch" type="xml">
+            <form string="Order Approval Line">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="res_model"/>
+                            <field name="member_id"/>
+                        </group>
+                        <group>
+                            <field name="approval"/>
+                            <field name="res_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Order Approval Action --> 
+    <record id="action_order_approval_line" model="ir.actions.act_window">
+        <field name="name">Order Approval Line</field>
+        <field name="res_model">order.approval.line</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!--end -->
+
+    <menuitem id="configuration_id"
+        name="Configuration" 
+        parent="main_purchase_request_menu"
+        sequence="3"/>
+
+    <menuitem id="committee_menu" 
+        name="Committee" 
+        parent="configuration_id"
+        action="committee_action"
+        sequence="1"/>
+
+    <menuitem id="hr_department_kanban_action"
+        action="hr.hr_department_tree_action"
+        parent="configuration_id"
+        sequence="2"/>
+
+    <menuitem id="approval_line_menu" 
+        name="Approval Lines" 
+        parent="purchase.menu_purchase_config"
+        action="action_order_approval_line"
+        sequence="10"/> 
+</odoo>

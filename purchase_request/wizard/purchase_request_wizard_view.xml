@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_purchase_request_wizard" model="ir.ui.view">
+        <field name="name">Department Inventory Report</field>
+        <field name="model">purchase.request.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Select department">
+                <group>
+                    <field name="department_ids" widget="many2many_tags" colspan="6" required='1'/>
+                </group>
+                <footer>
+                    <button name="print_report" string="Print" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_purchase_request_wizard" model="ir.actions.act_window">
+        <field name="name">Department Inventory Report</field>
+        <field name="res_model">purchase.request.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_purchase_request_wizard"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_request_report"
+        name="Reporting"
+        sequence="2"
+        parent="purchase_request.main_purchase_request_menu"/>
+
+    <menuitem id="menu_department_report"
+        name="Department Inventory Report"
+        parent="purchase_request.menu_request_report"
+        sequence="1"
+        action="purchase_request.action_purchase_request_wizard"/>
+</odoo>
+

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_order_form_inherit_purchase_request" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit.purchase.request</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='button_approve']" position="attributes">
+                <attribute name="groups">purchase_request.group_principal,purchase_request.group_comitee_head</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='button_confirm']" position="attributes">
+                <attribute name="attrs">{'invisible': 1}</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='button_confirm']" position="before">
+                <field name="approval" invisible="1"/>
+                <button name="button_order_approval" type="object" string="Approval" class="oe_highlight" attrs="{'invisible': [('approval', '=', True)]}"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string='Order Approvals'>
+                    <field name='approval_line_ids'>
+                        <tree string="Order Line Approvals">
+                            <field name="member_id" />
+                            <field name="approval"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    	 <record id="res_partner_form_inherit" model="ir.ui.view">
+            <field name="name">res.partner.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook[last()]" position="inside">
+                    <page string="Olila Sale">
+                        <group>
+                            <group>
+                                <!-- <field name="is_dealer"/>
+                                <field name="is_distributors"/> -->
+                                <field name="olila_type" widget="radio" options="{'horizontal': true}"/>
+                                <field name="blila_code" readonly="1"/>
+                                <field name="status"/>
+                                <field name="blila_pricelist_id"/>
+                                <field name="blila_document"/>
+                            </group>
+                            <group>
+                                <field name="deport_warehouse_id"/>
+                                <field name="vertule_warehouse_id"/>
+                                <field name="national_identifi_number"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

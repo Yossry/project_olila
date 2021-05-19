@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_purchase_request" model="ir.module.category">
+        <field name="name">Purchase Request</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="group_principal" model="res.groups">
+        <field name="name">Head of Institute</field>
+        <field name="category_id" ref="module_purchase_request"/>
+    </record>
+
+    <record id="group_comitee_head" model="res.groups">
+        <field name="name">Head of Commitee</field>
+        <field name="category_id" ref="module_purchase_request"/>
+    </record>
+
+    <record id="group_request_user" model="res.groups">
+        <field name="name">Request User</field>
+        <field name="category_id" ref="module_purchase_request"/>
+    </record>
+
+    <record id="group_store_user" model="res.groups">
+        <field name="name">Store User</field>
+        <field name="category_id" ref="module_purchase_request"/>
+    </record>
+
+    <record id="group_hod" model="res.groups">
+        <field name="name">Head of Department</field>
+        <field name="category_id" ref="module_purchase_request"/>
+    </record>
+
+</odoo>

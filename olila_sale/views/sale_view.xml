@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    	 <record id="sale_order_form_olila_inherit" model="ir.ui.view">
+            <field name="name">sale.order.form.olila</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="dealer_code"/>
+                    <field name="sale_type"/>
+                </xpath>
+                <xpath expr="//button[@name='%(sale.action_view_sale_advance_payment_inv)d'][1]" position="replace">
+                    <button name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"
+                        type="action" class="btn-primary"
+                        attrs="{'invisible': ['|', ('invoice_status', '!=', 'to invoice'), ('sale_type', '=', 'secondary_sales')]}"/>
+                </xpath>
+                <xpath expr="//button[@name='%(sale.action_view_sale_advance_payment_inv)d'][2]" position="replace">
+                    <button name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"
+                        type="action" context="{'default_advance_payment_method': 'percentage'}"
+                        attrs="{'invisible': ['|', '|', ('invoice_status', '!=', 'no'), ('state', '!=', 'sale'), ('sale_type', '=', 'secondary_sales')]}"/>
+                </xpath>
+                <xpath expr="//button[@name='action_confirm']" position="after">
+                    <button name="action_cost_estimation" string="Cost Estimation"
+                        type="object" class="btn-primary" attrs="{'invisible': [('sale_type', '!=', 'corporate_sales')]}"/>
+                </xpath>
+                 <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="after">
+                    <field name="capture_gps_location"/>
+                </xpath>
+                <xpath expr="//notebook[last()]" position="inside">
+                    <page string="Estimation Details">
+                        <field name="estimation_lines">
+                           <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="state"/>
+                                <field name="total_estimation"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="sale.action_orders" model="ir.actions.act_window">
+            <field name="name">Primary Sales Orders</field>
+            <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel')), ('sale_type', '=', 'primary_sales')]</field>
+            <field name="context">{'default_sale_type': 'primary_sales'}</field>
+        </record>
+
+        <record id="action_orders_primary" model="ir.actions.act_window">
+            <field name="name">Secondary Sales Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
+            <field name="context">{'default_sale_type': 'secondary_sales'}</field>
+            <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel')), ('sale_type', '=', 'secondary_sales')]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new quotation, the first step of a new sale!
+                </p><p>
+                    Once the quotation is confirmed, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_orders_corporate" model="ir.actions.act_window">
+            <field name="name">Corporate Sales Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
+            <field name="context">{'default_sale_type': 'corporate_sales'}</field>
+            <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel')), ('sale_type', '=', 'corporate_sales')]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new quotation, the first step of a new sale!
+                </p><p>
+                    Once the quotation is confirmed, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="sale.menu_sale_order"
+            name="Primary Sales Orders"
+            action="sale.action_orders"
+            parent="sale.sale_order_menu"
+            sequence="2" groups="sales_team.group_sale_salesman"/>
+
+        <menuitem id="menu_sale_order_primary"
+            name="Secondary Sales Orders"
+            action="action_orders_primary"
+            parent="sale.sale_order_menu"
+            sequence="2" groups="sales_team.group_sale_salesman"/>
+
+        <menuitem id="menu_corporate_sales_orders"
+            name="Corporate Sales Orders"
+            action="action_orders_corporate"
+            parent="sale.sale_order_menu"
+            sequence="2" groups="sales_team.group_sale_salesman"/>
+    </data>
+</odoo>
