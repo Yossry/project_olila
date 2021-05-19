@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_sale_advance_payment_wizard" model="ir.ui.view">
+        <field name="name">Sale Advance Payment</field>
+        <field name="model">sale.advance.payment</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Advance Payment">
+                <group>
+                    <group>
+                        <field name="journal_id"
+                                domain="[('type','in',['bank', 'cash'])]"
+                                widget="selection" select="1"
+                                string="Payment Method"/>
+                        <field name="amount_total"/>
+                    </group>
+                    <group>
+                        <field name="amount_to_pay"/>
+                        <field name="currency_id"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="make_advance_payment" string="Advance Payment" type="object" class="btn-primary"/>
+                    <button special="cancel" string="Cancel" class="btn-default"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_sale_advance_payment_id" model="ir.actions.act_window">
+        <field name="name">Advance Payment</field>
+        <field name="res_model">sale.advance.payment</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_sale_order"/>
+        <field name="binding_view_types">list</field>
+    </record>
+
+</odoo>
