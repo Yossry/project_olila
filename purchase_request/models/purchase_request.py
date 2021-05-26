@@ -6,15 +6,14 @@ from odoo.exceptions import ValidationError, UserError
 from odoo.tools.float_utils import float_compare, float_is_zero, float_round
 
 class PurchaseRequest(models.Model):
-
     _name = "purchase.request"
     _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
-    _description = 'Purchase Request'
+    _description = 'Purchase Indent'
 
     name = fields.Char(default=_('New'), readonly=True, copy=False)
     department_id = fields.Many2one('hr.department', string='Department', required=True)
-    schedule_date = fields.Datetime(default=fields.Datetime.now, string='Date')
-    team_id = fields.Many2one('committee.committee', string="Committee")
+    schedule_date = fields.Datetime(default=fields.Datetime.now, string='Schedule Date')
+    # team_id = fields.Many2one('committee.committee', string="Committee")
     state = fields.Selection([
         ('draft', 'Draft'),
         ('approve', 'Approved'),
@@ -40,7 +39,7 @@ class PurchaseRequest(models.Model):
         ('gem', 'Gem Portal'),
         ('committee', 'Through Committee'),
         ('local', 'Local Vendor'),
-        ('tender', 'Tender Process')], string="Type of Purchase", copy=False)
+        ('tender', 'Tender Process')], string="Type of Purchase", copy=False, default='tender')
     picking_count = fields.Integer(compute='_compute_picking', string='Picking count', default=0, store=True)
     tender_count = fields.Integer(default=0)
     picking_ids = fields.Many2many('stock.picking', compute='_compute_picking', string='Pickings', copy=False, store=True)
@@ -147,14 +146,15 @@ class PurchaseRequest(models.Model):
 
     def button_tender(self):
         lines = []
-        # if not self.purchase_type:
-        #     raise UserError(_('Please select purchase type.'))
+        if not self.department_id and self.department_id.picking_type:
+            raise UserError(_('Please select department or purchase type in department'))
         for line in self.request_lines_ids.filtered(lambda x:(x.quantity + x.extra_qty) > x.available_qty):
             remaining_qty = abs((line.quantity + line.extra_qty) - line.available_qty)
             if remaining_qty:
                 tendor_vals = {
                     'origin': self.name,
                     'date_end': self.schedule_date,
+                    'ordering_date': fields.Date.today(),
                     'warehouse_id': self.warehouse_id.id,
                     'company_id': self.company_id.id,
                     'picking_type_id': self.department_id.picking_type.id,
@@ -164,7 +164,7 @@ class PurchaseRequest(models.Model):
                                     'product_uom_id': line.product_uom.id,
                                     'product_qty': remaining_qty,
                                     'price_unit': line.price_unit if line.request_id.purchase_type == 'gem' else 0.0,
-                                    'scheduled_date': line.date if line.request_id.purchase_type == 'gem' else False,
+                                    'schedule_date': line.date if line.request_id.purchase_type == 'gem' else False,
                                     'move_dest_id': line.move_ids.mapped('move_dest_ids') and line.move_ids.mapped('move_dest_ids')[0].id or False,
                                 })],
                 }
@@ -197,8 +197,6 @@ class PurchaseRequest(models.Model):
         self.write({'state': 'draft', 'director_approval': False})
 
     def check_availability(self):
-        import pdb
-        pdb.set_trace()
         self.request_lines_ids.mapped('move_ids')._action_assign()
         state = 'waiting'
         for line in self.request_lines_ids:
@@ -251,12 +249,12 @@ class PurchaseRequest(models.Model):
 
 
 class PurchaseRequestLine(models.Model):
-
     _name = "purchase.request.line"
     _description = "request.line"
 
     request_id = fields.Many2one('purchase.request')
     product_id = fields.Many2one('product.product', string='Product', required=True)
+    availability = fields.Selection(related='request_id.availability')
     name = fields.Text(string='Description', required=True)
     quantity = fields.Float(string='Quantity', default=1.0)
     available_qty = fields.Float(string='Reserved Qty', readonly=True, default=0)
@@ -267,9 +265,7 @@ class PurchaseRequestLine(models.Model):
     is_done = fields.Boolean('Done', compute='_compute_is_done', store=True)
     tender_id = fields.Many2one('purchase.requisition', 'Tender')
     extra_qty = fields.Float('Extra Qty')
-    date = fields.Datetime('Date')
-
-    availability = fields.Selection(related='request_id.availability')
+    date = fields.Datetime('Order Date', default=fields.datetime.now())
 
 
     @api.depends('price_unit','quantity','product_id', 'extra_qty')

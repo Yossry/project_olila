@@ -6,31 +6,31 @@ from odoo.exceptions import UserError
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
 
-    approval = fields.Boolean(compute='_compute_order_approval')
-    approval_line_ids = fields.One2many('order.approval.line', 'res_id')
+    # approval = fields.Boolean(compute='_compute_order_approval')
+    # approval_line_ids = fields.One2many('order.approval.line', 'res_id')
 
-    def _compute_order_approval(self):
-        for order in self:
-            approval_line = self.env['order.approval.line'].search([
-                ('res_model', '=', 'purchase.order'),
-                ('res_id', '=', order.id),
-                ('member_id', '=', self.env.user.id)])
-            order.approval = True if not approval_line else approval_line.approval
+    # def _compute_order_approval(self):
+    #     for order in self:
+    #         approval_line = self.env['order.approval.line'].search([
+    #             ('res_model', '=', 'purchase.order'),
+    #             ('res_id', '=', order.id),
+    #             ('member_id', '=', self.env.user.id)])
+    #         order.approval = True if not approval_line else approval_line.approval
 
-    @api.model
-    def create(self, vals):
-        rec = super(PurchaseOrder, self).create(vals)
-        if 'requisition_id' in vals and vals.get('requisition_id'):
-            requisition_id = self.env['purchase.requisition'].browse(vals.get('requisition_id'))
-            committee = requisition_id.purchase_request_id.team_id
-            if committee and committee.manager_id:
-                for member in committee.user_ids | committee.manager_id:
-                    self.env['order.approval.line'].create({
-                        'member_id': member.id,
-                        'res_model': self._name,
-                        'res_id': rec.id,
-                    })
-        return rec
+    # @api.model
+    # def create(self, vals):
+    #     rec = super(PurchaseOrder, self).create(vals)
+    #     if 'requisition_id' in vals and vals.get('requisition_id'):
+    #         requisition_id = self.env['purchase.requisition'].browse(vals.get('requisition_id'))
+    #         committee = requisition_id.purchase_request_id.team_id
+    #         if committee and committee.manager_id:
+    #             for member in committee.user_ids | committee.manager_id:
+    #                 self.env['order.approval.line'].create({
+    #                     'member_id': member.id,
+    #                     'res_model': self._name,
+    #                     'res_id': rec.id,
+    #                 })
+    #     return rec
 
     def button_confirm(self):
         for order in self:

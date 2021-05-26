@@ -6,10 +6,10 @@
     'author': "Preciseways",
     'website': "http://www.preciseways.com",
     'version': '14.0',
-    'depends': ['sale_management', 'stock', 'fleet'],
+    'depends': ['sale_management', 'sale_stock', 'fleet'],
     'data': [
         'security/ir.model.access.csv',
-        'data/blial_seq.xml',
+        'data/olial_seq.xml',
         'views/res_partner_view.xml',
         'views/sale_view.xml',
         'views/cost_estimation.xml',

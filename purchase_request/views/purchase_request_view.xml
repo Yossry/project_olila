@@ -4,7 +4,7 @@
         <field name="name">purchase.request.tree</field>
         <field name="model">purchase.request</field>
         <field name="arch" type="xml">
-            <tree string="Purchase Request">
+            <tree string="Purchase Indent">
                 <field name="name"/>
                 <field name="warehouse_id"/>
                 <field name="department_id"/>
@@ -19,20 +19,19 @@
         <field name="name">purchase.request.form</field>
         <field name="model">purchase.request</field>
         <field name="arch" type="xml">
-            <form string="Purchase Request">
+            <form string="Purchase Indent">
                 <header>
                     <field name="show_check_availability" invisible="1"/>
                     <field name="show_tender" invisible="1"/>
                     <field name="show_transfer" invisible="1"/>
                     <field name="director_approval" invisible="1"/>
                     <field name="id" invisible="1"/>
-                    <button name="button_approve_direct" string="Director Approval" type="object" class="oe_highlight"/>
-                    <button name="button_approval" string="HOD Approval" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}" groups="purchase_request.group_hod"/>
+                    <button name="button_approve_direct" string="Approve" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                     <button name="button_draft" states='cancel' string="Set to Draft" type="object" class="oe_highlight"/>
-                    <button name="button_confirm" states='approve' string="Confirm" type="object" class="oe_highlight" groups="purchase_request.group_store_user"/>
-                    <button name="check_availability" string="Check Availability" type="object" attrs="{'invisible': [('state', 'not in', ['ready','confirm','waiting'])]}" class="oe_highlight"  groups='purchase.group_purchase_manager'/>
-                    <button name="button_tender" string="Create Tendor" type="object" class="oe_highlight" attrs="{'invisible': [('show_tender', '=', False)]}"  groups='purchase.group_purchase_manager'/>
-                    <button name="button_transfer" string="Transfer" type="object" class="oe_highlight" attrs="{'invisible': ['|',('state', '!=', 'ready'), ('availability', '!=', 'available')]}" groups='purchase.group_purchase_manager'/>
+                    <button name="button_confirm" states='approve' string="Confirm" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['approve'])]}"/>
+                    <button name="button_tender" string="Create Tendor" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['confirm', 'waiting'])]}"/>
+                    <button name="check_availability" string="Check Availability" type="object" attrs="{'invisible': [('state', 'not in', ['ready','confirm','waiting'])]}" class="oe_highlight"/>
+                    <button name="button_transfer" string="Transfer" type="object" class="oe_highlight" attrs="{'invisible': ['|',('state', '!=', 'ready'), ('availability', '!=', 'available')]}"/>
                     <button name="button_cancel" string="Cancel" type="object" attrs="{'invisible': [('id', '=', False)]}"/>
                     <field name="state" widget="statusbar"/>
                 </header>
@@ -65,11 +64,11 @@
                             <field name="department_id" required="1"/>
                             <field name="availability" attrs="{'invisible': [('state', 'in', ['draft', 'approve'])]}"/>
                             <field name="purchase_type" attrs="{'invisible': ['|', ('availability', '=', 'available'), ('state', '!=', 'waiting')]}"/>
-                            <field name="team_id" attrs="{'invisible': [('purchase_type', '!=', 'committee')], 'required': [('purchase_type', '=', 'committee')]}"/>
+                            <!-- <field name="team_id" attrs="{'invisible': [('purchase_type', '!=', 'committee')], 'required': [('purchase_type', '=', 'committee')]}"/> -->
                         </group>
                     </group>
                     <notebook>
-                        <page string="Request Lines" name="request_lines_ids">
+                        <page string="Indent Lines" name="request_lines_ids">
                             <field name="request_lines_ids" mode="tree,form">
                                 <form>
                                     <group>
@@ -92,10 +91,10 @@
                                         </page>
                                     </notebook>
                                 </form>
-                                <tree string="Request Lines" editable="bottom" decoration-muted="is_done" decoration-success="not is_done and (quantity + extra_qty)==available_qty" decoration-danger="not is_done and available_qty &lt; (quantity+extra_qty)">
+                                <tree string="Indent Lines" editable="bottom" decoration-muted="is_done" decoration-success="not is_done and (quantity + extra_qty)==available_qty" decoration-danger="not is_done and available_qty &lt; (quantity+extra_qty)">
                                     <field name="product_id" />
                                     <field name="name"/>
-                                    <field name="date"/>
+                                    <field name="date" required='1'/>
                                     <field name="quantity"/>
                                     <field name="is_done" invisible="1"/>
                                     <field name="available_qty"/>
@@ -122,7 +121,7 @@
     <!-- Purchase Request Action --> 
 
     <record id="purchase_request_action" model="ir.actions.act_window">
-        <field name="name">Purchase Request</field>
+        <field name="name">Purchase Indent</field>
         <field name="res_model">purchase.request</field>
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
@@ -134,16 +133,16 @@
     <!-- Purchase Request Menu --> 
     
     <menuitem id="main_purchase_request_menu"
-        name="Purchase Request"
+        name="Purchase Indent"
         web_icon="purchase_request,static/description/icon.png"/>
 
     <menuitem id="child_purchase_request_menu" 
-            name="Purchase Request" 
+            name="Purchase Indent" 
             parent="main_purchase_request_menu"
             sequence="1"/>
 
     <menuitem id="purchase_request_menu" 
-            name="Purchase Request" 
+            name="Purchase Indent" 
             parent="child_purchase_request_menu"
             action="purchase_request_action"/>
 </odoo>

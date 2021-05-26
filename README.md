@@ -1,2 +1,3 @@
 # project_olila
-project olila (sale purchase stock invoice)
+
+sale invoice purchase inventory

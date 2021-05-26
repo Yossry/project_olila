@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 {
-    'name': 'Sale Extended',
-    'category': 'sale',
+    'name': 'Sale Multi Picking',
+    'category': 'Sales',
     "sequence": 3,
     'version': '14.0.1.0',
     'depends': ['sale_management', 'stock'],

@@ -24,9 +24,8 @@ class SaleOrder(models.Model):
 	@api.depends('sale_payment_ids', 'invoice_ids', 'invoice_ids.state')
 	def _compute_payment(self):
 	    for order in self:
-	    	pay_records = self.env['account.payment']
-	    	pay_records |= order.mapped('sale_payment_ids')
-	    	order.payment_count = len(pay_records.ids)
+	    	pay_records  = order.mapped('sale_payment_ids')
+	    	order.payment_count = sum(pay_records.mapped('amount'))
 
 	# def action_confirm(self):
 	# 	move_lines = self.env['account.move.line']

@@ -6,3 +6,5 @@ class AccountPayment(models.Model):
     _inherit = "account.payment"
 
     sale_id = fields.Many2one('sale.order', "Sale", readonly=True, states={'draft': [('readonly', False)]})
+    dealer = fields.Boolean('Dealer')
+    distributor_code = fields.Char()

@@ -47,9 +47,8 @@ class SaleAdvancePayment(models.TransientModel):
             currency_amount = self.amount_to_pay * (1.0 / exchange_rate)
             payment_dict = {   'payment_type': 'inbound',
                                'partner_type': 'customer',
-                               'name': _("Advance") + " - " + sale.name,
                                'sale_id': sale.id,
-                               'ref': sale.name,
+                               'ref': _("Advance") + " - " + sale.name,
                                'partner_id': sale.partner_id and sale.partner_id.id,
                                'journal_id': self.journal_id and self.journal_id.id,
                                'company_id': sale.company_id and sale.company_id.id,

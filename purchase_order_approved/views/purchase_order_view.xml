@@ -1,0 +1,52 @@
+<!-- -->
+<odoo>
+
+    <record id="purchase_requisition_form" model="ir.ui.view">
+        <field name="name">purchase.requisition.form.inherited</field>
+        <field name="model">purchase.requisition</field>
+        <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form" />
+        <field name="arch" type="xml">
+            <button name="action_in_progress" position="after">
+                <button name="submit_order" type="object" string="Submit Order" states="draft, sent"/>
+            </button>
+            <button name="action_in_progress" position="after">
+                <button name="manager_approval" type="object" string="Approve Order" attrs="{'invisible':[('state','!=','awaiting_approval')]}" groups="purchase.group_purchase_manager"/>
+            </button>
+            <button name="action_open" position="replace">
+                <button name="action_open" states="in_progress" string="Validate" type="object" class="btn-primary" attrs="{'invisible':[('state','not in', ('manager_approved'))]}" groups="purchase.group_purchase_manager"/>
+            </button>
+            <button name="action_in_progress" position="replace">
+                <button name="action_in_progress" string="Confirm" type="object" class="btn-primary" states="manager_approved"/>
+            </button>
+        </field>
+    </record>
+
+    <record id="purchase_order_form" model="ir.ui.view">
+        <field name="name">purchase.order.form - purchase_order_approved</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form" />
+        <field name="arch" type="xml">
+            <button name="print_quotation" position="after">
+                <button name="submit_order" type="object" string="Submit Order" states="draft, sent"/>
+            </button>
+            <button name="print_quotation" position="after">
+                <button name="manager_approval" type="object" string="Approve Order" attrs="{'invisible':[('state','!=','awaiting_approval')]}" groups="purchase.group_purchase_manager"/>
+            </button>
+            <button id="draft_confirm" position="replace">
+                <button name="button_confirm" type="object"  string="Confirm Order" id="draft_confirm" attrs="{'invisible':[('state','not in', ('manager_approved'))]}" groups="purchase.group_purchase_manager"/>
+            </button>
+        </field>
+    </record>
+
+    <record id="purchase_filter_inherit" model="ir.ui.view">
+            <field name="name">purchase.filter.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="arch" type="xml">  
+                <filter name= "draft" position="replace">
+                    <filter domain="[('state','=','awaiting_approval')]" string="Manager Approval" name="To Approve" groups="purchase.group_purchase_manager"/>
+                </filter>
+            </field>
+    </record>
+
+</odoo>

@@ -93,11 +93,11 @@
         parent="main_purchase_request_menu"
         sequence="3"/>
 
-    <menuitem id="committee_menu" 
+    <!-- <menuitem id="committee_menu" 
         name="Committee" 
         parent="configuration_id"
         action="committee_action"
-        sequence="1"/>
+        sequence="1"/> -->
 
     <menuitem id="hr_department_kanban_action"
         action="hr.hr_department_tree_action"

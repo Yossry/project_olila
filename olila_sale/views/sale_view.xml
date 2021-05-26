@@ -7,8 +7,13 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='payment_term_id']" position="after">
-                    <field name="dealer_code"/>
-                    <field name="sale_type"/>
+                    <field name="dealer_code" />
+                    <field name="distributor_code" attrs="{'invisible': [('sale_type', '!=', 'secondary_sales')]}"/>
+                    <field name="subject" attrs="{'invisible': [('sale_type', '!=', 'corporate_sales')]}"/>
+                    <field name="sl_no" attrs="{'invisible': [('sale_type', '!=', 'corporate_sales')]}"/>
+                    <field name="secondary_contact_persion"/>
+                    <field name="zone"/>
+                    <field name="sale_type" readonly="1" force_save="1"/>
                 </xpath>
                 <xpath expr="//button[@name='%(sale.action_view_sale_advance_payment_inv)d'][1]" position="replace">
                     <button name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"
@@ -21,17 +26,18 @@
                         attrs="{'invisible': ['|', '|', ('invoice_status', '!=', 'no'), ('state', '!=', 'sale'), ('sale_type', '=', 'secondary_sales')]}"/>
                 </xpath>
                 <xpath expr="//button[@name='action_confirm']" position="after">
-                    <button name="action_cost_estimation" string="Cost Estimation"
-                        type="object" class="btn-primary" attrs="{'invisible': [('sale_type', '!=', 'corporate_sales')]}"/>
+                    <button name="action_cost_estimation" string="Create Estimation"
+                        type="object" class="btn-primary" attrs="{'invisible': ['|', ('state', '=', 'sale'), ('sale_type', '!=', 'corporate_sales')]}"/>
                 </xpath>
                  <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="after">
                     <field name="capture_gps_location"/>
                 </xpath>
-                <xpath expr="//notebook[last()]" position="inside">
-                    <page string="Estimation Details">
+                <xpath expr="//notebook[last()]" position="inside" >
+                    <page string="Estimation Details" attrs="{'invisible': [('sale_type', '!=', 'corporate_sales')]}">
                         <field name="estimation_lines">
                            <tree editable="bottom">
                                 <field name="name"/>
+                                <field name="product_id"/>
                                 <field name="state"/>
                                 <field name="total_estimation"/>
                             </tree>
@@ -41,13 +47,40 @@
             </field>
         </record>
 
+        <!-- Primary Actions -->
+
+        <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
+            <field name="name">Primary Quotation</field>
+            <field name="domain">[('sale_type', '=', 'primary_sales')]</field>
+            <field name="context">{'default_sale_type': 'primary_sales'}</field>
+        </record>
+
         <record id="sale.action_orders" model="ir.actions.act_window">
             <field name="name">Primary Sales Orders</field>
             <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel')), ('sale_type', '=', 'primary_sales')]</field>
             <field name="context">{'default_sale_type': 'primary_sales'}</field>
         </record>
 
-        <record id="action_orders_primary" model="ir.actions.act_window">
+        <!-- Secondary Actions -->
+
+        <record id="action_quotation_secondary" model="ir.actions.act_window">
+            <field name="name">Secondary Quotation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
+            <field name="context">{'default_sale_type': 'secondary_sales'}</field>
+            <field name="domain">[('state', 'in', ('draft', 'sent', 'cancel')), ('sale_type', '=', 'secondary_sales')]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new quotation, the first step of a new sale!
+                </p><p>
+                    Once the quotation is confirmed, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_orders_secondary" model="ir.actions.act_window">
             <field name="name">Secondary Sales Orders</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">sale.order</field>
@@ -55,6 +88,25 @@
             <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
             <field name="context">{'default_sale_type': 'secondary_sales'}</field>
             <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel')), ('sale_type', '=', 'secondary_sales')]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new quotation, the first step of a new sale!
+                </p><p>
+                    Once the quotation is confirmed, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
+                </p>
+            </field>
+        </record>
+
+        <!-- Corporate Actions -->
+
+        <record id="action_quotation_corporate" model="ir.actions.act_window">
+            <field name="name">Corporate Quotation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
+            <field name="context">{'default_sale_type': 'corporate_sales'}</field>
+            <field name="domain">[('state', 'in', ('draft', 'sent', 'cancel')), ('sale_type', '=', 'corporate_sales')]</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Create a new quotation, the first step of a new sale!
@@ -81,22 +133,66 @@
             </field>
         </record>
 
-        <menuitem id="sale.menu_sale_order"
-            name="Primary Sales Orders"
-            action="sale.action_orders"
+        <!-- Parent Menus -->
+
+        <menuitem id="primary_sales_menu"
+            name="Primary Orders"
             parent="sale.sale_order_menu"
+            sequence="10" groups="sales_team.group_sale_salesman"/>
+
+        <menuitem id="secondary_sales_menu"
+            name="Secondary Orders"
+            parent="sale.sale_order_menu"
+            sequence="10" groups="sales_team.group_sale_salesman"/>
+
+        <menuitem id="corporate_sales_menu"
+            name="Corporate Orders"
+            parent="sale.sale_order_menu"
+            sequence="10" groups="sales_team.group_sale_salesman"/>
+
+        <!-- Primary Sales -->
+
+
+        <menuitem id="sale.menu_sale_quotations"
+            name="Quotation"
+            action="sale.action_quotations_with_onboarding"
+            parent="olila_sale.primary_sales_menu"
             sequence="2" groups="sales_team.group_sale_salesman"/>
 
-        <menuitem id="menu_sale_order_primary"
-            name="Secondary Sales Orders"
-            action="action_orders_primary"
-            parent="sale.sale_order_menu"
+        <menuitem id="sale.menu_sale_order"
+            name="Sales Orders"
+            action="sale.action_orders"
+            parent="olila_sale.primary_sales_menu"
+            sequence="20" groups="sales_team.group_sale_salesman"/>
+
+
+        <!-- Secondary Sales -->
+
+        <menuitem id="menu_quotation_secondary"
+            name="Quotation"
+            action="action_quotation_secondary"
+            parent="olila_sale.secondary_sales_menu"
+            sequence="2" groups="sales_team.group_sale_salesman"/>
+
+        <menuitem id="menu_sale_order_secondary"
+            name="Sales Orders"
+            action="action_orders_secondary"
+            parent="olila_sale.secondary_sales_menu"
+            sequence="2" groups="sales_team.group_sale_salesman"/>
+
+
+        <!-- Corporate Sales -->
+
+        <menuitem id="menu_corporate_quotation"
+            name="Quotation"
+            action="action_quotation_corporate"
+            parent="olila_sale.corporate_sales_menu"
             sequence="2" groups="sales_team.group_sale_salesman"/>
 
         <menuitem id="menu_corporate_sales_orders"
-            name="Corporate Sales Orders"
+            name="Sales Orders"
             action="action_orders_corporate"
-            parent="sale.sale_order_menu"
-            sequence="2" groups="sales_team.group_sale_salesman"/>
+            parent="olila_sale.corporate_sales_menu"
+            sequence="20" groups="sales_team.group_sale_salesman"/>
     </data>
 </odoo>

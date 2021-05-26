@@ -10,18 +10,29 @@
                     <page string="Olila Sale">
                         <group>
                             <group>
-                                <!-- <field name="is_dealer"/>
-                                <field name="is_distributors"/> -->
+                                <field name="code" readonly="1"/>
                                 <field name="olila_type" widget="radio" options="{'horizontal': true}"/>
-                                <field name="blila_code" readonly="1"/>
-                                <field name="status"/>
-                                <field name="blila_pricelist_id"/>
-                                <field name="blila_document"/>
+                                <field name="olila_seller_type" widget="radio" options="{'horizontal': true}" string="Seller Type"/>
+                                <label for="national_identifi_number" string="National ID"/>
+                                <div class="o_row">
+                                    <field name="national_identifi_number"/>
+                                    <field name="olila_ni_document"/>
+                                </div>
+                                <label for="trade_licence" string="Trade Licence"/>
+                                <div class="o_row">
+                                    <field name="trade_licence"/>
+                                    <field name="trade_licence_document"/>
+                                </div>
                             </group>
                             <group>
-                                <field name="deport_warehouse_id"/>
-                                <field name="vertule_warehouse_id"/>
-                                <field name="national_identifi_number"/>
+                                <field name="deport_warehouse_id" attrs="{'required': [('olila_type', '=', 'distributor')], 'invisible': [('olila_type', '!=', 'distributor')]}"/>
+                                <field name="vertual_warehouse_id" attrs="{'required': [('olila_type', '=', 'distributor')], 'invisible': [('olila_type', '!=', 'distributor')]}"/>
+                                <field name="distributor_id" attrs="{'invisible': [('olila_type', '=', 'distributor')]}"/>
+                                <field name="proprietor_name"/>
+                                <field name="proprietor_contact"/>
+                                <field name="bin_no"/>
+                                <field name="zone"/>
+                                <field name="secondary_contact_persion"/>
                             </group>
                         </group>
                     </page>
