@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="fleet_vehicle_log_fuel_form" model="ir.ui.view">
+        <field name="name">fleet.vehicle.log.fuel.form</field>
+        <field name="model">fleet.vehicle.log.fuel</field>
+        <field name="arch" type="xml">
+            <form string="Tyres">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="vehicle_id" invisible="1"/>
+                            <field name="date" required="1"/>
+                            <field name="expected_fuel_req" required="1"/>
+                            <field name="fuel_amount" required="1"/>
+                            <field name="amount" required="1"/>
+                        </group>
+                        <group>
+                            <field name="ini_km_reading" required="1"/>
+                            <field name="end_km_reading" required="1"/>
+                            <field name="total_km" required="1"/>
+                        </group>
+
+                        <field filename="file_name" name="doc1"/>
+                        <field invisible="1" name="file_name"/>
+                    </group>
+
+                    <field name="fuel_purchase_ids">
+                            <tree editable="bottom">
+                                <field name="fuel_purchase"/>
+                                <field name="amount" sum="Total"/>
+                                <field  name="doc" widget="download_link" options="{'filename': 'file_name'}"/>
+                                <field name="file_name"/>
+                            </tree>
+                        </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="fleet_vehicle_log_fuel_tree" model="ir.ui.view">
+        <field name="name">fleet.vehicle.log.fuel.tree</field>
+        <field name="model">fleet.vehicle.log.fuel</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="vehicle_id" invisible="1"/>
+                <field name="date"/>
+                <field name="ini_km_reading"/>
+                <field name="end_km_reading"/>
+                <field name="total_km"/>
+                <field name="expected_fuel_req"/>
+                <field name="fuel_amount"/>
+                <field name="amount"/>
+            </tree>
+        </field>
+    </record>
+    <record id="fleet_vehicle_log_fuel_list_action" model="ir.actions.act_window">
+        <field name="name">Fuel Logs</field>
+        <field name="res_model">fleet.vehicle.log.fuel</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="fleet_vehicle_log_fuel_tree"/>
+    </record>
+    <menuitem action="fleet_vehicle_log_fuel_list_action" id="fleet_vehicle_log_fuel_menu" name="Fuel Logs" parent="fleet.fleet_vehicles" sequence="35"/>
+</odoo>

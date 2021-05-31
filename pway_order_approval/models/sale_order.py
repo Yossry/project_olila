@@ -8,21 +8,19 @@ class SaleOrder(models.Model):
 
     def submit_for_approval(self):
         for rec in self:
+            # Notify user with second approvers on setting activities 
             rec.state = 'waiting_for_approval'
 
+    def submit_for_second_approval(self):
+        for rec in self:
+            # Notify user to belongs to second approver by seting activity
+            rec.state = 'waiting_for_final_approval'
+
     def approve_sale_order(self):
-        #for rec in self:
-            #rec.action_confirm()
-            #rec.state = 'sale'
         res = super(SaleOrder,self).action_confirm()
         return res
             
     
-    state = fields.Selection([
-        ('draft', 'Quotation'),
-        ('sent', 'Quotation Sent'),
+    state = fields.Selection(selection_add=[
         ('waiting_for_approval', 'Waiting For Approval'),
-        ('sale', 'Sales Order'),
-        ('done', 'Locked'),
-        ('cancel', 'Cancelled'),
-        ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
+        ('waiting_for_final_approval', 'Final Approval')], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')

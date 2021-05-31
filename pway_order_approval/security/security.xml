@@ -2,7 +2,12 @@
 <odoo>
     <data>
         <record id="group_sale_order_approval" model="res.groups">
-            <field name="name">Sale Order Approver</field>
+            <field name="name">Sale Order First Approver</field>
+            <field name="comment">the user will have access to all records of everyone in the sales application.</field>
+        </record>
+
+        <record id="group_sale_order_final_approval" model="res.groups">
+            <field name="name">Sale Order Second Approver</field>
             <field name="comment">the user will have access to all records of everyone in the sales application.</field>
         </record>
     </data>

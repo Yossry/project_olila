@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_fleet_inherit" model="ir.ui.view">
+            <field name="name">fleet.vehicle.inherit.form</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/div[hasclass('oe_title')]/h1" position="inside">
+                    <div class="pr-0">
+                        <h1 class="d-flex flex-row justify-content-between">
+                            <field name="kanban_state" widget="state_selection"/>
+                        </h1>
+                    </div>
+                </xpath>
+                <field name="residual_value" position="after">
+                    <field name="registration_nbr"/>
+                    <field name="date_purchase"/>
+                    <label for="cubic_centimeter"/>
+                    <div class="o_row">
+                        <field name="cubic_centimeter"/>
+                        <span>cm
+                            <sup>3</sup></span>
+                    </div>
+                    <!-- <field name="cubic_centimeter"/>-->
+                </field>
+                <field name="fuel_type" position="replace"/>
+                <field name="location" position="after">
+                    <field name="department_id" options="{'no_create_edit': True}"/>
+                    <field name="vehicle_asign_id"/>
+                    <field name="fuel_type" widget="radio"/>
+                    <field name="average_mileage"/>
+                    <field name="vehicle_seat"/>
+                </field>
+                <xpath expr="//field[@name='driver_id']" position="after">
+                    <field name="driver_number"/>
+                    <field name="driver_nid"/>
+                </xpath>
+                <xpath expr="//form/sheet/group/group/div" position="after">
+                    <field name="helper_id"/>
+                    <field name="helper_number"/>
+                </xpath>
+                <xpath expr="//field[@name='future_driver_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                    <attribute name="nolabel">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='contract_count']" position="attributes">
+                    <attribute name="string">Vehicle Licenses</attribute>
+                </xpath>
+                <xpath expr="//form/sheet/group/group[6]" position="before">
+                    <notebook>
+                        <page string="Documents">
+                            <group>
+                                <field filename="file_name" name="doc1"/>
+                                <field invisible="1" name="file_name"/>
+                                <field filename="file_name2" name="doc2"/>
+                                <field invisible="1" name="file_name2"/>
+                                <field filename="file_name3" name="doc3"/>
+                                <field invisible="1" name="file_name3"/>
+                                <field filename="file_name4" name="doc4"/>
+                                <field invisible="1" name="file_name4"/>
+                                <field filename="file_name5" name="doc5"/>
+                                <field invisible="1" name="file_name5"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </xpath>
+                <xpath expr="//button[@name='return_action_to_open']" position="after">
+                    <button class="oe_stat_button" icon="fa-files-o" name="open_vehicle_history" type="object">
+                        <field name="vehicle_history_count" string="History" widget="statinfo"/>
+                    </button>
+                    <button class="oe_stat_button" icon="fa-history" name="open_vehicle_tyres" type="object">
+                        <field name="tyres_count" string="Tyres" widget="statinfo"/>
+                    </button>
+                    <button class="oe_stat_button" icon="fa-files-o" name="open_vehicle_fuel_logs" type="object">
+                        <field name="fuel_log_count" string="Fuel Logs" widget="statinfo"/>
+                    </button>
+                    <button class="oe_stat_button" icon="fa fa-arrows" name="open_vehicle_routes" type="object">
+                        <field name="routes_count" string="Routes" widget="statinfo"/>
+                    </button>
+                    <button class="oe_stat_button" icon="fa-files-o" name="open_vehicle_component" type="object">
+                        <field name="component_count" string="Components" widget="statinfo"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+        <!-- Document Upload in Vehicle Service  -->
+        <record id="fleet_vehicle_log_services_form_inherit" model="ir.ui.view">
+            <field name="name">fleet.vehicle.log.services.form.inherit</field>
+            <field name="model">fleet.vehicle.log.services</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_form"/>
+            <field name="arch" type="xml">
+                <field name="odometer_unit" position="before">
+                    <field filename="file_name" name="doc"/>
+                    <field invisible="1" name="file_name"/>
+                </field>
+            </field>
+        </record>
+        <record id="fleet_vehicle_view_kanban_inherit" model="ir.ui.view">
+            <field name="name">fleet.vehicle.inherit.kanban</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_view_kanban"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('oe_kanban_bottom_left')]" position="inside">
+                    <field name="kanban_state" widget="state_selection"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="fleet.menu_root" model="ir.ui.menu">
+            <field name="name">Transport</field>
+        </record>
+    </data>
+</odoo>

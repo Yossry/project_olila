@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+     <record id="vehicle_history_form" model="ir.ui.view">
+        <field name="name">vehicle.history.form</field>
+        <field name="model">vehicle.history</field>
+        <field name="arch" type="xml">
+            <form string="Vehicle History">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="vehicle_id" invisible="1"/>
+                            <field name="user_id"/>
+                            <field name="date" />
+                            <field name="driver_id" />
+
+                        </group>
+
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="vehicle_history_tree" model="ir.ui.view">
+        <field name="name">vehicle.history.tree</field>
+        <field name="model">vehicle.history</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="vehicle_id" invisible="1"/>
+                <field name="user_id"/>
+                <field name="date" />
+                <field name="driver_id" />
+            </tree>
+        </field>
+    </record>
+    <record id="vehicle_history_list_action" model="ir.actions.act_window">
+        <field name="name">Fuel Logs</field>
+        <field name="res_model">vehicle.history</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="vehicle_history_tree"/>
+    </record>
+    <menuitem action="vehicle_history_list_action" id="vehicle_history_menu" name="Vehicle History" parent="fleet.fleet_vehicles" sequence="35"/>
+</odoo>
+

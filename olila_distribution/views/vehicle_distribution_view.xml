@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="vehicle_distribution_form" model="ir.ui.view">
+            <field name="name">vehicle.distribution.form</field>
+            <field name="model">vehicle.distribution</field>
+            <field name="arch" type="xml">
+                <form string="Vehicle Management">
+                    <header>
+                        <button name="send_for_approval" states="draft" type="object" string="Send for Approval" class="oe_highlight" groups="olila_distribution.group_distribution_user"/>
+                        <button name="approve_vehicle" states="approval" type="object" string="Approve" class="oe_highlight" groups="olila_distribution.group_distribution_manager"/>
+                        <button name="reject_vehicle" states="approval" type="object" string="Reject" class="oe_highlight" groups="olila_distribution.group_distribution_manager"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field  name="transport_type" widget="radio" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                <field  name="own_vehicle_id" attrs="{'invisible':[('transport_type', '=', 'rent')], 'readonly': [('state','!=','draft')], 'required':[('transport_type', '=', 'own')] }"/>
+                                <field  name="own_vehicle_driver_id" attrs="{'invisible':[('transport_type', '=', 'rent')], 'readonly': [('state','!=','draft')], 'required':[('transport_type', '=', 'own')]}"/>
+                                <field  name="own_vehicle_driver_contact" attrs="{'invisible':[('transport_type', '=', 'rent')], 'readonly': [('state','!=','draft')]}"/>
+                                <field  name="rent_vehicle_nbr" attrs="{'invisible':[('transport_type', '=', 'own')], 'readonly': [('state','!=','draft')], 'required': [('transport_type', '=', 'rent')]}"/>
+                                <field  name="rent_vehicle_driver" attrs="{'invisible':[('transport_type', '=', 'own')], 'readonly': [('state','!=','draft')], 'required': [('transport_type', '=', 'rent')]}"/>
+                                <field  name="rent_vehicle_driver_contact" attrs="{'invisible':[('transport_type', '=', 'own')], 'readonly': [('state','!=','draft')]}"/>
+                            </group>
+                            <group>
+                                <field  name="picking_id" attrs="{'readonly': [('state','!=','draft')]}" invisible="1"/>
+                                <field name="cost" attrs="{'readonly': [('state','!=','draft')]}" />
+                                <field name="remarks" attrs="{'readonly': [('state','!=','draft')]}" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                         <field name="message_follower_ids"/>
+                         <field name="activity_ids"/>
+                         <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        <record id="vehicle_distribution_tree" model="ir.ui.view">
+            <field name="name">vehicle.distribution.tree</field>
+            <field name="model">vehicle.distribution</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field  name="transport_type" />
+                    <field  name="own_vehicle_id" string="Company Vehicle No."/>
+                    <field  name="own_vehicle_driver_id" string="Company Driver Name"/>
+                    <field  name="own_vehicle_driver_contact" string="Company Driver Number"/>
+                    <field  name="rent_vehicle_nbr" string="Rent Vehicle No."/>
+                    <field  name="rent_vehicle_driver" string="Rent Vehicle Driver"/>
+                    <field  name="rent_vehicle_driver_contact" string="Rent Vehicle Driver No."/>
+                    <field name="cost" />
+                    <field name="remarks" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+        <record id="vehicle_distribution_action" model="ir.actions.act_window">
+            <field name="name">Vehicle Distribution</field>
+            <field name="res_model">vehicle.distribution</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="vehicle_distribution_tree"/>
+        </record>
+        <menuitem action="vehicle_distribution_action" id="vehicle_distribution_main_menu" name="Vehicle Distribution" parent="stock.menu_stock_warehouse_mgmt" sequence="10"/>
+    </data>
+</odoo>

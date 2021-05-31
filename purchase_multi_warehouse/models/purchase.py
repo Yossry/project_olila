@@ -19,7 +19,8 @@ class PurchaseOrderLine(models.Model):
     def _prepare_stock_move_vals(self, picking, price_unit, product_uom_qty, product_uom):
         res = super(PurchaseOrderLine, self)._prepare_stock_move_vals(picking, price_unit, product_uom_qty, product_uom)
         if self.warehouse_id:
-        	res['warehouse_id'] = self.warehouse_id.id
+            res['warehouse_id'] = self.warehouse_id.id
+            res['location_dest_id'] = self.warehouse_id.lot_stock_id.id
         return res
 
     def _get_warehouse_picking(self, warehouse_id):

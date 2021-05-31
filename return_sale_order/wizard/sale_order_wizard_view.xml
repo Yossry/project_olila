@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+	     <record id="view_sale_order_wizard" model="ir.ui.view">
+            <field name="name">Sale Order Wizard</field>
+            <field name="model">sale.order.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">       
+                <form string="Assign Warehouse">
+                    <separator colspan="4" />
+                    <group>
+                        <field name="picking_ids" widget="many2many_tags"/>
+                    </group>
+                    <footer>
+                        <button  name="return_picking"  string="Return Picking" type="object" class="btn-primary"/>
+                    	or                   		
+                   		<button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>                  
+                </form>
+            </field>
+        </record>
+        	    
+        <record id="action_sale_wizard" model="ir.actions.act_window">
+            <field name="name">Return picking</field>
+            <field name="res_model">sale.order.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+          <!--   <field name="binding_model_id" ref="sale.model_sale_order"/> -->
+        </record>
+
+        <record id="sale_order_olila_sale_return_inherit" model="ir.ui.view">
+            <field name="name">sale.order.olila.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button type="action" name="%(return_sale_order.action_sale_wizard)d"  string="Return Picking" class="oe_highlight"/>
+                </xpath>
+            </field>
+        </record>
+	</data>
+</odoo>

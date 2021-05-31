@@ -5,7 +5,7 @@ from itertools import groupby
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    shipping_partner_id = fields.Many2one(related='order_id.partner_id', store=True, string='Shipping Customer', readonly=False)
+    shipping_partner_id = fields.Many2one(related='order_id.partner_id', store=True, string='Shipping Address', readonly=False)
 
     def _prepare_procurement_values(self, group_id=False):
         values = super(SaleOrderLine, self)._prepare_procurement_values(group_id)

@@ -6,17 +6,24 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
+                <group name="purchase" position="inside">
+                    <field name="olila_seller_type" widget="radio" options="{'horizontal': true}" string="Vendor Type"/>
+                </group>
                 <xpath expr="//notebook[last()]" position="inside">
                     <page string="Olila Sale">
                         <group>
                             <group>
                                 <field name="code" readonly="1"/>
-                                <field name="olila_type" widget="radio" options="{'horizontal': true}"/>
-                                <field name="olila_seller_type" widget="radio" options="{'horizontal': true}" string="Seller Type"/>
+                                <field name="olila_type" string="Customer Type" widget="radio" options="{'horizontal': true}"/>
                                 <label for="national_identifi_number" string="National ID"/>
                                 <div class="o_row">
                                     <field name="national_identifi_number"/>
                                     <field name="olila_ni_document"/>
+                                </div>
+                                <label for="tin_no" string="TIN No"/>
+                                <div class="o_row">
+                                    <field name="tin_no"/>
+                                    <field name="tin_no_document"/>
                                 </div>
                                 <label for="trade_licence" string="Trade Licence"/>
                                 <div class="o_row">
@@ -26,7 +33,7 @@
                             </group>
                             <group>
                                 <field name="deport_warehouse_id" attrs="{'required': [('olila_type', '=', 'distributor')], 'invisible': [('olila_type', '!=', 'distributor')]}"/>
-                                <field name="vertual_warehouse_id" attrs="{'required': [('olila_type', '=', 'distributor')], 'invisible': [('olila_type', '!=', 'distributor')]}"/>
+                                <field name="vertual_location_id" attrs="{'required': [('olila_type', '=', 'distributor')], 'invisible': [('olila_type', '!=', 'distributor')]}"/>
                                 <field name="distributor_id" attrs="{'invisible': [('olila_type', '=', 'distributor')]}"/>
                                 <field name="proprietor_name"/>
                                 <field name="proprietor_contact"/>

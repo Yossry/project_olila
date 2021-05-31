@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="increment_sequence_id_sequence" model="ir.sequence">
+    <field name="name">Field Incrementation</field>
+    <field name="code">increment_sequence_id</field>
+    <field name="prefix">RC</field>
+    <field name="padding">3</field>
+    <field eval="False" name="company_id"/>
+  </record>
+  <record id="vehicle_license_renewal_details_form" model="ir.ui.view">
+    <field name="name">vehicle.liecense.renew.form</field>
+    <field name="model">vehicle.liecense.renew</field>
+    <field name="arch" type="xml">
+      <form string="Tyres">
+        <header>
+          <button class="oe_highlight" groups="fleet.fleet_group_manager" name="confirm_renew" states="draft" string="Confirm" type="object"/>
+          <field name="state" widget="statusbar"/>
+        </header>
+        <sheet>
+          <!--      <div class="oe_title"><h1><field name="name"/></h1></div>-->
+          <group col="2">
+            <group string="Date">
+              <field attrs="{'readonly': [('state','=','done')]}" name="date_from"/>
+              <field attrs="{'readonly': [('state','=','done')]}" name="date_to"/>
+              <field attrs="{'readonly': [('state','=','done')]}" name="licence_id"/>
+            </group>
+            <group string="Cost">
+              <field attrs="{'readonly': [('state','=','done')]}" name="cost"/>
+              <field attrs="{'readonly': [('state','=','done')]}" name="speed_money"/>
+              <field attrs="{'readonly': [('state','=','done')]}" name="total_cost"/>
+            </group>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="vehicle_license_renewal_detailss_tree" model="ir.ui.view">
+    <field name="name">vehicle.liecense.renew.tree</field>
+    <field name="model">vehicle.liecense.renew</field>
+    <field name="arch" type="xml">
+      <tree>
+        <!--            <field name="name"/>-->
+        <field name="date_from"/>
+        <field name="date_to"/>
+        <field name="cost"/>
+        <field name="speed_money"/>
+        <field name="total_cost"/>
+      </tree>
+    </field>
+  </record>
+  <record id="vehicle_license_renewal_details_list_action" model="ir.actions.act_window">
+    <field name="name">Vehicles License Renewals</field>
+    <field name="res_model">vehicle.liecense.renew</field>
+    <field name="view_mode">tree,form</field>
+    <field name="view_id" ref="vehicle_license_renewal_detailss_tree"/>
+  </record>
+  <menuitem action="vehicle_license_renewal_details_list_action" id="vehicle_license_renewal_details_menu" name="Vehicles License Renewals" parent="fleet.fleet_vehicles" sequence="40"/>
+  <record id="fleet_vehicle_contract_form_inherit" model="ir.ui.view">
+    <field name="name">fleet.vehicle.log.contract.inherit</field>
+    <field name="model">fleet.vehicle.log.contract</field>
+    <field name="inherit_id" ref="fleet.fleet_vehicle_log_contract_view_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//div[@class='oe_title']" position="before">
+        <div class="oe_button_box" name="button_box">
+          <button class="oe_stat_button" icon="fa-history" name="open_license_renewals" type="object">
+            <field name="renew_count" string="Renewals" widget="statinfo"/>
+          </button>
+        </div>
+      </xpath>
+    </field>
+  </record>
+</odoo>

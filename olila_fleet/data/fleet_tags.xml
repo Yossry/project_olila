@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="covered_van" model="fleet.vehicle.tag">
+            <field name="name">Covered Van</field>
+        </record>
+        <record id="car" model="fleet.vehicle.tag">
+            <field name="name">Car</field>
+        </record>
+        <record id="motor_bike" model="fleet.vehicle.tag">
+            <field name="name">Motor Bike</field>
+        </record>
+        <record id="fleet.fleet_vehicle_state_new_request" model="fleet.vehicle.state">
+            <field name="name">Active</field>
+        </record>
+        <record id="fleet.fleet_vehicle_state_to_order" model="fleet.vehicle.state">
+            <field name="name">Repairing</field>
+        </record>
+        <record id="fleet.fleet_vehicle_state_registered" model="fleet.vehicle.state">
+            <field name="name">Break Down</field>
+        </record>
+        <record id="fleet.fleet_vehicle_state_downgraded" model="fleet.vehicle.state">
+            <field name="name">Scrap</field>
+        </record>
+    </data>
+</odoo>

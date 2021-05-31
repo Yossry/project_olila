@@ -17,13 +17,13 @@ class SaleOrder(models.Model):
     sl_no = fields.Char("S/L number")
     contact_no = fields.Char("Contact No")
     zone = fields.Char("Zone")
-    secondary_contact_persion = fields.Char("Secondary Contact Persion")
+    secondary_contact_persion = fields.Char("Secondary Contact Person")
 
     def action_cost_estimation(self):
         """ Cost Estimation Open"""
-        action_rec = self.env['ir.model.data'].xmlid_to_object('olila_sale.cost_estimation_action')
+        action_rec = self.env['ir.model.data'].sudo().xmlid_to_object('olila_sale.cost_estimation_action')
         if action_rec:
-            action = action_rec.read([])[0]
+            action = action_rec.sudo().read([])[0]
             action["domain"] = [('order_id', '=', self.id)]
             action['context'] = {'default_order_id': self.id}
             return action
@@ -34,7 +34,8 @@ class SaleOrder(models.Model):
         if self.partner_id:
             if self.sale_type == 'primary_sales':
                 self.dealer_code = self.partner_id.code
-                self.warehouse_id = self.partner_id.deport_warehouse_id.id
+                if self.partner_id.deport_warehouse_id:
+                    self.warehouse_id = self.partner_id.deport_warehouse_id.id
             elif self.sale_type == 'secondary_sales':
                 self.distributor_code = self.partner_id.distributor_id.code
             self.contact_no = self.partner_id and self.partner_id.phone or self.partner_id.mobile
@@ -46,7 +47,9 @@ class SaleOrder(models.Model):
 class SaleorderLine(models.Model):
     _inherit = 'sale.order.line'
 
-    capture_gps_location = fields.Char(string="Capture GPS Location")
+    capture_gps_location = fields.Char(string="Capture GPS Location", copy=False)
+    latitude = fields.Char(string="latitude", copy=False)
+    longitute = fields.Char(string="Longitute", copy=False)
 
     @api.model
     def create(self, vals):
@@ -58,9 +61,10 @@ class SaleorderLine(models.Model):
         response = requests.request("GET", url, headers=headers)
         rec_data = response.json()
         vals['capture_gps_location'] = ip_address
-        print(rec_data)
         if rec_data and rec_data['status'] == "success":
             vals['capture_gps_location'] = str(rec_data['lat']) + "==" + str(rec_data['lon'])
+            vals['latitude'] = str(rec_data['lat'])
+            vals['longitute'] = str(rec_data['lon'])
         res = super(SaleorderLine, self).create(vals)
         return res
 

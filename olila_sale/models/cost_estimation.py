@@ -6,13 +6,13 @@ class CostEstimation(models.Model):
     _description = 'cost estimation'
     _inherit = ['format.address.mixin', 'image.mixin', 'mail.thread', 'mail.activity.mixin']
 
-    @api.depends('estimation_line_ids', 'estimation_line_ids.price_subtotal', 'estimation_line_ids.price_unit')
+    @api.depends('estimation_line_ids', 'estimation_line_ids.price_subtotal', 'margin', 'estimation_line_ids.price_unit')
     def _compute_amount_all(self):
         total_estimation = 0.0
         for cost in self:
             for rec in cost.estimation_line_ids:
                 total_estimation += rec.price_subtotal
-            cost.total_estimation  = total_estimation
+            cost.total_estimation  = total_estimation + cost.margin
 
     @api.model
     def default_get(self, default_fields):
@@ -23,17 +23,20 @@ class CostEstimation(models.Model):
     date = fields.Date(string='Date', default=fields.Date.today())
     note = fields.Text(string='Remarks')
     code = fields.Char('Code', size=256)
+    company_id = fields.Many2one('res.company', string='Company', required=True, readonly=True,
+        default=lambda self: self.env.company)
+    currency_id = fields.Many2one("res.currency", default=lambda self: self.env.company.currency_id)
     rfq_number = fields.Char(string="RFQ Number")
-    #selection_product = fields.Selection([('create_new', 'Create New Product'), ('use_existing', 'Use Existing Product')])
     order_id = fields.Many2one('sale.order', 'Quotation')
     product_id = fields.Many2one('product.product', 'Product')
     description_sale = fields.Char('Description', size=256)
     is_primary_approved = fields.Boolean("Is Primary Approved")
     is_final_approved = fields.Boolean("Is Final Approved")
-    quantity = fields.Float("Quantity")
-    state = fields.Selection([('draft','Draft'),('confirm','Confirm'),('primary_approved', 'Primary Approved'),('final_approved','Final Approved'), ('accept','Accept'), ('reject','Reject')], 
+    quantity = fields.Float("Quantity", default=1)
+    state = fields.Selection([('draft','Draft'), ('confirm','Confirm'), ('primary_approved', 'Primary Approved'), ('final_approved', 'Final Approved'), ('accept','Accept'), ('reject','Reject')], 
         string='Status', readonly=True, index=True, copy=False, default='draft')
-    total_estimation = fields.Float(string="Final Price", compute="_compute_amount_all")
+    margin = fields.Monetary(string="Margin")
+    total_estimation = fields.Monetary(string="Final Price", compute="_compute_amount_all")
     estimation_line_ids  = fields.One2many('cost.estimation.line', 'estimation_id', string='Estimation Lines')
 
     @api.onchange('product_id')
@@ -62,9 +65,10 @@ class CostEstimation(models.Model):
 
     def button_accept(self):
         if self.is_final_approved:
-            Product = self.env['product.product']
+            Product = self.env['product.product'].sudo()
             self.product_id = Product.create({'name': self.description_sale, 'default_code': self.code})
-            self.order_id.order_line.create({'product_id': self.product_id.id, 'product_uom_qty': self.quantity, 'order_id': self.order_id.id})
+            price_unit = self.total_estimation / self.quantity
+            self.order_id.order_line.create({'product_id': self.product_id.id, 'product_uom_qty': self.quantity, 'price_init': price_unit, 'order_id': self.order_id.id})
             self.write({'state': 'accept'})
         else:
             raise UserError(_('Need to approve before accept cost estimation.'))

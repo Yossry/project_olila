@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="fleet_route_plan_form" model="ir.ui.view">
+    <field name="name">fleet.route.plan.form</field>
+    <field name="model">fleet.route.plan</field>
+    <field name="arch" type="xml">
+      <form string="Routes">
+        <header>
+          <button class="oe_highlight" groups="fleet.fleet_group_manager" name="confirm_route" states="draft" string="Confirm" type="object"/>
+          <field name="state" widget="statusbar"/>
+        </header>
+        <sheet>
+          <group col="2">
+            <field attrs="{'readonly': [('state','=','done')]}" name="date"/>
+            <field attrs="{'readonly': [('state','=','done')]}" name="vehicle_id"/>
+          </group>
+          <notebook>
+            <page string="Dealers">
+              <group string="Dealer List">
+                <field name="components_ids">
+                  <tree>
+                    <field name="customer"/>
+                    <field name="street"/>
+                    <field name="street2"/>
+                    <field name="city"/>
+                  </tree>
+                </field>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="fleet_route_plan_tree" model="ir.ui.view">
+    <field name="name">fleet.route.plan.tree</field>
+    <field name="model">fleet.route.plan</field>
+    <field name="arch" type="xml">
+      <tree>
+        <field name="date"/>
+        <field name="vehicle_id"/>
+        <field name="state"/>
+      </tree>
+    </field>
+  </record>
+  <record id="fleet_route_plan_list_action" model="ir.actions.act_window">
+    <field name="name">Route Plans</field>
+    <field name="res_model">fleet.route.plan</field>
+    <field name="view_mode">tree,form</field>
+    <field name="view_id" ref="fleet_route_plan_tree"/>
+  </record>
+  <menuitem action="fleet_route_plan_list_action" id="fleet_route_plan_menu" name="Routes" parent="fleet.fleet_vehicles" sequence="50"/>
+  <record id="fleet_route_plan_line_form" model="ir.ui.view">
+    <field name="name">fleet.route.plan.line.form</field>
+    <field name="model">fleet.route.plan.line</field>
+    <field name="arch" type="xml">
+      <form string="Routes">
+        <sheet>
+          <group col="2">
+            <field name="customer"/>
+            <field name="street"/>
+            <field name="street2"/>
+            <field name="city"/>
+            <field name="route_id"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="fleet_route_plan_line_tree" model="ir.ui.view">
+    <field name="name">fleet.route.plan.line.tree</field>
+    <field name="model">fleet.route.plan.line</field>
+    <field name="arch" type="xml">
+      <tree>
+        <field name="customer"/>
+        <field name="street"/>
+        <field name="street2"/>
+        <field name="city"/>
+      </tree>
+    </field>
+  </record>
+</odoo>

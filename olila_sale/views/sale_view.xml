@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='payment_term_id']" position="after">
-                    <field name="dealer_code" />
+                    <field name="dealer_code"/>
                     <field name="distributor_code" attrs="{'invisible': [('sale_type', '!=', 'secondary_sales')]}"/>
                     <field name="subject" attrs="{'invisible': [('sale_type', '!=', 'corporate_sales')]}"/>
                     <field name="sl_no" attrs="{'invisible': [('sale_type', '!=', 'corporate_sales')]}"/>
@@ -30,7 +30,7 @@
                         type="object" class="btn-primary" attrs="{'invisible': ['|', ('state', '=', 'sale'), ('sale_type', '!=', 'corporate_sales')]}"/>
                 </xpath>
                  <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="after">
-                    <field name="capture_gps_location"/>
+                    <field name="capture_gps_location" invisible="1"/>
                 </xpath>
                 <xpath expr="//notebook[last()]" position="inside" >
                     <page string="Estimation Details" attrs="{'invisible': [('sale_type', '!=', 'corporate_sales')]}">
@@ -47,19 +47,104 @@
             </field>
         </record>
 
+         <record id="sale_order_form_olila_primary_sale_inherit" model="ir.ui.view">
+            <field name="name">sale.order.form.primary.olila</field>
+            <field name="model">sale.order</field>
+            <field name="mode">primary</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                     <attribute name="domain">[('olila_type', 'in', ['dealer', 'distributor'])]</attribute>
+                </xpath>
+            </field>
+        </record>
+
+
+         <record id="sale_order_form_olila_corporate_sale_inherit" model="ir.ui.view">
+            <field name="name">sale.order.form.corporate.olila</field>
+            <field name="model">sale.order</field>
+            <field name="mode">primary</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                     <attribute name="domain">[('olila_type', '=', 'corporater')]</attribute>
+                </xpath>
+            </field>
+        </record>
+
         <!-- Primary Actions -->
 
         <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
             <field name="name">Primary Quotation</field>
-            <field name="domain">[('sale_type', '=', 'primary_sales')]</field>
+            <field name="res_model">sale.order</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
+            <field name="domain">[('state', 'in', ['draft', 'sent']), ('sale_type', '=', 'primary_sales')]</field>
             <field name="context">{'default_sale_type': 'primary_sales'}</field>
         </record>
 
+        <record id="sale_order_action_view_quotations_with_onboarding_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="sale.view_quotation_tree"/>
+            <field name="act_window_id" ref="sale.action_quotations_with_onboarding"/>
+        </record>
+
+        <record id="sale_order_action_view_quotations_with_onboarding_kanban" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="sale.view_sale_order_kanban"/>
+            <field name="act_window_id" ref="sale.action_quotations_with_onboarding"/>
+        </record>
+
+        <record id="sale_order_action_quotations_with_onboarding_form" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="olila_sale.sale_order_form_olila_primary_sale_inherit"/>
+            <field name="act_window_id" ref="sale.action_quotations_with_onboarding"/>
+        </record>
+
+        <record id="sale_order_action_view_quotations_with_onboarding_calendar" model="ir.actions.act_window.view">
+            <field name="sequence" eval="4"/>
+            <field name="view_mode">calendar</field>
+            <field name="view_id" ref="sale.view_sale_order_calendar"/>
+            <field name="act_window_id" ref="sale.action_quotations_with_onboarding"/>
+        </record>
+
+        <record id="sale_order_action_view_quotations_with_onboarding_pivot" model="ir.actions.act_window.view">
+            <field name="sequence" eval="5"/>
+            <field name="view_mode">pivot</field>
+            <field name="view_id" ref="sale.view_sale_order_pivot"/>
+            <field name="act_window_id" ref="sale.action_quotations_with_onboarding"/>
+        </record>
+
+        <record id="sale_order_action_view_quotations_with_onboarding_graph" model="ir.actions.act_window.view">
+            <field name="sequence" eval="6"/>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="sale.view_sale_order_graph"/>
+            <field name="act_window_id" ref="sale.action_quotations_with_onboarding"/>
+        </record>
+
+<!--         <record model="ir.actions.act_window.view" id="action_primary_quotation_form_view_change">
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="olila_sale.sale_order_form_olila_primary_sale_inherit"/>
+            <field name="act_window_id" ref="sale.action_quotations_with_onboarding"/>
+        </record> -->
+
         <record id="sale.action_orders" model="ir.actions.act_window">
             <field name="name">Primary Sales Orders</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
             <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel')), ('sale_type', '=', 'primary_sales')]</field>
             <field name="context">{'default_sale_type': 'primary_sales'}</field>
         </record>
+
+<!--         <record model="ir.actions.act_window.view" id="action_primary_order_form_view_change">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="olila_sale.sale_order_form_olila_primary_sale_inherit"/>
+            <field name="act_window_id" ref="sale.action_orders"/>
+        </record> -->
 
         <!-- Secondary Actions -->
 
@@ -101,7 +186,6 @@
 
         <record id="action_quotation_corporate" model="ir.actions.act_window">
             <field name="name">Corporate Quotation</field>
-            <field name="type">ir.actions.act_window</field>
             <field name="res_model">sale.order</field>
             <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
             <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
@@ -118,7 +202,6 @@
 
         <record id="action_orders_corporate" model="ir.actions.act_window">
             <field name="name">Corporate Sales Orders</field>
-            <field name="type">ir.actions.act_window</field>
             <field name="res_model">sale.order</field>
             <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
             <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
@@ -131,6 +214,50 @@
                     Once the quotation is confirmed, it becomes a sales order.<br/> You will be able to create an invoice and collect the payment.
                 </p>
             </field>
+        </record>
+
+
+
+        <record id="sale_order_action_view_quotations_with_corporate_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="sale.view_quotation_tree"/>
+            <field name="act_window_id" ref="action_quotation_corporate"/>
+        </record>
+
+        <record id="sale_order_action_view_quotations_corporate_kanban" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="sale.view_sale_order_kanban"/>
+            <field name="act_window_id" ref="action_quotation_corporate"/>
+        </record>
+
+        <record id="sale_order_action_quotations_with_corporate_form" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="olila_sale.sale_order_form_olila_corporate_sale_inherit"/>
+            <field name="act_window_id" ref="action_quotation_corporate"/>
+        </record>
+
+        <record id="sale_order_action_view_quotations_corporate_calendar" model="ir.actions.act_window.view">
+            <field name="sequence" eval="4"/>
+            <field name="view_mode">calendar</field>
+            <field name="view_id" ref="sale.view_sale_order_calendar"/>
+            <field name="act_window_id" ref="action_quotation_corporate"/>
+        </record>
+
+        <record id="sale_order_action_view_quotations_corporate_pivot" model="ir.actions.act_window.view">
+            <field name="sequence" eval="5"/>
+            <field name="view_mode">pivot</field>
+            <field name="view_id" ref="sale.view_sale_order_pivot"/>
+            <field name="act_window_id" ref="action_quotation_corporate"/>
+        </record>
+
+        <record id="sale_order_action_view_quotations_corporate_graph" model="ir.actions.act_window.view">
+            <field name="sequence" eval="6"/>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="sale.view_sale_order_graph"/>
+            <field name="act_window_id" ref="action_quotation_corporate"/>
         </record>
 
         <!-- Parent Menus -->

@@ -11,11 +11,11 @@
               </xpath>
               
               <xpath expr="//header" position="inside">
-                   <button name="submit_for_approval" string="Submit for Approval" type="object" class="oe_highlight" states="draft,sent"
-                        groups="sales_team.group_sale_salesman"/>
-                  <button name="action_confirm" string="Confirm" type="object" class='oe_highlight' attrs="{'invisible': [('state', 'not in', ['waiting_for_approval'])]}" groups="pway_order_approval.group_sale_order_approval"/>
+                   <button name="submit_for_approval" string="Submit for Approval" type="object" class="oe_highlight" states="draft,sent" groups="sales_team.group_sale_salesman"/>
+                   <button name="submit_for_second_approval" string="Approve" type="object" class='oe_highlight' attrs="{'invisible': [('state', 'not in', ['waiting_for_approval'])]}" groups="pway_order_approval.group_sale_order_approval"/>
+                  <button name="action_confirm" string="Confirm Order" type="object" class='oe_highlight' attrs="{'invisible': [('state', 'not in', ['waiting_for_final_approval'])]}" groups="pway_order_approval.group_sale_order_final_approval"/>
               </xpath>
-              
+       
               <xpath expr="//form[1]/header[1]/button[@name='action_confirm'][1]" position="attributes">
     <attribute name="groups">pway_order_approval.group_sale_order_approval</attribute>
                   <attribute name="attrs">{"invisible": ["|",["state","!=","sent"],["state","!=","waiting_for_approval"]]}</attribute>
@@ -28,9 +28,6 @@
               <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']" position="attributes">
                 <attribute name="attrs">{"readonly": [('state', 'in', ['done','cancel','waiting_for_approval'])]}</attribute>
             </xpath>
-           
-                  
-              
           </field>
       </record>
       
@@ -42,9 +39,13 @@
             	<xpath expr="//filter[@name='my_quotation']" position="after">
             		<separator/>
                     <filter name="filter_waiting_for_approval" string="Waiting for approval" domain="[('state','=','waiting_for_approval')]"/>
+                    <filter name="filter_waiting_for_final_approval" string="Waiting for final approval" domain="[('state','=','waiting_for_final_approval')]"/>
             	</xpath>
             </field>
         </record>
+      <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
+         <field name="domain">[('state', 'in', ('draft', 'sent', 'waiting_for_approval', 'waiting_for_final_approval')), ('sale_type', '=', 'primary_sales')]</field>
+      </record>
     
   </data>
 </odoo>
