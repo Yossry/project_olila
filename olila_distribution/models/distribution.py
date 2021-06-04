@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models,_
+from odoo.exceptions import UserError, ValidationError
 
 class VehicleDistribution(models.Model):
     _name = 'vehicle.distribution'
@@ -26,6 +27,13 @@ class VehicleDistribution(models.Model):
                 {'user_id': user.id, 'date': fields.date.today(), 'vehicle_id': self.own_vehicle_id.id,
                  'driver_id': self.own_vehicle_driver_id.id})
 
+    def changed_vehicle_status(self):
+        if self.transport_type =='own' and self.own_vehicle_id:
+            if self.own_vehicle_id.kanban_state == 'blocked':
+                self.own_vehicle_id.kanban_state = 'done'
+            else:
+                raise ValidationError(('Vehicle Already in Used State'))
+
 
     def reject_vehicle(self):
         self.state = 'draft'
@@ -33,7 +41,7 @@ class VehicleDistribution(models.Model):
     transport_type = fields.Selection([('own', 'Own'), ('rent', '3rd Party/Rent')], string="Vehicle Type",
                                       default='own')
     picking_id = fields.Many2one('stock.picking', string="Picking ID")
-    own_vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle Number", tracking= True)
+    own_vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle Number", tracking= True, domain=lambda self: [('state_id', '=', self.env.ref('fleet.fleet_vehicle_state_new_request').id),('kanban_state','=','blocked')],)
     own_vehicle_driver_id = fields.Many2one('res.partner', string='Driver Name', tracking= True)
     own_vehicle_driver_contact = fields.Char('Driver Contact Number')
     rent_vehicle_nbr = fields.Char('Vehicle Number', tracking= True)

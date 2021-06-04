@@ -2,15 +2,22 @@
 <odoo>
     <record model="ir.module.category" id="module_category_distribution">
         <field name="name">Distribution</field>
-        <field name="description">Category For Dustribution</field>
+        <field name="description">Category For Distribution</field>
         <field name="sequence">50</field>
     </record>
+
     <record id="group_distribution_user" model="res.groups">
-        <field name="name">User</field>
-        <field name="category_id" ref="module_category_distribution"/>
-    </record>
+            <field name="name">User:Create Request</field>
+            <field name="category_id" ref="olila_distribution.module_category_distribution"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Create request of Vehicle Used</field>
+        </record>
+
+    
     <record id="group_distribution_manager" model="res.groups">
-        <field name="name">Manager</field>
-        <field name="category_id" ref="module_category_distribution"/>
+        <field name="name">Manager:Approve Request Created By Users</field>
+        <field name="category_id" ref="olila_distribution.module_category_distribution"/>
+        <field name="implied_ids" eval="[(4, ref('olila_distribution.group_distribution_user'))]"/>
+        <field name="comment">Approve and status Update</field>
     </record>
 </odoo>

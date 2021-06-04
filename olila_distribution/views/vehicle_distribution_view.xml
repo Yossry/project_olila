@@ -10,6 +10,7 @@
                         <button name="send_for_approval" states="draft" type="object" string="Send for Approval" class="oe_highlight" groups="olila_distribution.group_distribution_user"/>
                         <button name="approve_vehicle" states="approval" type="object" string="Approve" class="oe_highlight" groups="olila_distribution.group_distribution_manager"/>
                         <button name="reject_vehicle" states="approval" type="object" string="Reject" class="oe_highlight" groups="olila_distribution.group_distribution_manager"/>
+                         <button name="changed_vehicle_status" states="approved" type="object" string="Vehicle Status Update" class="oe_highlight" groups="olila_distribution.group_distribution_manager"/>
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>

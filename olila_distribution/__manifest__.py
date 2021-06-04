@@ -18,8 +18,8 @@
 
     # always loaded
     'data': [
-        'security/ir.model.access.csv',
         'security/distribution_security.xml',
+        'security/ir.model.access.csv',
         'data/olila_data.xml',
         'views/vehicle_distribution_view.xml',
         'views/stock_picking_view.xml',
