@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="seq_lc_requisition" model="ir.sequence">
+	        <field name="name">LC requisition</field>
+	        <field name="code">lc.opening.fund.requisition</field>
+	        <field name="prefix">CF/</field>
+	        <field name="padding">5</field>
+	        <field name="company_id" eval="False" />
+	    </record>
+
+	    <record id="seq_res_cf_aggents" model="ir.sequence">
+	        <field name="name">CF Aggent</field>
+	        <field name="code">res.cf.aggent</field>
+	        <field name="prefix">CF/</field>
+	        <field name="padding">5</field>
+	        <field name="company_id" eval="False" />
+	    </record>
+	    <record id="seq_charge" model="ir.sequence">
+	        <field name="name">Custom Charges</field>
+	        <field name="code">custom.charges</field>
+	        <field name="prefix">Charges/</field>
+	        <field name="padding">5</field>
+	        <field name="company_id" eval="False" />
+	    </record>
+	</data>
+</odoo>

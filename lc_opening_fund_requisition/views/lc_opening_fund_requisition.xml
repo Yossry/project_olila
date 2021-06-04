@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id='lc_opening_fund_requisition_tree' model='ir.ui.view'>
+            <field name="name">lc.opening.fund.requisition.tree</field>
+            <field name="model">lc.opening.fund.requisition</field>
+            <field name="arch" type="xml">
+                <tree string="LC Opening Fund Requisition Form">
+                    <field name="name"/>
+                    <field name="lc_requisition_date"/>
+                    <field name="supplier_id"/>
+                    <field name="purchase_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id='lc_opening_fund_requisition_form' model='ir.ui.view'>
+            <field name="name">lc.opening.fund.requisition.form</field>
+            <field name="model">lc.opening.fund.requisition</field>
+            <field name="arch" type="xml">
+                <form string="LC Opening Fund Requisition Form">
+                    <header>
+                        <button name="button_done" string="Process" states="open" type="object" class="btn-primary"/>
+                        <button name="button_confirm" string="Confirm" states="draft" type="object" class="btn-primary"/>
+                        <button name="button_make_done" string="Make Done" states="accept" type="object" class="btn-primary"/>
+                        <button name="button_lc_opening" string="Create LC Opening" states="request" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'request')]}"/>
+                        <button name="create_insurance_cover" string="Create Insurance Cover" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'confirm')]}"/>
+                        <button name="create_approval_explosive" string="Pre-Approval Explosive" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'confirm')]}"/>
+                        <button name="create_lc_request" string="Create LC Request" type="object" class="btn-primary" attrs="{'invisible': ['|', '|', ('pre_appoval', '=', False), ('is_insurance', '=', False), ('state', '!=', 'confirm')]}"/>
+                        <button name="button_cancel" string="Cancel" type="object" class="btn-primary" attrs="{'invisible': [('state', '=', 'cancel')]}"/>
+                        <field name="state"  widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="open_insurance_cost" type="object" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible': [('insurance_count', '=', 0)]}">
+                                <field name="insurance_count" widget="statinfo" string="Insurances"/>
+                            </button>
+                            <button name="open_explosive_cost" type="object" class="oe_stat_button" icon="fa-id-card" attrs="{'invisible': [('explosive_count', '=', 0)]}">
+                                <field name="explosive_count" widget="statinfo" string="Pre-Approvals"/>
+                            </button>
+
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="supplier_id"/>
+                                <field name="department_id"/>
+                                <field name="origin"/>
+                                <field name="lcaf_no"/>
+                                <field name="is_insurance"/>
+                                <field name="pre_appoval"/>
+                            </group>
+                            <group>
+                                <field name="purchase_id"/>
+                                <field name="purchase_orde_date"/>
+                                <field name="lc_requisition_date"/>
+                                <field name="is_lcaf"/>
+                                <field name="is_tm"/>
+                                <field name="is_imp"/>
+                                <field name="usd_to_tk"/>
+                                <field name='usd_tk_amount' attrs="{'invisible':[('usd_to_tk', '=', False)]}"/>
+                                <field name="purchase_id" invisible="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Requisition Lines" name="Requisition Lines">
+                                <field name="requisition_line_ids" readonly='1'>
+                                   <tree editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="product_id" required="1"/>
+                                        <field name="description"/>
+                                        <field name="hs_code"/>
+                                        <field name="product_qty"/>
+                                        <field name="price_unit"/>
+                                        <field name="lc_requisition_id" invisible="1"/>
+                                    </tree>
+                                </field>
+                                <group class="oe_subtotal_footer oe_right">
+                                    <field name="margin" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="commission" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="source_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="vat_on_commission" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="pt_charge" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="insurance_charge" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                </group>
+                                <field name="remarks" class="oe_inline" placeholder="Define your terms and conditions ..."/>
+                                <div class="oe_clear"/>
+                            </page>
+                            <page string="LC Agent" name="LC Agent" attrs="{}">
+                                <field name="cf_aggent_ids" mode="form,tree">
+                                    <form>
+                                        <div class="oe_title">
+                                            <h1>
+                                                <field name="name"/>
+                                            </h1>
+                                        </div>
+                                        <group>
+                                            <group>
+                                                <field name="date"/>
+                                                <field name="be_date"/>
+                                                <field name="be_no"/>
+                                                <field name="containers_details"/>
+                                            </group>
+                                            <group>
+                                                <field name="product_id"/>
+                                                <field name="item_code"/>
+                                                <field name="net_weight"/>
+                                                <field name="delivery_type"/>
+                                                <field name="lc_requisition_id" invisible="1"/>
+                                            </group>
+                                        </group>
+                                        <notebook>
+                                            <page string="Attachments" name="Attachments">
+                                                <field name="attachment_ids"/>
+                                            </page>
+                                            <page string="Agents Charge" name="Agents Charge">
+                                                <field name="agents_charge_ids">
+                                                   <tree editable="bottom">
+                                                        <field name="user_id"/>
+                                                        <field name="details"/>
+                                                        <field name="amount"/>
+                                                        <field name="total_amount"/>
+                                                        <field name="cf_aggent_id" invisible="1"/>
+                                                    </tree>
+                                                </field>
+                                            </page>
+                                        </notebook>
+                                    </form>
+                                    <tree string="LC Agent Lines">
+                                        <field name="product_id"/>
+                                        <field name="item_code"/>
+                                        <field name="date"/>
+                                        <field name="net_weight"/>
+                                        <field name="delivery_type"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Custom Charges" name="Custom Charges" attrs="{}">
+                                <field name="charges_ids" mode="form, tree">
+                                    <form>
+                                        <div class="oe_title">
+                                            <h1>
+                                                <field name="name"/>
+                                            </h1>
+                                        </div>
+                                        <group>
+                                            <group>
+                                                <field name="bill_of_entry_no"/>
+                                                <field name="customs_point"/>
+                                            </group>
+                                            <group>
+                                                <field name="declaration_no"/>
+                                                <field name="lc_requisition_id" invisible="1"/>
+                                            </group>
+                                        </group>
+                                        <notebook>
+                                            <page string="Taxes Charge Global" name="Taxes Charge Global">
+                                                <field name="charge_global_ids">
+                                                   <tree editable="bottom">
+                                                        <field name="tax_code"/>
+                                                        <field name="tax_description"/>
+                                                        <field name="amount"/>
+                                                        <field name="charge_id" invisible="1"/>
+                                                    </tree>
+                                                </field>
+                                            </page>
+                                            <page string="Refundable Tax/Charge" name="Refundable Tax/Charge">
+                                                <field name="refund_charge_ids">
+                                                   <tree editable="bottom">
+                                                        <field name="tax_code"/>
+                                                        <field name="tax_description"/>
+                                                        <field name="amount"/>
+                                                        <field name="charge_id" invisible="1"/>
+                                                    </tree>
+                                                </field>
+                                            </page>
+                                        </notebook>
+                                    </form>
+                                    <tree string="LC Agent Lines">
+                                        <field name="name"/>
+                                        <field name="bill_of_entry_no"/>
+                                        <field name="customs_point"/>
+                                        <field name="declaration_no"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id='lc_opening_fund_requisition_action' model='ir.actions.act_window'>
+            <field name="name">LC Requisition Fund</field>
+            <field name="res_model">lc.opening.fund.requisition</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p>
+                    Lc Opening Fund Requisition.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="lc_requisition_menu"
+            action="lc_opening_fund_requisition_action" 
+            parent="purchase.menu_procurement_management"
+            sequence="97"/>
+    </data>
+</odoo>

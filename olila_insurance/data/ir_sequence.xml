@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="seq_insurance_cover" model="ir.sequence">
+	        <field name="name">Insurance Cover</field>
+	        <field name="code">insurance.cover</field>
+	        <field name="prefix">ICN/</field>
+	        <field name="padding">5</field>
+	        <field name="company_id" eval="False" />
+	    </record>
+
+	    <record id="seq_explosive" model="ir.sequence">
+	        <field name="name">Approval Explosive</field>
+	        <field name="code">approval.explosive</field>
+	        <field name="prefix">PPA/</field>
+	        <field name="padding">5</field>
+	        <field name="company_id" eval="False" />
+	    </record>
+	</data>
+</odoo>

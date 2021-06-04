@@ -1,0 +1,8 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_lc_opening_fund_requisition,access_lc_opening_fund_requisition,model_lc_opening_fund_requisition,base.group_user,1,1,1,1
+access_lc_opening_fund_requisition_line,access_lc_opening_fund_requisition_line,model_lc_opening_fund_requisition_line,base.group_user,1,1,1,1
+access_res_cf_aggent,access_res_cf_aggent,model_res_cf_aggent,base.group_user,1,1,1,1
+access_custom_charges,access_custom_charges,model_custom_charges,base.group_user,1,1,1,1
+access_taxes_charge_global,access_taxes_charge_global,model_taxes_charge_global,base.group_user,1,1,1,1
+access_taxes_refund_charge,access_taxes_refund_charge,model_taxes_refund_charge,base.group_user,1,1,1,1
+access_agents_charge,access_agents_charge,model_agents_charge,base.group_user,1,1,1,1

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<!-- tree  view -->
+	<record model="ir.ui.view" id="pway_insurance_tree_view">
+		<field name="name">insurance.tree</field>
+		<field name="model">insurance.cover</field>
+		<field name="arch" type="xml">
+			<tree>
+				<field name="name"/>
+				<field name="partner_id"/>
+				<field name="lc_requisition_id" string='LC Requisition'/>
+                <field name='total_amount'/>
+				<field name="state"/>
+			</tree>
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="pway_insurance_form_view">
+		<field name="name">insurance.form</field>
+		<field name="model">insurance.cover</field>
+		<field name="arch" type="xml">
+			<form string="Insurance">
+				<header>
+                    <button name="button_confirm" string="Confirm" type="object" class="btn-primary" attrs="{'invisible':[('state', '!=', 'draft')]}"/>
+                    <button name="button_send" string="Send" type="object" class="btn-primary" attrs="{'invisible':[('state', 'in', ('send', 'marine', 'draft'))]}"/>
+                    <button name="button_cancel" string="Cancel" type="object" class="btn-primary" attrs="{'invisible':[('state', '=', 'cancel')]}"/>
+                    <button name="button_draft" string="Draft" type="object" class="btn-primary" attrs="{'invisible':[('state', '=', 'draft')]}"/>
+                    <field name="state"  widget="statusbar" statusbar_visible="draft,confirm,cancel,send,marine"/>
+                </header>
+				<sheet>
+					<div class="oe_title">
+						<h1><field name="name"/></h1>
+					</div>
+					<group>
+						<group>
+							<field name="partner_id"/>
+							<field name="branch_id"/>
+							<label for="street" string="Address"/>
+							<div class="o_address_format">
+                                <field name="street" placeholder="Street..." class="o_address_street"/>
+                                <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                                <field name="city" placeholder="City" class="o_address_city"/>
+                                <field name="state_id" class="o_address_state" placeholder="State" options="{'no_open': True, 'no_quick_create': True}"/>
+                                <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                <field name="country_id" placeholder="Country" class="o_address_country" options='{"no_open": True, "no_create": True}'
+                              />
+                            </div>
+						</group>
+						<group>
+							<field name="phone"/>
+							<field name="email"/>
+							<field name="fax"/>
+							<field name="id_no"/>
+							<field name="vat_regi_no"/>
+							<field name="vat" string='VAT'/>
+                            <field name="lc_requisition_id" string='LC Requisition'/>
+						</group>
+					</group>
+					<notebook>
+                        <page string="Insurance Lines">
+                            <field name="insurance_ids">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="item_code"/>
+                                    <field name="hs_code"/>
+                                    <field name="quantity"/>
+                                    <field name="unit_price"/>
+                                    <field name="insurance_id" invisible="1"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="total_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            </group>
+                            <field name="note" class="oe_inline" placeholder="Define your terms and conditions ..."/>
+                            <div class="oe_clear"/>
+                        </page>
+                        <page string="Marine Info">
+                        	<group>
+                        		<group>
+                        			<field name="marine_cover_no"/>
+                                    <field name="classs"/>
+                                    <field name="marine"/>
+									<field name="marine_cover_details"/>
+                                </group>
+                                <group>
+                                    <field name="stamp_duty"/>
+                                    <field name="added"/>
+                                    <field name="war"/>
+                        		</group>
+                        	</group>
+                        </page>
+                    </notebook>		
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<!-- Action -->
+	<record model="ir.actions.act_window" id="action_view_insurance">
+        <field name="name">Insurance Cover Note</field>
+        <field name="res_model">insurance.cover</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="insurance_menu"
+        action="action_view_insurance" 
+        parent="purchase.menu_procurement_management"
+        sequence="99"/>
+</odoo>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id='res_cf_aggent_tree' model='ir.ui.view'>
+            <field name="name">res.cf.aggent.tree</field>
+            <field name="model">res.cf.aggent</field>
+            <field name="arch" type="xml">
+                <tree string="CF Agent">
+                    <field name="date"/>
+                    <field name="be_date"/>
+                    <field name="be_no"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id='res_cf_aggent_form' model='ir.ui.view'>
+            <field name="name">res.cf.aggent.form</field>
+            <field name="model">res.cf.aggent</field>
+            <field name="arch" type="xml">
+                <form string="CF Agent">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="date"/>
+                                <field name="be_date"/>
+                                <field name="be_no"/>
+                                <field name="containers_details"/>
+                            </group>
+                            <group>
+                                <field name="product_id"/>
+                                <field name="item_code"/>
+                                <field name="net_weight"/>
+                                <field name="delivery_type"/>
+                                <field name="lc_requisition_id" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id='res_cf_aggent_action' model='ir.actions.act_window'>
+            <field name="name">CF Agent</field>
+            <field name="res_model">res.cf.aggent</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p>
+                    Make Cf Agent.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="res_cf_aggent_menu"
+            action="res_cf_aggent_action" 
+            parent="purchase.menu_procurement_management"
+            sequence="102"/>
+    </data>
+</odoo>

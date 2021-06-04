@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="product_template_form_import_po_inherit" model="ir.ui.view">
+            <field name="name">product.template.from.import.po.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='type']" position="after">
+                    <field name="material_type"/>
+                </xpath>
+            </field>
+        </record>
+
+    	 <record id="purchase_order_form_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='print_quotation']" position="after">
+                    <button name="create_landed_cost" type="object" string="Create Landed Cost Fund" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'purchase'),('purchase_type', '=', 'local')]}"/>
+                </xpath>
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button class="open_landed_cost" name="open_landed_cost"  type="object" icon="fa-dollar" attrs="{'invisible': [('landed_cost_count', '=', 0)]}">
+                            <field string="Landed Cost Fund" name="landed_cost_count" widget="statinfo" />
+                    </button>
+                </xpath>
+                <xpath expr="//field[@name='date_order']" position="after">
+                    <field name='mode_of_shipment'/>
+                </xpath>
+                <xpath expr="//field[@name='partner_ref']" position="after">
+                    <field name='purchase_type' widget='radio'/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="after">
+                    <field name="hs_code"/>
+                </xpath>
+                <xpath expr="//page[@name='purchase_delivery_invoice']" position="after">
+                    <page string="Import Purchase Details" name="import_purchase_details" attrs="{'invisible':[('purchase_type', '=', 'local')]}">
+                        <group>
+                            <group>
+                                <field name='buyer_name'/>
+                                <field name='origin'/>
+                                <field name='buyer_address'/>
+                                <field name='buyer_factory_address'/>
+                            </group>
+                            <group>
+                                <field name='beneficiary'/>
+                                <field name='swift_code'/>
+                                <field name='beneficiary_address'/>
+                                <field name='beneficiary_bank_name'/>
+                                <field name='beneficiary_bank_branch'/>
+                                <field name='beneficiary_bank_account_no'/>
+                            </group>
+                            <group>
+                                <field name='date_of_last_shipment'/>
+                                <field name='port_of_loading'/>
+                                <field name='transportation_time'/>
+                                <field name='transhipment'/>
+                                <field name='packing_details'/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="purchase.purchase_form_action" model="ir.actions.act_window">
+            <field name="name">Purchase Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">tree,kanban,form,pivot,graph,calendar,activity</field>
+            <field name="view_id" ref="purchase.purchase_order_view_tree"/>
+            <field name="domain">[('state','in', ('landed_cost', 'purchase', 'done'))]</field>
+            <field name="search_view_id" ref="purchase.purchase_order_view_search"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                No purchase order found. Let's create one!
+              </p><p>
+                Once you ordered your products to your supplier, confirm your request for quotation and it will turn into a purchase order.
+              </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

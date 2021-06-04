@@ -28,7 +28,7 @@
                 <field name="location" position="after">
                     <field name="department_id" options="{'no_create_edit': True}"/>
                     <field name="vehicle_asign_id"/>
-                    <field name="fuel_type" widget="radio"/>
+                    <field name="fuel_type" widget="radio" options="{'horizontal': true}"/>
                     <field name="average_mileage"/>
                     <field name="vehicle_seat"/>
                 </field>

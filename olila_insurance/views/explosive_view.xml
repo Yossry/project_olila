@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<!-- tree  view -->
+	<record model="ir.ui.view" id="pway_explosive_tree_view">
+		<field name="name">approval.explosive.tree</field>
+		<field name="model">approval.explosive</field>
+		<field name="arch" type="xml">
+			<tree>
+				<field name="name"/>
+				<field name="purchase_order_no"/>
+                <field name="lc_requisition_id"/>
+			</tree>
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="pway_explosive_view">
+		<field name="name">approval.explosive.form</field>
+		<field name="model">approval.explosive</field>
+		<field name="arch" type="xml">
+			<form string="Pre-Approval">
+				<header>
+                    <button name="button_confirm" string="Confirm" type="object" class="btn-primary" attrs="{'invisible':[('state', '!=', 'draft')]}"/>
+                    <button name="button_approve" string="Approve" type="object" class="btn-primary" attrs="{'invisible':[('state', '!=', 'confirm')]}"/>
+                    <button name="button_re_approval" string="Re-Approval" type="object" class="btn-primary" attrs="{'invisible':[('state', '!=', 'approve')]}"/>
+                    <button name="button_cancel" string="Cancel"  type="object" class="btn-primary" attrs="{'invisible':[('state', 'in', ('cancel'))]}"/>
+                    <button name="button_done" string="Done"  type="object" class="btn-primary" attrs="{'invisible':[('state', 'not in', ('approve', 're_approval'))]}"/>
+                    <field name="state"  widget="statusbar" statusbar_visible="draft,confirm,approve,re_approval,done,cancel"/>
+                </header>
+				<sheet>
+					<div class="oe_title">
+						<h1><field name="name"/></h1>
+					</div>
+					<group>
+						<group>
+                            <field name="institute_name"/>
+							<label for="street" string="Application Institute Address"/>
+							<div class="o_address_format">
+                                <field name="street" placeholder="Street..." class="o_address_street"/>
+                                <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                                <field name="city" placeholder="City" class="o_address_city"/>
+                                <field name="state_id" class="o_address_state" placeholder="State" options="{'no_open': True, 'no_quick_create': True}"/>
+                                <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                <field name="country_id" placeholder="Country" class="o_address_country" options='{"no_open": True, "no_create": True}'
+                              />
+                            </div>
+						</group>
+						<group>
+                            <field name="pre_approval_date"/>
+                            <field name="purchase_order_no"/>
+                            <field name="purchase_order_date"/>
+                            <field name="lc_requisition_id"/>
+						</group>
+					</group>
+					<notebook>
+                        <page string="Approval Lines">
+                            <field name="explosive_lines">
+                                <tree editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="item_code"/>
+                                    <field name="importable_quantity"/>
+                                    <field name="stock_before_approval"/>
+                                    <field name="applic_quantity"/>
+                                    <field name="stock_after_import"/>
+                                    <field name="arrival_days_required"/>
+                                    <field name="factory_stock_report_date"/>
+                                    <field name="import_quantity"/>
+                                    <field name="application_no"/>
+                                    <field name="application_date"/>
+                                    <field name="speed_money_am"/>
+                                    <field name="approval_explosive_id" invisible="1"/>
+                                </tree>
+                            </field>
+                            <field name="remark" class="oe_inline" placeholder="Remark and note here..."/>
+                            <div class="oe_clear"/> 
+                        </page>
+                        <page string="Pre-Approvals" attrs="{}">
+                        	<group>
+                        		<group>
+                        			<field name="commercial_invoice"/>
+									<field name="bill_of_lading"/>
+									<field name="lc_no"/>
+                        		</group>
+                        		<group>
+                        			<field name="packing_list"/>
+									<field name="certificate_of_origin"/>
+									<field name="arrival_date"/>
+                        		</group>
+                        	</group>
+                        </page>
+                    </notebook> 
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<!-- Action -->
+	<record model="ir.actions.act_window" id="action_view_explosive">
+        <field name="name">Approvals For Explosive</field>
+        <field name="res_model">approval.explosive</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_view_explosive"
+        action="action_view_explosive" 
+        parent="purchase.menu_procurement_management"
+        sequence="99"/>
+</odoo>
