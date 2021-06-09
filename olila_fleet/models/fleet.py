@@ -151,7 +151,7 @@ class FleetVehicle(models.Model):
     def open_vehicle_history(self):
         return {
             'type': 'ir.actions.act_window',
-            'name': 'Vehicle History',
+            'name': 'Routes',
             'view_mode': 'tree,form',
             'res_model': 'vehicle.history',
             'domain': [('vehicle_id', '=', self.id)],

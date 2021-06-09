@@ -37,7 +37,7 @@ class FleetVehicleLogContract(models.Model):
     def open_license_renewals(self):
         return {
             'type': 'ir.actions.act_window',
-            'name': 'Tyres',
+            'name': 'Licence Renewals',
             'view_mode': 'tree,form',
             'res_model': 'vehicle.liecense.renew',
             'domain': [('licence_id', '=', self.id)],

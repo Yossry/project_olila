@@ -1,0 +1,32 @@
+<odoo>
+    <record model="ir.ui.view" id="delivery_report_wizard">
+        <field name="name">Delivery Report</field>
+        <field name="model">delivery.report.wizard</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Delivery Report">
+                <group>
+                    <group>
+                        <field name="date_start"/>
+                    </group>
+                    <group>
+                        <field name="date_end"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <act_window id="action_delivery_report_wizard"
+                name="Delivery Report"
+                res_model="delivery.report.wizard"
+                view_mode="form"
+                target="new"/>
+    <menuitem action="action_delivery_report_wizard"
+              id="menu_delivery_report_wizard"
+              parent="stock.menu_warehouse_report"
+              name="Delivery Report" />
+</odoo>

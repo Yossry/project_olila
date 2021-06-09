@@ -6,10 +6,10 @@
     'author': "rohitsrivastava99@gmail.com",
     'category': 'fleet',
     'version': '14.0.1',
-    'depends': ['fleet','hr'],
+    'depends': ['fleet','hr','stock'],
     'data': [
         'security/ir.model.access.csv',
-        #'data/fleet_tags.xml',
+        'data/fleet_tags.xml',
         'data/fleet_history_data.xml',
         'views/fleet_view.xml',
         'views/vehicle_fuel_log.xml',
@@ -17,6 +17,6 @@
         'views/liecense_renewal_history.xml',
         'views/fleet_route_plan.xml',
         'views/vehicle_components.xml',
-        'views/vehicle_tyre_deatails.xml',
+        'views/vehicle_tyre_details.xml',
     ],
 }

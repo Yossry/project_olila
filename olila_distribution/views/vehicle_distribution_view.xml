@@ -8,6 +8,7 @@
                 <form string="Vehicle Management">
                     <header>
                         <button name="send_for_approval" states="draft" type="object" string="Send for Approval" class="oe_highlight" groups="olila_distribution.group_distribution_user"/>
+                        <button name="genarate_product_line" states="draft" type="object" string="Genrate" class="oe_highlight" groups="olila_distribution.group_distribution_user"/>
                         <button name="approve_vehicle" states="approval" type="object" string="Approve" class="oe_highlight" groups="olila_distribution.group_distribution_manager"/>
                         <button name="reject_vehicle" states="approval" type="object" string="Reject" class="oe_highlight" groups="olila_distribution.group_distribution_manager"/>
                          <button name="changed_vehicle_status" states="approved" type="object" string="Vehicle Status Update" class="oe_highlight" groups="olila_distribution.group_distribution_manager"/>
@@ -25,11 +26,24 @@
                                 <field  name="rent_vehicle_driver_contact" attrs="{'invisible':[('transport_type', '=', 'own')], 'readonly': [('state','!=','draft')]}"/>
                             </group>
                             <group>
+                                <field  name="date"  attrs="{'readonly': [('state','!=','draft')]}"/>
                                 <field  name="picking_id" attrs="{'readonly': [('state','!=','draft')]}" invisible="1"/>
                                 <field name="cost" attrs="{'readonly': [('state','!=','draft')]}" />
                                 <field name="remarks" attrs="{'readonly': [('state','!=','draft')]}" />
                             </group>
                         </group>
+                        <notebook>
+                        <page string="Products">
+                             <field name="product_line_ids">
+                            <tree editable="bottom">
+                                <field name="product_id"/>
+                                <field name="product_qty"/>
+                                <field name="partner_id"/>
+                                <field name="is_done"/>
+                            </tree>
+                        </field>
+                        </page>
+                    </notebook>
                     </sheet>
                     <div class="oe_chatter">
                          <field name="message_follower_ids"/>
@@ -44,6 +58,7 @@
             <field name="model">vehicle.distribution</field>
             <field name="arch" type="xml">
                 <tree>
+                    <field  name="date"/>
                     <field  name="transport_type" />
                     <field  name="own_vehicle_id" string="Company Vehicle No."/>
                     <field  name="own_vehicle_driver_id" string="Company Driver Name"/>

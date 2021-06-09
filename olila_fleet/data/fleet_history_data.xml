@@ -7,5 +7,12 @@
             <field name="prefix">VH/</field>
             <field name="padding">5</field>
         </record>
+
+         <record id="seq_vehicle_tyre_detail" model="ir.sequence">
+            <field name="name">Vehicle Tyre Detail</field>
+            <field name="code">vehicle.tyre.detail</field>
+            <field name="prefix">R-</field>
+            <field name="padding">5</field>
+        </record>
     </data>
 </odoo>

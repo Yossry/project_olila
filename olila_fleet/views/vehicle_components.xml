@@ -13,6 +13,18 @@
             </tree>
         </field>
     </record>
+
+     <record id="vehicle_component_details_search" model="ir.ui.view">
+        <field name="name">vehicle.components.search</field>
+        <field name="model">vehicle.components</field>
+        <field name="arch" type="xml">
+            <search >
+                <field name="name"/>
+                <field name="number"/>
+                
+            </search>
+        </field>
+    </record>
     <record id="vehicle_component_details_list_action" model="ir.actions.act_window">
         <field name="name">Vehicles Components</field>
         <field name="res_model">vehicle.components</field>

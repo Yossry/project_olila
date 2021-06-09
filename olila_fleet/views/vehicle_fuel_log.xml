@@ -4,34 +4,49 @@
         <field name="name">fleet.vehicle.log.fuel.form</field>
         <field name="model">fleet.vehicle.log.fuel</field>
         <field name="arch" type="xml">
-            <form string="Tyres">
+            <form string="Fuel Issue">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="lock"/>
+                    <button name="action_lock" states="open" type="object" string="Lock" default_focus="1" class="btn-primary"  confirm="This will Lock the record.No further changes can be make.Are you sure ?."/>
+                </header>
                 <sheet>
                     <group>
-                        <group>
-                            <field name="vehicle_id" invisible="1"/>
-                            <field name="date" required="1"/>
-                            <field name="expected_fuel_req" required="1"/>
-                            <field name="fuel_amount" required="1"/>
-                            <field name="amount" required="1"/>
+                        <group string="Vehicle Details">
+                            <field name="vehicle_id" />
+                            <field name="driver_id" />
                         </group>
-                        <group>
-                            <field name="ini_km_reading" required="1"/>
+                        <group string="Odometer Details">
+                            <field name="ini_km_reading" required="1" />
                             <field name="end_km_reading" required="1"/>
                             <field name="total_km" required="1"/>
                         </group>
-
-                        <field filename="file_name" name="doc1"/>
-                        <field invisible="1" name="file_name"/>
                     </group>
-
-                    <field name="fuel_purchase_ids">
-                            <tree editable="bottom">
-                                <field name="fuel_purchase"/>
-                                <field name="amount" sum="Total"/>
-                                <field  name="doc" widget="download_link" options="{'filename': 'file_name'}"/>
-                                <field name="file_name"/>
-                            </tree>
-                        </field>
+                    <group>
+                        <group string="Additional Details">
+                            <field name="date" required="1"/>
+                            <field invisible="1" name="file_name"/>
+                            <field filename="file_name" name="doc1" string="Invoice Ref."/>
+                        </group>
+                        <group string="Refueling Details">
+                            <field name="expected_fuel_req" required="1"/>
+                            <field name="fuel_amount" required="1"/>
+                            <field name="amount" required="1"/>
+                         </group>
+                    </group>
+                    <notebook>
+                    <page string="Fuel Filling History" name="order_lines">
+                        <field name="fuel_purchase_ids" >
+                                <tree editable="bottom">
+                                    <field name="purchase_date" string="Date"/>
+                                    <field name="fuel_type"/>
+                                    <field name="fuel_purchase" string="Ltr" sum="Total"/>
+                                    <field name="amount"  string="Price" sum="Total"/>
+                                    <field  name="doc" widget="download_link" filename="file_name"/>
+                                    <field name="file_name" invisible="1"/>
+                                </tree>
+                            </field>
+                    </page>
+                </notebook>
                 </sheet>
             </form>
         </field>

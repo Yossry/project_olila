@@ -1,3 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_vehicle_distribution,vehicle.distribution,model_vehicle_distribution,olila_distribution.group_distribution_user,1,1,1,1
 access_vehicle_distribution,vehicle.distribution,model_vehicle_distribution,olila_distribution.group_distribution_manager,1,1,1,1
+access_delivery_report_wizard,delivery.report.wizard,model_delivery_report_wizard,olila_distribution.group_distribution_manager,1,1,1,1
+access_distribution_product_line,distribution.product.line,model_distribution_product_line,olila_distribution.group_distribution_manager,1,1,1,1

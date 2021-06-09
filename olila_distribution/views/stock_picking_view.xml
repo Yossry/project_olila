@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//button[@name='action_picking_move_tree']" position="after">
-                    <button name="open_vehicle_distribution_management" type="object" class="oe_stat_button" icon="fa-history"  attrs="{'invisible':[('picking_type_code', '!=', 'outgoing')]}">
+                    <button name="open_vehicle_distribution_management" type="object" class="oe_stat_button" icon="fa-history"  attrs="{'invisible':[('picking_type_code', 'not in', ('outgoing','internal'))]}">
                         <field name="vehicle_distribution_count" widget="statinfo" string="Vehicle Distribution"/>
                     </button>
                 </xpath>

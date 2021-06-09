@@ -47,6 +47,9 @@
                 <xpath expr="//field[@name='contract_count']" position="attributes">
                     <attribute name="string">Vehicle Licenses</attribute>
                 </xpath>
+                <xpath expr="//button[@name='open_assignation_logs']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <xpath expr="//form/sheet/group/group[6]" position="before">
                     <notebook>
                         <page string="Documents">
@@ -67,16 +70,16 @@
                 </xpath>
                 <xpath expr="//button[@name='return_action_to_open']" position="after">
                     <button class="oe_stat_button" icon="fa-files-o" name="open_vehicle_history" type="object">
-                        <field name="vehicle_history_count" string="History" widget="statinfo"/>
+                        <field name="vehicle_history_count" string="Routes" widget="statinfo"/>
                     </button>
                     <button class="oe_stat_button" icon="fa-history" name="open_vehicle_tyres" type="object">
                         <field name="tyres_count" string="Tyres" widget="statinfo"/>
                     </button>
-                    <button class="oe_stat_button" icon="fa-files-o" name="open_vehicle_fuel_logs" type="object">
+                    <button class="oe_stat_button" icon="fa-flask" name="open_vehicle_fuel_logs" type="object">
                         <field name="fuel_log_count" string="Fuel Logs" widget="statinfo"/>
                     </button>
-                    <button class="oe_stat_button" icon="fa fa-arrows" name="open_vehicle_routes" type="object">
-                        <field name="routes_count" string="Routes" widget="statinfo"/>
+                    <button class="oe_stat_button" icon="fa fa-arrows" name="open_vehicle_routes" type="object" invisible="1">
+                        <field name="routes_count" string="Vehicle Routes" widget="statinfo" />
                     </button>
                     <button class="oe_stat_button" icon="fa-files-o" name="open_vehicle_component" type="object">
                         <field name="component_count" string="Components" widget="statinfo"/>
@@ -109,5 +112,19 @@
         <record id="fleet.menu_root" model="ir.ui.menu">
             <field name="name">Transport</field>
         </record>
+        <record id="fleet_vehicle_log_services_view_form_inherit" model="ir.ui.view">
+            <field name="name">fleet.vehicle.log.services.form.inherit</field>
+            <field name="model">fleet.vehicle.log.services</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='description']" position="attributes">
+                    <attribute name="string">Repair Details</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date']" position="attributes">
+                    <attribute name="string">Repair Date</attribute>
+                </xpath>
+            </field>
+        </record>
+
     </data>
 </odoo>

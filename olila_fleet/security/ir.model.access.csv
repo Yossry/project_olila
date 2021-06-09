@@ -8,3 +8,4 @@ access_fleet_route_plan,fleet.route.plan,model_fleet_route_plan,,1,1,1,1
 access_fleet_route_plan_line,fleet.route.plan.line,model_fleet_route_plan_line,,1,1,1,1
 access_vehicle_history,vehicle.history,model_vehicle_history,,1,1,1,1
 access_fuel_purchase_history,fuel.purchase.history,model_fuel_purchase_history,,1,1,1,1
+access_vehicle_history_line,vehicle.history.line,model_vehicle_history_line,,1,1,1,1
