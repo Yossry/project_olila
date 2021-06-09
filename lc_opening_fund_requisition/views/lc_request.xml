@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<!-- tree  view -->
+	<record model="ir.ui.view" id="lc_request_tree_view">
+		<field name="name">lc.request.tree.view</field>
+		<field name="model">lc.request</field>
+		<field name="arch" type="xml">
+			<tree>
+				<field name="name"/>
+				<field name="purchase_order_no"/>
+				<field name="purchase_order_date"/>
+				<field name="lcaf_no"/>
+				<field name="state"/>
+			</tree>
+		</field>
+	</record>
+
+	<!-- form veiw -->
+	<record model="ir.ui.view" id="lc_request_form_view">
+		<field name="name">lc.request.form.view</field>
+		<field name="model">lc.request</field>
+		<field name="arch" type="xml">
+			<form string="LC Opening Request">
+				<header>
+                        <button string="Set to Draft" class="oe_highlight" name="button_draft" type="object" attrs="{'invisible':[('state', 'in', ('draft'))]}"/>
+                        <button string="Open" class="oe_highlight" name="button_open" type="object" states='confirm'/>
+                        <button string="Confirm"  class="oe_highlight" name="button_confirm" type="object" states='draft'/>
+                        <button string="Cancel"  class="oe_highlight" name="button_cancel" type="object" states='draft,confirm,open'/>
+                        <field name="state"  widget="statusbar"/>
+                </header>				
+				<sheet>
+					<div class="oe_button_box" name="button_box">
+	                    <button name="view_lc_opening" type="object" class="oe_stat_button" icon="fa-id-card" attrs="{'invisible': [('opening_count', '=', 0)]}">
+	                        <field name="opening_count" widget="statinfo" string="LC Opening"/>
+	                    </button>
+                    </div>
+					<div class="oe_title">
+						<h1><field name="name"/></h1>
+					</div>
+					<group>
+						<group>
+							<field name="lcaf_no"/>
+							<field name="lc_type"/>
+							<field name="lc_amount"/>							
+							<field name="bank_name"/>
+							<field name="bank_branch"/>
+							<field name="bank_code"/>
+							<field name="bank_address"/>
+							<field name="account_no"/>
+						</group>
+						<group>
+							<field name="application_date"/>
+							<field name="purchase_order_date"/>
+							<field name="purchase_order_no"/>
+							<field name="currency"/>
+							<field name="margin"/>
+							<field name="maturity_balance"/>
+							<field name="total_amount"/>
+						</group>
+						<group colspan='6'>
+							<field name="remarks"/>
+						</group>
+					</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<!-- Action -->
+	<record model="ir.actions.act_window" id="action_view_lc_request">
+            <field name="name">LC Opening Request</field>
+            <field name="res_model">lc.request</field>
+            <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_view_lc_request" 
+	    name="LC Opening Request" 
+	    sequence="100"
+	    parent="purchase.menu_procurement_management"
+	    action="action_view_lc_request"/>
+</odoo>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<!-- tree  view -->
+	<record model="ir.ui.view" id="pway_lc_opening_tree_view">
+		<field name="name">lc.opening.tree</field>
+		<field name="model">lc.opening</field>
+		<field name="arch" type="xml">
+			<tree>
+				<field name="name"/>
+				<field name="order_id"/>
+				<field name="po_date"/>
+				<field name="state"/>
+			</tree>
+		</field>
+	</record>
+
+	<!-- form veiw -->
+	<record model="ir.ui.view" id="pway_lc_opening_form_view">
+		<field name="name">lc.opening.form</field>
+		<field name="model">lc.opening</field>
+		<field name="arch" type="xml">
+			<form string="LC Opening Detail">
+				<header>
+                    <button name="button_confirm" string="Confirm" type="object" class="btn-primary" states='draft'/>
+                    <button name="button_accept" string="Accept" type="object" class="btn-primary" states='confirm'/>
+                    <button name="button_ammendment" string="Ammendment" type="object" class="btn-primary" states='confirm'/>
+                    <button name="button_cancel" string="Cancel" type="object" class="btn-primary" states='draft,confirm,accept,ammendment'/>
+                    <field name="state"  widget="statusbar"/>
+                </header>		
+				<sheet>
+					<div class="oe_button_box" name="button_box">
+	                    <button name="view_lc_opening_ammendment" type="object" class="oe_stat_button" icon="fa-edit" attrs="{'invisible': [('ammendment_count', '=', 0)]}">
+	                        <field name="ammendment_count" widget="statinfo" string="Ammendments"/>
+	                    </button>
+	                </div>
+					<div class="oe_title">
+						<h1><field name="name"/></h1>
+					</div>
+					<group>
+						<group>
+							<field name="order_id" required='1'/>
+							<field name="po_date" required='1'/>
+							<field name="shipment_date"/>
+							<field name="expire_date"/>
+							<field name="origin"/>
+							<field name="bin_reg_no"/>
+						</group>
+                		<group>
+                			<field name="lc_no" required='1'/>
+							<field name="lc_date" required='1'/>
+							<field name="lc_amount"/>
+							<field name="lcaf_no"/>
+							<field name="lc_ref_no"/>
+							<field name="currency_id"/>
+                		</group>
+						<group>
+							<field name="partial_shipment"/>
+							<field name="transshipment"/>
+							<field name="port_of_loading"/>
+							<field name="port_of_destination"/>
+							<field name="irc_number"/>
+						</group>
+						<group>
+	            			<field name="bank_name"/>
+							<field name="bank_address"/>
+							<field name="bank_bin_no"/>
+							<field name="beneficiary"/>
+	            		</group>
+					</group>
+					<notebook>
+						<page string="LC Opening Lines">
+							<field name="lc_opening_lines">
+								<tree editable="bottom">
+									<field name="product_id" required='1'/>
+									<field name="item_code"/>
+									<field name="quantity" required='1'/>
+									<field name="unit_price" required='1'/>
+									<field name="total_price"/>
+									<field name="opening_id" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="LC Charges">
+							<field name="lc_charges_lines">
+								<tree editable="bottom">
+									<field name="lc_application_charge"/>
+									<field name="lc_amendment_charge"/>
+									<field name="swift_charge"/>
+									<field name="commission"/>
+									<field name="stamp"/>
+									<field name="vat"/>
+									<field name="opening_id" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<!-- Action -->
+	<record model="ir.actions.act_window" id="action_view_lc_detail">
+        <field name="name">LC Opening</field>
+        <field name="res_model">lc.opening</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    
+    <menuitem id="menu_lc_opening"
+        action="action_view_lc_detail" 
+        parent="purchase.menu_procurement_management"
+        sequence="101"/>
+</odoo>

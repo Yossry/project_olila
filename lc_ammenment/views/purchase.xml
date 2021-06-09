@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- tree  view -->
+    <record model="ir.ui.view" id="purchase_lc_ammendment_tree_view">
+        <field name="name">purchase.lc.ammendment.tree</field>
+        <field name="model">purchase.lc.ammendment</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="purchase_order_no"/>
+                <field name="lc_no"/>
+                <field name="date_of_amendant"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- form veiw -->
+    <record model="ir.ui.view" id="purchase_lc_ammendment_form_view">
+        <field name="name">purchase.lc.ammendment.form.view</field>
+        <field name="model">purchase.lc.ammendment</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Lc Ammendment">
+                <header>
+                    <field name="state"  widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="purchase_order_no"/>
+                            <field name="purchase_order_date"/>
+                            <field name="lc_no"/>
+                            <field name="swift_input"/>
+                            
+                        </group>
+                        <group>    
+                            <field name="sender_name"/>
+                            <field name="sender_branch"/>
+                            <field name="sender_address"/>
+                            <field name="sender_ref_no"/>
+                        </group>
+                        <group>    
+                            <field name="receiver_name"/>
+                            <field name="receiver_branch"/>
+                            <field name="receiver_address"/>
+                            <field name="mur"/>
+                            <field name="sequence_of_total"/>       
+                        </group>
+                        <group>    
+                            <field name="bank_ref_no"/>
+                            <field name="bank_code"/>
+                            <field name="date_issue"/>
+                            <field name="date_of_amendant"/>
+                            <field name="number_of_amendants"/>   
+                            <field name="application_rules"/>
+                        </group>    
+                        <group>    
+                            <field name="from_of_credit"/>
+                            <field name="date_of_entry"/>
+                            <field name="place_of_entry"/>
+                            <field name="last_date_of_shipment"/>
+                        </group>    
+                        <group>    
+                           <field name="purpose_message"/>
+                           <field name="information"/>
+                        </group>    
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record model="ir.actions.act_window" id="action_purchase_lc_ammendment">
+        <field name="name">LC Opening Ammendment</field>
+        <field name="res_model">purchase.lc.ammendment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="purchase_lc_ammendment" 
+        name="LC Opening Ammendment" 
+        sequence="102"
+        parent="purchase.menu_procurement_management"
+        action="action_purchase_lc_ammendment"/>
+
+</odoo>

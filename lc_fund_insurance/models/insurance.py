@@ -19,15 +19,14 @@ class Insurance(models.Model):
             rec.total_amount = total
 
     name = fields.Char('Name', required=True, index=True, readonly=True, copy=False, default='New') 
-    partner_id = fields.Many2one("res.partner", string="Insurance Company", required=True)
+    partner_id = fields.Many2one("res.partner", string="Insurance Company")
     branch_id = fields.Many2one('res.branch', string="Branch")
+    zip = fields.Char(change_default=True)
     street = fields.Char()
     street2 = fields.Char()
-    zip = fields.Char(change_default=True)
     city = fields.Char()
+    note = fields.Text(string="Note")
     state_id = fields.Many2one("res.country.state", string='State', ondelete='restrict', domain="[('country_id', '=?', country_id)]")
-    state = fields.Selection([('draft','Draft'),('confirm','Confirm'), ('send','Send'),('marine','Marine'),('cancel','Cancel')], 
-        string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
     country_id = fields.Many2one('res.country', string='Country', ondelete='restrict')
     phone = fields.Char(string='Phone', copy=False)
     email   = fields.Char(string="Email",  copy=False)
@@ -43,10 +42,11 @@ class Insurance(models.Model):
     stamp_duty = fields.Float(string='Stamp Duty', copy=False)
     added = fields.Float(string="Added", copy=False)
     total_amount = fields.Float(string='Total Amount', compute="_compute_total")
-    note = fields.Text(string="Note")
     currency_id = fields.Many2one('res.currency', 'Currency', required=True, readonly=True, default=lambda self: self.env.company.currency_id.id)
     lc_requisition_id = fields.Many2one("lc.opening.fund.requisition")
     insurance_ids = fields.One2many("insurance.cover.lines", "insurance_id", string="Insurance Lines")
+    state = fields.Selection([('draft','Draft'),('confirm','Confirm'), ('send','Send'),('marine','Marine'),('cancel','Cancel')], 
+        string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
 
     @api.model
     def create(self, vals):

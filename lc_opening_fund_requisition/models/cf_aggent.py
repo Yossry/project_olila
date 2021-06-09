@@ -5,7 +5,7 @@ class CfAggent(models.Model):
     _name = 'res.cf.aggent'
     _description = 'CF Aggent'
 
-    name = fields.Char(string='Sequence', required=True, readonly=True, copy=False, default=lambda self: self.env['ir.sequence'].next_by_code('res.cf.aggent'))
+    name = fields.Char(string='Name', required=True, readonly=True, copy=False, default=lambda self: self.env['ir.sequence'].next_by_code('res.cf.aggent'))
     date = fields.Date(string="Date")
     be_date = fields.Date(string="BE Date")
     be_no = fields.Char(string="BE No")
@@ -31,5 +31,5 @@ class AgentsCharge(models.Model):
 	user_id = fields.Many2one('res.users', string="User")
 	details = fields.Char(string="Details", copy=False)
 	amount = fields.Float(string="Amount", copy=False)
-	total_amount = fields.Float(string="Total Amount", copy=False)
+	total_amount = fields.Float(string="Total", copy=False)
 	cf_aggent_id = fields.Many2one('res.cf.aggent', string="Agent")

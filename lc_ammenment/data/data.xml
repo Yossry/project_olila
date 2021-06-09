@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+		<record id="sequence_purchase_ammendant" model="ir.sequence">
+			<field name="name">Purchase LC Ammendment</field>
+			<field name="code">purchase.lc.ammendment</field>	
+			<field name="padding">5</field>
+			<field name="prefix">LCOA/</field>
+			<field name="company_id" eval="False" />
+		</record>
+	</data>
+</odoo>

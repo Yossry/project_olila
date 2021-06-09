@@ -18,6 +18,10 @@
                     <group>
                         <field name="amount_to_pay"/>
                         <field name="currency_id"/>
+                        <field name="partner_bank_id" attrs="{'invisible':[('is_bank_journal', '!=', True)]}"/>
+                        <field name="bank_branch" attrs="{'invisible':[('is_bank_journal', '!=', True)]}"/>
+                        <field name="file_attachment" attrs="{'invisible':[('is_bank_journal', '!=', True)]}"/>
+                        <field name="is_bank_journal" invisible="1"/>
                     </group>
                 </group>
                 <footer>

@@ -1,0 +1,4 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_lc_charges_line,access_lc_charges_line,model_lc_charges_line,base.group_user,1,1,1,1
+access_lc_opening,access_lc_opening,model_lc_opening,base.group_user,1,1,1,1
+access_lc_opening_lines,access_lc_opening_lines,model_lc_opening_lines,base.group_user,1,1,1,1

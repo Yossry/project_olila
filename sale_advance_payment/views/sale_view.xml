@@ -7,8 +7,10 @@
         <field name="inherit_id" ref="account.view_account_payment_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='move_id']" position="after">
+                <field name="bank_branch"/>
                 <field name="dealer"/>
                 <field name="distributor_code" attrs="{'invisible': [('dealer', '=', False)]}"/>
+                <field name="file_attachment"/>
             </xpath>
         </field>
     </record>
@@ -32,6 +34,17 @@
                 <field name="payment_count" widget="statinfo" string="Payments"/>
             </button>
           </xpath>
+        </field>
+    </record>
+
+    <record id="view_res_bank_form_inherit_olila" model="ir.ui.view">
+        <field name="name">res.bank.form.inherit</field>
+        <field name="model">res.bank</field>
+        <field name="inherit_id" ref="base.view_res_bank_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='bic']" position="after">
+                <field name="bank_branch"/>
+            </xpath>
         </field>
     </record>
 

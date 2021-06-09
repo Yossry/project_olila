@@ -3,8 +3,6 @@
 	'name':"Insurance Details",
 	'summary':"""Insurance Details""",
 	'description':"Insurance Details",
-	'author':"Preciseways",
-	'website':"https://preciseways.com",
 	'category':"Insurance Details",
 	'version':"14.0",
 	'depends':['base','purchase', 'lc_opening_fund_requisition'],

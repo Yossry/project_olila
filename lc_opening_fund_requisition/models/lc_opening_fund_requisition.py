@@ -5,9 +5,14 @@ class LCOpeningFundRequisition(models.Model):
     _name = 'lc.opening.fund.requisition'
     _description = 'Lc Opening Fund Requisition'
 
+    @api.depends('margin','commission', 'source_tax','vat_on_commission','pt_charge','insurance_charge')
+    def _compute_lc_total(self):
+        for rec in self:
+            rec.lc_fund_total = rec.margin + rec.commission + rec.source_tax + rec.vat_on_commission + rec.pt_charge + rec.insurance_charge
+
     purchase_id = fields.Many2one('purchase.order', string="Purchase No")
     name = fields.Char('Name', required=True, index=True, readonly=True, copy=False, default='New')
-    purchase_orde_date = fields.Datetime(string="Purchase Date")
+    purchase_order_date = fields.Datetime(string="Purchase Date")
     lc_requisition_date = fields.Date(string="LC Requisition Date")
     supplier_id = fields.Many2one('res.partner', string="Supplier")
     department_id = fields.Many2one('hr.department', string='Department')
@@ -16,11 +21,9 @@ class LCOpeningFundRequisition(models.Model):
     is_lcaf = fields.Boolean(string="LCAF")
     is_tm = fields.Boolean(string="T/M")
     is_imp = fields.Boolean(string="IMP")
-    usd_to_tk = fields.Boolean(string="USD to TK")
-    usd_tk_amount = fields.Float(string="Amount")
+    imp_amount = fields.Float(string="IMP Amount")
     state = fields.Selection([('draft','Draft'),('confirm', 'Confirm'),('request','Request'),('open','Open'),('accept', 'Accept'),('amendment', 'Amendment'),('done', 'Done'),('cancel','Cancel')], 
-        string='Status', readonly=True, index=True, 
-        copy=False, default='draft', track_visibility='onchange')
+        string='Status', readonly=True, index=True, copy=False, default='draft')
     margin = fields.Float(string="Margin", copy=False)
     commission = fields.Float(string="Commission", copy=False)
     source_tax= fields.Float(string="Source Tax", copy=False)
@@ -32,10 +35,16 @@ class LCOpeningFundRequisition(models.Model):
     requisition_line_ids  = fields.One2many('lc.opening.fund.requisition.line', 'lc_requisition_id', string='Lc Opening Fund Requisition Line')
     cf_aggent_ids  = fields.One2many('res.cf.aggent', 'lc_requisition_id', string='CF Agent')
     charges_ids  = fields.One2many('custom.charges', 'lc_requisition_id', string='Custom Charges')
-    insurance_count = fields.Integer(compute='_insurance_count', string='# Landed Cost')
-    explosive_count = fields.Integer(compute='_explosive_count', string='# Pre-approvals')
+    insurance_count = fields.Integer(compute='_insurance_count', string='# Insurances')
+    explosive_count = fields.Integer(compute='_explosive_count', string='# Approvals')
+    request_count = fields.Integer(compute='_lc_request_count', string='# Requests')
+    opening_count = fields.Integer(compute='_opening_count', string='# Opening')
+    picking_count = fields.Integer(compute='_picking_count', string='# Pickings')
     is_insurance = fields.Boolean(string="Insurance", copy=False)
-    pre_appoval = fields.Boolean(string="Pre-Approval", copy=False)
+    pre_appoval = fields.Boolean(string="Approval", copy=False)
+    lc_request = fields.Boolean(string="Request", copy=False)
+    picking = fields.Boolean(string="Picking")
+    lc_fund_total = fields.Float(string="Total", compute='_compute_lc_total') 
 
     def _explosive_count(self):
         for rec in self:
@@ -47,10 +56,36 @@ class LCOpeningFundRequisition(models.Model):
             insurance_ids = self.env['insurance.cover'].search([('lc_requisition_id', '=', rec.id)])
             rec.insurance_count = len(insurance_ids.ids)
 
+    def _lc_request_count(self):
+        for rec in self:
+            lc_request_ids = self.env['lc.request'].search([('lcaf_no', '=', self.id)])
+            rec.request_count = len(lc_request_ids.ids)
+
+    def _picking_count(self):
+        for rec in self:
+            rec.picking_count = len(rec.purchase_id.picking_ids.ids)
+
+    def _opening_count(self):
+        for rec in self:
+            opening_ids = self.env['lc.opening'].search([('lc_no', '=', rec.id)])
+            rec.opening_count = len(opening_ids.ids)
+
+    def view_lc_opening(self):
+        opening_ids = self.env['lc.opening'].search([('lc_no', '=', self.id)])
+        return {
+            'name': _('Opening'),
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'lc.opening',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+            'domain': [('id', 'in', opening_ids.ids)],
+        }
+
     def open_explosive_cost(self):
         explosive_ids = self.env['approval.explosive'].search([('lc_requisition_id', '=', self.id)])
         return {
-            'name': _('Approvals Explosive'),
+            'name': _('Approval For Explosive'),
             'view_type': 'form',
             'view_mode': 'tree,form',
             'res_model': 'approval.explosive',
@@ -71,38 +106,77 @@ class LCOpeningFundRequisition(models.Model):
             'domain': [('id', 'in', insurance_ids.ids)],
         }
 
+    def open_lc_request(self):
+        lc_request_ids = self.env['lc.request'].search([('lcaf_no', '=', self.id)])
+        return {
+            'name': _('LC Opening Request'),
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'lc.request',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+            'domain': [('id', 'in', lc_request_ids.ids)],
+        }
+
+    def open_picking(self):
+        return {
+            'name': _('Pickings'),
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'stock.picking',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+            'domain': [('id', 'in', self.purchase_id.picking_ids.ids)],
+        }
+
     @api.model
     def create(self, vals):
         if vals.get('name', 'New') == 'New':
-            vals['name'] = self.env['ir.sequence'].next_by_code('lc.opening.fund.requisition') or '/'
+            vals['name'] = self.env['ir.sequence'].next_by_code('lc.opening.fund.requisition') or 'New'
         return super(LCOpeningFundRequisition, self).create(vals)
-
-    def create_lc_request(self):
-        self.write({'state' : 'request'})
-        return True
 
     def button_done(self):
         for rec in self:
             if rec.purchase_id:
-                rec.purchase_id.button_approve()
-            rec.state = 'done'
+                rec.purchase_id.with_context(is_lc=True).button_approve()
+            rec.write({'picking': True, 'state': 'done'})
         return True
 
     def button_confirm(self):
-        self.write({'state' : 'confirm'})
+        self.write({'state': 'confirm'})
         return True
 
     def button_lc_opening(self):
-        self.write({'state' : 'open'})
+        self.write({'state': 'open'})
         return True
 
     def button_make_done(self):
-        self.write({'state' : 'done'})
+        self.write({'state': 'done'})
         return True
 
     def button_cancel(self):
-        self.write({'state' : 'cancel'})
+        self.write({'state': 'cancel'})
         return True
+
+    def button_draft(self):
+        self.write({'state': 'draft'})
+
+    def button_create_charges(self):
+        return True
+
+    def create_lc_request(self):
+        values = self._prepare_request_data()
+        self.env['lc.request'].create(values)
+        self.write({'lc_request': True, 'state': 'request'})
+        return True
+
+    def _prepare_request_data(self):
+        return {
+            'purchase_order_no': self.purchase_id and self.purchase_id.id,
+            'purchase_order_date': self.purchase_order_date,
+            'lcaf_no': self.id,
+            'lc_amount': self.lc_fund_total
+        }
 
     def _prepare_lines(self, line):
         return {
@@ -117,16 +191,25 @@ class LCOpeningFundRequisition(models.Model):
     def _prepare_values(self):
         lines = [(0,0, self._prepare_lines(line)) for line in self.requisition_line_ids]
         return {
-        'partner_id' : self.supplier_id.id,
-        'lc_requisition_id' : self.id,
-        'insurance_ids' : lines
+            'lc_requisition_id' : self.id,
+            'insurance_ids' : lines
         }
 
     def create_insurance_cover(self):
-        values = self._prepare_values()
-        insurance_id = self.env['insurance.cover'].create(values)
+        lines = [(0,0, self._prepare_lines(line)) for line in self.requisition_line_ids]
         self.is_insurance = True
-        return True
+        return {
+            'name': _('Insurance Cover'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'insurance.cover',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+            'context': {
+                'default_lc_requisition_id' : self.id,
+                'default_insurance_ids': lines
+            },
+        }
 
     def _prepare_explosive_lines(self, line):
         return {
@@ -144,17 +227,17 @@ class LCOpeningFundRequisition(models.Model):
         }
 
     def _approval_explosive(self):
-        lines = [(0,0, self._prepare_explosive_lines(line)) for line in self.requisition_line_ids]
+        lines = [(0,0, self._prepare_explosive_lines(line)) for line in self.requisition_line_ids.filtered(lambda x: x.product_id and x.product_id.material_type == 'sodium_nitrate')]
         return {
-        'purchase_order_date' : self.purchase_id.date_order if self.purchase_id.date_order else False,
-        'purchase_order_no' : self.purchase_id.id if self.purchase_id else False,
-        'lc_requisition_id' : self.id,
-        'explosive_lines' : lines,
+            'purchase_order_date' : self.purchase_id.date_order if self.purchase_id.date_order else False,
+            'purchase_order_no' : self.purchase_id.id if self.purchase_id else False,
+            'lc_requisition_id' : self.id,
+            'explosive_lines' : lines,
         }
 
     def create_approval_explosive(self):
         values = self._approval_explosive()
-        insurance_id = self.env['approval.explosive'].create(values)
+        self.env['approval.explosive'].create(values)
         self.pre_appoval = True
         return True
 

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    	<template id="report_lc_request_template">
+			<t t-call="web.external_layout">
+				<div class="page">
+            		<div class="oe_structure"/>
+            		<div class="row">
+					    <div class="col-8">
+					      <span t-if="doc.bank_address" t-esc="doc.bank_address"/>
+					    </div>
+					</div>
+					<h2 class="mt16 text-center"><span>LC Release Letter</span></h2><br/>
+					<div class="row mt32 mb16">
+					    <div class="col-12">
+							<h4 class="mt16 text-center"><span t-esc="doc.name" /></h4>
+						</div>
+					</div>
+					<table class="table table-bordered" style="margin-top:16px;">
+					    <thead>
+					      <tr>
+					        <th class="text-center">Date</th>
+					        <th class="text-center">LC Number</th>
+					        <th class="text-center">LC Date</th>
+					        <th class="text-center">LC Amount</th>
+					      </tr>
+					    </thead>
+					    <tbody>
+					      <tr>
+					        <td class="text-center"><span t-esc="doc.application_date"/></td>
+					        <td class="text-center"><span t-esc="doc.lcaf_no.name"/></td>
+					        <td class="text-center"><span t-esc="doc.lcaf_no.lc_requisition_date"/></td>
+					        <td class="text-center"><span t-esc="doc.lc_amount"/></td>
+					      </tr>
+					    </tbody>
+					</table>
+					<table class="table table-bordered" style="margin-top:16px;">
+					    <thead>
+					      <tr>
+					        <th class="text-center">Bank Code</th>
+					        <th class="text-center">Bank Name</th>
+					        <th class="text-center">Bank Branch</th>
+					        <th class="text-center">A/C Number</th>
+					      </tr>
+					    </thead>
+					    <tbody>
+					      <tr>
+					        <td class="text-center"><span t-esc="doc.bank_code"/></td>
+					        <td class="text-center"><span t-esc="doc.bank_name"/></td>
+					        <td class="text-center"><span t-esc="doc.bank_branch"/></td>
+					        <td class="text-center"><span t-esc="doc.account_no"/></td>
+					      </tr>
+					    </tbody>
+					</table>
+					<table class="table table-bordered" style="margin-top:16px;">
+					    <thead>
+					      <tr>
+					        <th class="text-center">Product</th>
+					        <th class="text-center">Quantity</th>
+					        <th class="text-center">Amount</th>
+					      </tr>
+					    </thead>
+					    <tbody>
+                            <t t-foreach="doc.lcaf_no.requisition_line_ids" t-as="line">
+                            <tr>
+                                <td class="text-center"><span t-esc="line.product_id.name"/></td>
+                                <td class="text-center"><span t-esc="line.product_qty"/></td>
+                                <td class="text-center"><span t-esc="line.price_unit"/></td>
+                            </tr>
+                            </t>
+                        </tbody>
+					</table>
+					<table class="table table-bordered" style="margin-top:32px;">
+					    <thead>
+					      <tr>
+					        <th style="width:14px;">Remarks</th>
+					        <td><span t-esc="doc.remarks"/></td>
+					      </tr>
+					    </thead>
+					</table>
+            	</div>
+			</t>
+		</template>
+	    <template id="lc_request_template">
+		    <t t-call="web.html_container">
+		        <t t-foreach="docs" t-as="doc">
+		            <t t-call="lc_opening_fund_requisition.report_lc_request_template"/>
+		        </t>
+		    </t>
+		</template>
+	</data>
+</odoo>

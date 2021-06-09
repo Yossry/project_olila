@@ -2,6 +2,17 @@
 <odoo>
     <data>
 
+         <record id="res_partner_form_insurance_vendor_inherit" model="ir.ui.view">
+            <field name="name">res.partner.insurance.vendor.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='vat']" position="after">
+                    <field name="insurance_vendor"/>
+                </xpath>
+            </field>
+        </record>
+
         <record id="product_template_form_import_po_inherit" model="ir.ui.view">
             <field name="name">product.template.from.import.po.inherit</field>
             <field name="model">product.template</field>
@@ -28,6 +39,7 @@
                 </xpath>
                 <xpath expr="//field[@name='date_order']" position="after">
                     <field name='mode_of_shipment'/>
+                    <field name='country_id'/>
                 </xpath>
                 <xpath expr="//field[@name='partner_ref']" position="after">
                     <field name='purchase_type' widget='radio'/>
@@ -38,12 +50,6 @@
                 <xpath expr="//page[@name='purchase_delivery_invoice']" position="after">
                     <page string="Import Purchase Details" name="import_purchase_details" attrs="{'invisible':[('purchase_type', '=', 'local')]}">
                         <group>
-                            <group>
-                                <field name='buyer_name'/>
-                                <field name='origin'/>
-                                <field name='buyer_address'/>
-                                <field name='buyer_factory_address'/>
-                            </group>
                             <group>
                                 <field name='beneficiary'/>
                                 <field name='swift_code'/>
@@ -61,6 +67,21 @@
                             </group>
                         </group>
                     </page>
+                </xpath>
+                <xpath expr="//button[@name='action_rfq_send'][2]" position="replace">
+                    <button name="action_rfq_send" states="landed_cost" string="Send PO by Email" type="object" context="{'send_rfq':False}"/>
+                </xpath>
+                <xpath expr="//button[@name='action_create_invoice'][2]" position="replace">
+                   <button name="action_create_invoice" string="Create Bill" type="object" context="{'create_bill':True}" attrs="{'invisible': ['|', '|', ('state', 'not in', ('purchase', 'done', 'landed_cost')), ('invoice_status', 'not in', ('no', 'invoiced')), ('order_line', '=', [])]}"/>
+                </xpath>
+                <xpath expr="//button[@name='button_cancel']" position="replace">
+                    <button name="button_cancel" states="draft,to approve,sent,purchase,landed_cost" string="Cancel" type="object" />
+                </xpath>
+                <xpath expr="//button[@name='button_done']" position="replace">
+                    <button name="button_done" states="purchase,landed_cost" type="object" string="Lock"/>
+                </xpath>
+                <xpath expr="//button[@name='confirm_reminder_mail']" position="replace">
+                    <button name="confirm_reminder_mail" string="Confirm Receipt Date" type="object" attrs="{'invisible': ['|','|', '|', ('state', 'not in', ('purchase', 'done', 'landed_cost')), ('mail_reminder_confirmed', '=', True), ('picking_count', '=', 0), ('date_planned', '=', False)]}" groups="base.group_no_one"/>
                 </xpath>
             </field>
         </record>

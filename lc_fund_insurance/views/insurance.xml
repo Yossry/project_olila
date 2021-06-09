@@ -33,7 +33,7 @@
 					</div>
 					<group>
 						<group>
-							<field name="partner_id"/>
+							<field name="partner_id" domain="[('insurance_vendor', '=', True)]"/>
 							<field name="branch_id"/>
 							<label for="street" string="Address"/>
 							<div class="o_address_format">
@@ -58,7 +58,7 @@
 					</group>
 					<notebook>
                         <page string="Insurance Lines">
-                            <field name="insurance_ids">
+                            <field name="insurance_ids" readonly='1'>
                                 <tree editable="bottom">
                                     <field name="sequence" widget="handle"/>
                                     <field name="product_id"/>
@@ -75,7 +75,7 @@
                             <field name="note" class="oe_inline" placeholder="Define your terms and conditions ..."/>
                             <div class="oe_clear"/>
                         </page>
-                        <page string="Marine Info">
+                        <page string="Marine Cargo">
                         	<group>
                         		<group>
                         			<field name="marine_cover_no"/>

@@ -53,7 +53,7 @@
 					</group>
 					<notebook>
                         <page string="Approval Lines">
-                            <field name="explosive_lines">
+                            <field name="explosive_lines" readonly='1'>
                                 <tree editable="bottom">
                                     <field name="product_id"/>
                                     <field name="item_code"/>
@@ -73,7 +73,7 @@
                             <field name="remark" class="oe_inline" placeholder="Remark and note here..."/>
                             <div class="oe_clear"/> 
                         </page>
-                        <page string="Pre-Approvals" attrs="{}">
+                        <page string="Final Approvals" attrs="{}">
                         	<group>
                         		<group>
                         			<field name="commercial_invoice"/>

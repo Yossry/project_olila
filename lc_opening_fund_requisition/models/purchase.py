@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 
+class Partner(models.Model):
+    _inherit = 'res.partner'
+
+    insurance_vendor = fields.Boolean()
+
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
@@ -21,12 +26,7 @@ class PurchaseOrderLine(models.Model):
 class Purchase(models.Model):
     _inherit = 'purchase.order'
 
-    # buyer
-    buyer_name = fields.Many2one('res.partner', string="Buyer")
-    origin = fields.Many2one('res.country')
-    buyer_address = fields.Char()
-    buyer_factory_address = fields.Char()
-    # account
+    country_id = fields.Many2one('res.country', string='Country')
     beneficiary = fields.Char()
     beneficiary_address = fields.Char()
     beneficiary_bank_name = fields.Char()
@@ -45,9 +45,15 @@ class Purchase(models.Model):
     landed_cost_count = fields.Integer(compute='_landed_cost_count', string='# Landed Cost')
     mode_of_shipment = fields.Selection([('air', 'Air'), ('ship', 'Ship'), ('road', 'Road')], copy=False) 
 
+    def button_approve(self, force=False):
+        rec = super(Purchase, self).button_approve()
+        if self.env.context.get('is_lc'):
+            self.write({'state': 'landed_cost', 'date_approve': fields.Datetime.now()})
+        return rec
+
     def button_confirm(self):
         for order in self:
-            if order.state not in ['draft', 'sent']:
+            if order.state not in ['draft', 'sent', 'landed_cost']:
                 continue
             order._add_supplier_to_product()
             # Deal with double validation process
@@ -56,11 +62,10 @@ class Purchase(models.Model):
                         and order.amount_total < self.env.company.currency_id._convert(
                             order.company_id.po_double_validation_amount, order.currency_id, order.company_id, order.date_order or fields.Date.today()))\
                     or order.user_has_groups('purchase.group_purchase_manager'):
-                if self.purchase_type != 'import':
-                    order.button_approve()
+                if self.purchase_type == 'import':
+                    order.write({'state': 'purchase'})
                 else:
-                    self.write({'state': 'purchase'})
-
+                    order.button_approve()
             else:
                 order.write({'state': 'to approve'})
             if order.partner_id not in order.message_partner_ids:
@@ -75,7 +80,7 @@ class Purchase(models.Model):
     def open_landed_cost(self):
         requisition_ids = self.env['lc.opening.fund.requisition'].search([('purchase_id', '=', self.id)])
         return {
-            'name': _('Landed Costs'),
+            'name': _('LC Fund Requisition'),
             'view_type': 'form',
             'view_mode': 'tree,form',
             'res_model': 'lc.opening.fund.requisition',
@@ -97,8 +102,9 @@ class Purchase(models.Model):
         lines = [(0,0, self._prepare_lines(line)) for line in self.order_line]
         return {
             'supplier_id' : self.partner_id.id,
-            'purchase_orde_date' : self.create_date,
+            'purchase_order_date' : self.create_date,
             'lc_requisition_date' : fields.Date.today(),
+            'department_id' : self.department_id and self.department_id.id,
             'purchase_id' : self.id,
             'requisition_line_ids' : lines
         }

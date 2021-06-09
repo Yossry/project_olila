@@ -21,25 +21,33 @@
             <field name="arch" type="xml">
                 <form string="LC Opening Fund Requisition Form">
                     <header>
-                        <button name="button_done" string="Process" states="open" type="object" class="btn-primary"/>
+                        <button name="button_done" string="Process" states="accept" type="object" class="btn-primary"/>
                         <button name="button_confirm" string="Confirm" states="draft" type="object" class="btn-primary"/>
-                        <button name="button_make_done" string="Make Done" states="accept" type="object" class="btn-primary"/>
-                        <button name="button_lc_opening" string="Create LC Opening" states="request" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'request')]}"/>
                         <button name="create_insurance_cover" string="Create Insurance Cover" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'confirm')]}"/>
                         <button name="create_approval_explosive" string="Pre-Approval Explosive" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'confirm')]}"/>
                         <button name="create_lc_request" string="Create LC Request" type="object" class="btn-primary" attrs="{'invisible': ['|', '|', ('pre_appoval', '=', False), ('is_insurance', '=', False), ('state', '!=', 'confirm')]}"/>
                         <button name="button_cancel" string="Cancel" type="object" class="btn-primary" attrs="{'invisible': [('state', '=', 'cancel')]}"/>
+                        <button name="button_draft" string="Set to Draft" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'amendment')]}"/>
+                        <button name="button_create_charges" string="Create Charges" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'done')]}"/>
                         <field name="state"  widget="statusbar"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button name="open_insurance_cost" type="object" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible': [('insurance_count', '=', 0)]}">
+                            <button name="view_lc_opening" type="object" class="oe_stat_button" icon="fa-folder-open-o" attrs="{'invisible': [('opening_count', '=', 0)]}">
+                                <field name="opening_count" widget="statinfo" string="Openings"/>
+                            </button>
+                            <button name="open_insurance_cost" type="object" class="oe_stat_button" icon="fa-id-card" attrs="{'invisible': [('insurance_count', '=', 0)]}">
                                 <field name="insurance_count" widget="statinfo" string="Insurances"/>
                             </button>
-                            <button name="open_explosive_cost" type="object" class="oe_stat_button" icon="fa-id-card" attrs="{'invisible': [('explosive_count', '=', 0)]}">
-                                <field name="explosive_count" widget="statinfo" string="Pre-Approvals"/>
+                            <button name="open_explosive_cost" type="object" class="oe_stat_button" icon="fa-user" attrs="{'invisible': [('explosive_count', '=', 0)]}">
+                                <field name="explosive_count" widget="statinfo" string="Approvals"/>
                             </button>
-
+                            <button name="open_lc_request" type="object" class="oe_stat_button" icon="fa-edit" attrs="{'invisible': [('request_count', '=', 0)]}">
+                                <field name="request_count" widget="statinfo" string="Requests"/>
+                            </button>
+                            <button name="open_picking" type="object" class="oe_stat_button" icon="fa-truck" attrs="{'invisible': [('picking_count', '=', 0)]}">
+                                <field name="picking_count" widget="statinfo" string="Pickings"/>
+                            </button>
                         </div>
                         <div class="oe_title">
                             <h1>
@@ -52,18 +60,16 @@
                                 <field name="department_id"/>
                                 <field name="origin"/>
                                 <field name="lcaf_no"/>
-                                <field name="is_insurance"/>
-                                <field name="pre_appoval"/>
+                                
                             </group>
                             <group>
                                 <field name="purchase_id"/>
-                                <field name="purchase_orde_date"/>
+                                <field name="purchase_order_date"/>
                                 <field name="lc_requisition_date"/>
                                 <field name="is_lcaf"/>
                                 <field name="is_tm"/>
                                 <field name="is_imp"/>
-                                <field name="usd_to_tk"/>
-                                <field name='usd_tk_amount' attrs="{'invisible':[('usd_to_tk', '=', False)]}"/>
+                                <field name='imp_amount' attrs="{'invisible':[('is_imp', '=', False)]}"/>
                                 <field name="purchase_id" invisible="1"/>
                             </group>
                         </group>
@@ -87,6 +93,7 @@
                                     <field name="vat_on_commission" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                     <field name="pt_charge" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                     <field name="insurance_charge" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="lc_fund_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                                 </group>
                                 <field name="remarks" class="oe_inline" placeholder="Define your terms and conditions ..."/>
                                 <div class="oe_clear"/>
@@ -116,7 +123,13 @@
                                         </group>
                                         <notebook>
                                             <page string="Attachments" name="Attachments">
-                                                <field name="attachment_ids"/>
+                                                <field name="attachment_ids">
+                                                    <tree editable="bottom">
+                                                        <field name="name"/>
+                                                        <field name="type"/>
+                                                        <field name="datas" widget='file'/>
+                                                    </tree>
+                                                </field>
                                             </page>
                                             <page string="Agents Charge" name="Agents Charge">
                                                 <field name="agents_charge_ids">
@@ -132,16 +145,17 @@
                                         </notebook>
                                     </form>
                                     <tree string="LC Agent Lines">
+                                        <field name="name"/>
+                                        <field name="date"/>
                                         <field name="product_id"/>
                                         <field name="item_code"/>
-                                        <field name="date"/>
                                         <field name="net_weight"/>
                                         <field name="delivery_type"/>
                                     </tree>
                                 </field>
                             </page>
                             <page string="Custom Charges" name="Custom Charges" attrs="{}">
-                                <field name="charges_ids" mode="form, tree">
+                                <field name="charges_ids" mode="form,tree">
                                     <form>
                                         <div class="oe_title">
                                             <h1>
@@ -154,6 +168,7 @@
                                                 <field name="customs_point"/>
                                             </group>
                                             <group>
+                                                <field name="date"/>
                                                 <field name="declaration_no"/>
                                                 <field name="lc_requisition_id" invisible="1"/>
                                             </group>
@@ -183,11 +198,22 @@
                                     </form>
                                     <tree string="LC Agent Lines">
                                         <field name="name"/>
+                                        <field name="date"/>
                                         <field name="bill_of_entry_no"/>
                                         <field name="customs_point"/>
                                         <field name="declaration_no"/>
                                     </tree>
                                 </field>
+                            </page>
+                            <page string="Others" id="extra_info">
+                                <group>
+                                    <group>
+                                        <field name="is_insurance"/>
+                                        <field name="pre_appoval"/>
+                                        <field name="lc_request"/>
+                                        <field name="picking"/>
+                                    </group>
+                                </group>
                             </page>
                         </notebook>
                     </sheet>
