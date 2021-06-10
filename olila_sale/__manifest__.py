@@ -14,5 +14,6 @@
         'views/sale_view.xml',
         'views/cost_estimation.xml',
         'views/stock_picking.xml',
+        'views/request_for_quote_view.xml',
     ],
 }
