@@ -13,7 +13,6 @@ class PurchaseRequest(models.Model):
     name = fields.Char(default=_('New'), readonly=True, copy=False)
     department_id = fields.Many2one('hr.department', string='Department', required=True)
     schedule_date = fields.Datetime(default=fields.Datetime.now, string='Schedule Date')
-    # team_id = fields.Many2one('committee.committee', string="Committee")
     state = fields.Selection([
         ('draft', 'Draft'),
         ('approve', 'Approved'),

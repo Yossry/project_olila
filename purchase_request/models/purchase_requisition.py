@@ -8,3 +8,4 @@ class PurchaseRequisition(models.Model):
     _inherit = "purchase.requisition"
 
     purchase_request_id = fields.Many2one('purchase.request', string='Picking Type')
+    department_id = fields.Many2one('hr.department', string='Department')
