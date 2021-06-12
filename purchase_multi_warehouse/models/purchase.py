@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models, _, SUPERUSER_ID
 
 
 class PurchaseOrderLine(models.Model):
@@ -23,6 +23,10 @@ class PurchaseOrderLine(models.Model):
             res['location_dest_id'] = self.warehouse_id.lot_stock_id.id
         return res
 
+
+class PurchaseOrder(models.Model):
+    _inherit = 'purchase.order'
+
     def _get_warehouse_picking(self, warehouse_id):
         moves = self.picking_ids.mapped('move_lines').filtered(lambda x: x.warehouse_id == warehouse_id)
         return moves.mapped('picking_id').filtered(lambda x: x.state not in ('done', 'cancel'))
@@ -30,12 +34,14 @@ class PurchaseOrderLine(models.Model):
     def _create_picking(self):
         StockPicking = self.env['stock.picking']
         for order in self:
+            print('>>>>>>>>>>>>..')
             if any(product.type in ['product', 'consu'] for product in order.order_line.product_id):
                 order = order.with_company(order.company_id)
                 warehouse_ids = order.order_line.mapped('warehouse_id')
                 if warehouse_ids:
                     for warehouse in warehouse_ids:
                         pickings = order._get_warehouse_picking(warehouse)
+                        print('WARE:::::::::::', warehouse, pickings)
                         if not pickings:
                             res = order._prepare_picking()
                             res['picking_type_id'] = warehouse.in_type_id.id
