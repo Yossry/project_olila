@@ -26,6 +26,11 @@
                         <field name="state"  widget="statusbar"/>
                     </header>
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="open_sale_order" type="object" class="oe_stat_button" icon="fa-id-card" attrs="{'invisible': [('rfq_count', '=', 0)]}">
+                                <field name="rfq_count" widget="statinfo" string="Corporate Sales"/>
+                            </button>
+                        </div>
                         <div class="oe_title">
                             <h1>
                                 <field name="name"/>
@@ -33,8 +38,8 @@
                         </div>
                         <group>
                             <group>
-                                <field name="partner_id"/>
-                                <label for="street" string="Bank Address"/>
+                                <field name="partner_id" required="1"/>
+                                <label for="street" string="Request Address"/>
                                 <div class="o_address_format">
                                     <field name="street" placeholder="Street..." class="o_address_street"/>
                                     <field name="street2" placeholder="Street 2..." class="o_address_street"/>

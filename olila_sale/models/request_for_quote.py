@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
+from datetime import timedelta, datetime
 
 class RequestForQuote(models.Model):
     _name = 'request.for.quote'
@@ -28,8 +29,38 @@ class RequestForQuote(models.Model):
     expected_delivery = fields.Date(string="Expected Delivery Date")
     remarks = fields.Text(string="Remarks")
     note = fields.Text(string="Terms & Condition")
+    rfq_count = fields.Integer(compute='_rfq_count', string='# Requests')
+
+    def _rfq_count(self):
+        for rec in self:
+            rfq_ids = self.env['sale.order'].search([('rfq_id', '=', self.id)])
+            rec.rfq_count = len(rfq_ids.ids)
+
+    def open_sale_order(self):
+        rfq_ids = self.env['sale.order'].search([('rfq_id', '=', self.id)])
+        return {
+            'name': _('Corporate Sales'),
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'sale.order',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+            'domain': [('id', 'in', rfq_ids.ids)],
+        }
+
+    def create_sale_order(self):
+        order_id = self.env['sale.order'].create({
+                'partner_id' : self.partner_id.id,
+                'date_order': datetime.now().date(),
+                'sale_type' : 'corporate_sales',
+                'rfq_id' : self.id,
+            })
+        return True
+
+
 
     def action_confirm(self):
+        self.create_sale_order()
         self.write({'state' : 'confirm'})
 
     def action_done(self):

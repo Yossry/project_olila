@@ -18,6 +18,7 @@ class SaleOrder(models.Model):
     contact_no = fields.Char("Contact No")
     zone = fields.Char("Zone")
     secondary_contact_persion = fields.Char("Secondary Contact Person")
+    rfq_id = fields.Many2one('request.for.quote', string="RFQ")
 
     def action_cost_estimation(self):
         """ Cost Estimation Open"""
