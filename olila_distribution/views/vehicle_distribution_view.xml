@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+
+        <menuitem id="menu_distribution"
+            name="Distribution" sequence="116" web_icon="olila_distribution,static/description/icon.png"/>
+
         <record id="vehicle_distribution_form" model="ir.ui.view">
             <field name="name">vehicle.distribution.form</field>
             <field name="model">vehicle.distribution</field>
@@ -17,31 +21,40 @@
                     <sheet>
                         <group>
                             <group>
-                                <field  name="transport_type" widget="radio" attrs="{'readonly': [('state','!=','draft')]}"/>
-                                <field  name="own_vehicle_id" attrs="{'invisible':[('transport_type', '=', 'rent')], 'readonly': [('state','!=','draft')], 'required':[('transport_type', '=', 'own')] }"/>
-                                <field  name="own_vehicle_driver_id" attrs="{'invisible':[('transport_type', '=', 'rent')], 'readonly': [('state','!=','draft')], 'required':[('transport_type', '=', 'own')]}"/>
-                                <field  name="own_vehicle_driver_contact" attrs="{'invisible':[('transport_type', '=', 'rent')], 'readonly': [('state','!=','draft')]}"/>
+                                <field  name="transport_type" widget="radio" attrs="{'readonly': [('state','!=','draft')]}" options="{'horizontal': true}"/>
+                                <field  name="vehicle_id" attrs="{'invisible':[('transport_type', '=', 'rent')], 'readonly': [('state','!=','draft')], 'required':[('transport_type', '=', 'own')] }" widget = "selection"/>
+
                                 <field  name="rent_vehicle_nbr" attrs="{'invisible':[('transport_type', '=', 'own')], 'readonly': [('state','!=','draft')], 'required': [('transport_type', '=', 'rent')]}"/>
-                                <field  name="rent_vehicle_driver" attrs="{'invisible':[('transport_type', '=', 'own')], 'readonly': [('state','!=','draft')], 'required': [('transport_type', '=', 'rent')]}"/>
-                                <field  name="rent_vehicle_driver_contact" attrs="{'invisible':[('transport_type', '=', 'own')], 'readonly': [('state','!=','draft')]}"/>
+                                 <field  name="transport_company" attrs="{'readonly': [('state','!=','draft')],'required': [('transport_type', '=', 'rent')],'invisible': [('transport_type', '!=', 'rent')]}" />
+                                 <field  name="driver_id" attrs="{'readonly': [('state','!=','draft')]}" widget = "selection"/>
+                                <field  name="driver_contact" attrs="{'readonly': [('state','!=','draft')]}" />
+
+                                
                             </group>
                             <group>
                                 <field  name="date"  attrs="{'readonly': [('state','!=','draft')]}"/>
-                                <field  name="picking_id" attrs="{'readonly': [('state','!=','draft')]}" invisible="1"/>
-                                <field name="cost" attrs="{'readonly': [('state','!=','draft')]}" />
-                                <field name="remarks" attrs="{'readonly': [('state','!=','draft')]}" />
+                               <!--  <field  name="picking_id" attrs="{'readonly': [('state','!=','draft')]}" invisible="1"/> -->
+                                <field  name="product_id" invisible="1"/>
+                                <field  name="currency_id" invisible="1"/>
+                                <field name="cost" attrs="{'readonly': [('state','!=','draft')],'required': [('transport_type', '=', 'rent')]}" widget="monetary"/>
+                                <field  name="delivery_ids" widget="many2many_tags" options="{'no_create_edit': True, 'color_field': 'color'}" required="1"/>
+                               
                             </group>
                         </group>
                         <notebook>
-                        <page string="Products">
+                        <page string="To Delivery">
                              <field name="product_line_ids">
-                            <tree editable="bottom">
-                                <field name="product_id"/>
-                                <field name="product_qty"/>
-                                <field name="partner_id"/>
-                                <field name="is_done"/>
-                            </tree>
+                                <tree editable="bottom">
+                                    <field name="picking_id"/>
+                                    <field name="product_id"/>
+                                    <field name="product_qty"/>
+                                    <field name="partner_id"/>
+                                    <field name="is_done"/>
+                                </tree>
                         </field>
+                        <group colspan="4">
+                            <field name="remarks" attrs="{'readonly': [('state','!=','draft')]}" nolabel="1" placeholder="Remarks ..."/>
+                        </group>
                         </page>
                     </notebook>
                     </sheet>
@@ -59,16 +72,16 @@
             <field name="arch" type="xml">
                 <tree>
                     <field  name="date"/>
-                    <field  name="transport_type" />
-                    <field  name="own_vehicle_id" string="Company Vehicle No."/>
-                    <field  name="own_vehicle_driver_id" string="Company Driver Name"/>
-                    <field  name="own_vehicle_driver_contact" string="Company Driver Number"/>
+                    <field  name="transport_type"  decoration-danger="transport_type == 'rent'" decoration-warning="transport_type == 'own'" widget="badge"/>
+                    <field  name="vehicle_id" string="Vehicle No."/>
+                    <field  name="driver_id" string="Driver"/>
+                    <field  name="driver_contact" string="Number"/>
                     <field  name="rent_vehicle_nbr" string="Rent Vehicle No."/>
-                    <field  name="rent_vehicle_driver" string="Rent Vehicle Driver"/>
-                    <field  name="rent_vehicle_driver_contact" string="Rent Vehicle Driver No."/>
+                    <!-- <field  name="rent_vehicle_driver" string="Rent Vehicle Driver"/>
+                    <field  name="rent_vehicle_driver_contact" string="Rent Vehicle Driver No."/> -->
                     <field name="cost" />
-                    <field name="remarks" />
-                    <field name="state" />
+                    <!-- <field name="remarks" /> -->
+                    <field name="state"  decoration-success="state == 'approved'" decoration-info="state == 'draft' or state == 'approval'" widget="badge"  />
                 </tree>
             </field>
         </record>
@@ -78,6 +91,9 @@
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="vehicle_distribution_tree"/>
         </record>
-        <menuitem action="vehicle_distribution_action" id="vehicle_distribution_main_menu" name="Vehicle Distribution" parent="stock.menu_stock_warehouse_mgmt" sequence="10"/>
+        <menuitem action="vehicle_distribution_action" id="vehicle_distribution_main_menu" name="Vehicle Distribution" parent="olila_distribution.menu_distribution" sequence="10"/>
+
+        
+
     </data>
 </odoo>

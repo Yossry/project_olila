@@ -9,12 +9,14 @@
                 <sheet>
                     <group>
                         <group>
-                            <field name="name" required="1"/>
-                            <field name="purchase_date" required="1"/>
+                            <field name="name" required="1" attrs="{'readonly': [('state','!=','open')]}"/>
+                            <field name="tyre_no" required="1" attrs="{'readonly': [('state','!=','open')]}"/>
+                            <field name="purchase_date" required="1" attrs="{'readonly': [('state','!=','open')]}"/>
                         </group>
                         <group>
                             <field name="vehicle_id" invisible="1"/>
-                            <field name="position" required="1"/>
+                            <field name="position" required="1" attrs="{'readonly': [('state','!=','open')]}"/>
+                            <field name="current_user_id" attrs="{'readonly': [('state','!=','open')]}"/>
                         </group>
                     </group>
                     <!-- <group string="Retreading"> -->
@@ -29,6 +31,11 @@
                         </field>
                     <!-- </group> -->
                 </sheet>
+                <div class="oe_chatter">
+                         <field name="message_follower_ids"/>
+                         <field name="activity_ids"/>
+                         <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>
@@ -38,11 +45,29 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
+                <field name="tyre_no"/>
                 <field name="purchase_date"/>
                 <field name="position"/>
+                <field name="current_user_id"/>
             </tree>
         </field>
     </record>
+
+    <record id="vehicle_tyre_detail_search" model="ir.ui.view">
+        <field name="name">vehicle.tyre.detail.search</field>
+        <field name="model">vehicle.tyre.detail</field>
+        <field name="arch" type="xml">
+            <search >
+                <field name="name"/>
+                <field name="tyre_no"/>
+                <group expand="0" string="Group By">
+                    <filter string="Position" name="position" context="{'group_by': 'position'}"/>
+
+                </group>
+            </search>
+        </field>
+    </record>
+
     <record id="fleet_vehicle_tyre_action" model="ir.actions.act_window">
         <field name="name">Vehicles</field>
         <field name="res_model">vehicle.tyre.detail</field>

@@ -1,7 +1,18 @@
 # -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
 
 from odoo import api, fields, models
+from random import randint
+
+class Fuel(models.Model):
+    _name = 'fuel.fuel'
+
+
+    def _get_default_color(self):
+        return randint(1, 11)
+
+    name = fields.Char('Fuel')
+    color = fields.Integer(string='Color Index', default=_get_default_color)
+    active = fields.Boolean(default=True)
 
 class FleetVehicleModel(models.Model):
     _inherit = 'fleet.vehicle.model'
@@ -44,7 +55,8 @@ class FleetVehicle(models.Model):
     
     registration_nbr = fields.Text('Vehicle Registration No')
     date_purchase = fields.Date('Vehicle Purchase Date')
-    cubic_centimeter = fields.Float("Vehicle Cubic Capacity (CC)")
+    cubic_centimeter = fields.Float("Vehicle Capacity (CBM)")
+    vehicle_capacity = fields.Float("Vehicle Capacity (Ton)")
     kanban_state = fields.Selection([
         ('done', 'USED'),
         ('blocked', 'IDLE'),
@@ -52,20 +64,20 @@ class FleetVehicle(models.Model):
         copy=False, default='blocked', tracking=True
     )
 
-    doc1 = fields.Binary('Doc 1')
+    doc1 = fields.Binary('Registration Certificate')
     file_name = fields.Char("File Name")
-    doc2 = fields.Binary('Doc 2')
+    doc2 = fields.Binary('Route permit')
     file_name2 = fields.Char("File Name")
-    doc3 = fields.Binary('Doc 3')
+    doc3 = fields.Binary('Tax token')
     file_name3 = fields.Char("File Name")
-    doc4 = fields.Binary('Doc 4')
+    doc4 = fields.Binary('Fitness')
     file_name4 = fields.Char("File Name")
-    doc5 = fields.Binary('Doc 5')
+    doc5 = fields.Binary('Insurance')
     file_name5 = fields.Char("File Name")
 
     tyres_count = fields.Integer(string='Tyres', compute='get_tyres_count')
-    fuel_type = fields.Selection([('gasoline', 'Petrol'),('lpg', 'CNG'),('diesel', 'Diesel'),('electric','Electric'),('hybrid','Hybrid')], string="Fuel Type")
-
+    # fuel_type = fields.Selection([('gasoline', 'Petrol'),('lpg', 'CNG'),('diesel', 'Diesel'),('electric','Electric'),('hybrid','Hybrid')], string="Fuel Type")
+    fuel_type_ids = fields.Many2many('fuel.fuel',  string="Fuel Type")
     fuel_log_count = fields.Integer(string='Fuel Logs', compute='get_fuel_log_count')
     vehicle_seat = fields.Float('Seat/Capacity')
     # components_ids = fields.One2many('vehicle.components', 'vehicle_id', string='Components')
@@ -80,8 +92,25 @@ class FleetVehicle(models.Model):
     department_id = fields.Many2one('hr.department', string='Department')
     driver_nid = fields.Char('Driver ID')
     vehicle_history_count = fields.Integer(string='Fuel Logs', compute='get_vehicle_history_count')
+    tyres_amount = fields.Integer('No of Tyres')
+    depot_id = fields.Many2one('stock.warehouse', string='Depot')
+    progress = fields.Float("Docs Upload", compute='_compute_progress', store=True, group_operator="avg", help="Display Docs Attached.")
 
-
+    @api.depends('doc1', 'doc2', 'doc3','doc4','doc5')
+    def _compute_progress(self):
+        for task in self:
+            task.progress = 0.0
+            if task.doc1:
+                task.progress += 20
+            if task.doc2:
+                task.progress += 20
+            if task.doc3:
+                task.progress += 20
+            if task.doc4:
+                task.progress += 20
+            if task.doc5:
+                task.progress += 20
+                
 
         
     def open_vehicle_tyres(self):

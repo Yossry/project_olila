@@ -12,18 +12,18 @@
                 <sheet>
                     <group>
                         <group string="Vehicle Details">
-                            <field name="vehicle_id" />
-                            <field name="driver_id" />
+                            <field name="vehicle_id" attrs="{'readonly': [('state','!=','open')]}" />
+                            <field name="driver_id" attrs="{'readonly': [('state','!=','open')]}" />
                         </group>
                         <group string="Odometer Details">
-                            <field name="ini_km_reading" required="1" />
-                            <field name="end_km_reading" required="1"/>
+                            <field name="ini_km_reading" required="1" attrs="{'readonly': [('state','!=','open')]}"/>
+                            <field name="end_km_reading" required="1" attrs="{'readonly': [('state','!=','open')]}"/>
                             <field name="total_km" required="1"/>
                         </group>
                     </group>
                     <group>
                         <group string="Additional Details">
-                            <field name="date" required="1"/>
+                            <field name="date" required="1" attrs="{'readonly': [('state','!=','open')]}"/>
                             <field invisible="1" name="file_name"/>
                             <field filename="file_name" name="doc1" string="Invoice Ref."/>
                         </group>
@@ -39,7 +39,7 @@
                                 <tree editable="bottom">
                                     <field name="purchase_date" string="Date"/>
                                     <field name="fuel_type"/>
-                                    <field name="fuel_purchase" string="Ltr" sum="Total"/>
+                                    <field name="fuel_purchase" string="Ltr" sum="Total Fuel"/>
                                     <field name="amount"  string="Price" sum="Total"/>
                                     <field  name="doc" widget="download_link" filename="file_name"/>
                                     <field name="file_name" invisible="1"/>
@@ -67,6 +67,21 @@
             </tree>
         </field>
     </record>
+     <record id="fleet_vehicle_log_fuel_search" model="ir.ui.view">
+        <field name="name">fleet.vehicle.log.fuel.search</field>
+        <field name="model">fleet.vehicle.log.fuel</field>
+        <field name="arch" type="xml">
+            <search >
+                <field name="vehicle_id"/>
+                <field name="driver_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="State" name="state" context="{'group_by': 'state'}"/>
+
+                </group>
+            </search>
+        </field>
+    </record>
+
     <record id="fleet_vehicle_log_fuel_list_action" model="ir.actions.act_window">
         <field name="name">Fuel Logs</field>
         <field name="res_model">fleet.vehicle.log.fuel</field>

@@ -4,7 +4,13 @@ from odoo import api, fields, models
 class FleetVehicleFuelLog(models.Model):    
     _name = 'fleet.vehicle.log.fuel'
     _rec_name = 'date'
-    
+
+    @api.onchange('vehicle_id')
+    def on_change_vehicle_id(self):
+        for i in self:
+            if i.vehicle_id:
+                i.driver_id = i.vehicle_id.driver_id.id
+
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle")
     driver_id = fields.Many2one('res.partner', string="Driver")
     date = fields.Date ('Date')
@@ -28,6 +34,14 @@ class FleetVehicleFuelLog(models.Model):
 
     def action_lock(self):
         self.state = 'lock'
+        self.env['fleet.vehicle.odometer'].create(
+            {'value': self.end_km_reading, 'date': fields.date.today(), 'vehicle_id': self.vehicle_id.id,
+             'driver_id': self.driver_id.id})
+        total_fuel_purchase = 0
+        for rec in self.fuel_purchase_ids:
+            total_fuel_purchase = total_fuel_purchase + rec.fuel_purchase
+        self.fuel_amount = total_fuel_purchase
+        self.vehicle_id.average_mileage = (self.total_km / total_fuel_purchase)
 
 
 class FleetVehicleFuelLog(models.Model):

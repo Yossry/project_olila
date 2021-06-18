@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+    	<record id="fleet_vehicle_view_form_driver" model="ir.ui.view">
+            <field name="name">fleet.vehicle.inherit3</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='driver_id']" position="attributes">
+                     <attribute name="domain">[('is_driver', '=', True),('nature_driver','=','driver')]</attribute>
+                     <attribute name="widget">selection</attribute>
+                </xpath>
+                <xpath expr="//field[@name='helper_id']" position="attributes">
+                     <attribute name="domain">[('is_driver', '=', True),('nature_driver','=','helper')]</attribute>
+                     <attribute name="widget">selection</attribute>
+                </xpath>
+            </field>
+        </record>
+
+</data>
+</odoo>

@@ -16,6 +16,7 @@
         'views/vehicle_history.xml',
         'views/liecense_renewal_history.xml',
         'views/fleet_route_plan.xml',
+        'views/fuel_type.xml',
         'views/vehicle_components.xml',
         'views/vehicle_tyre_details.xml',
     ],

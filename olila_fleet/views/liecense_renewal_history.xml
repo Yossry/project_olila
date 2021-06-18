@@ -67,6 +67,13 @@
           </button>
         </div>
       </xpath>
+      <xpath expr="//field[@name='start_date']" position="attributes">
+                    <attribute name="string">License Start Date</attribute>
+      </xpath>
+      <xpath expr="//field[@name='expiration_date']" position="attributes">
+                    <attribute name="string">License Expiration Date</attribute>
+      </xpath>
+
     </field>
   </record>
 </odoo>

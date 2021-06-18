@@ -45,7 +45,7 @@ class DeliveryReport(models.AbstractModel):
                 driver_name = distribution.own_vehicle_driver_id.name
             else:
                 vehicle_num = distribution.rent_vehicle_nbr
-                driver_name = distribution.rent_vehicle_driver
+                # driver_name = distribution.rent_vehicle_driver
             total_product_qty = 0
             for line in order.sale_id.order_line:
                 total_product_qty = total_product_qty + line.qty_delivered

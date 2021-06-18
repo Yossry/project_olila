@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, _
+from odoo.exceptions import AccessError, UserError, ValidationError
 
 class FleetVehicleTyre(models.Model):
     _name = 'vehicle.components'
@@ -42,6 +43,12 @@ class FleetVehicleTyre(models.Model):
     def action_lock(self):
         self.state = 'lock'
 
+    def unlink(self):
+        for order in self:
+            if order.state == 'lock':
+                raise UserError(_('You can not delete a Tyre in Lock state.'))
+        return super(FleetVehicleTyre, self).unlink()
+
 
 
 
@@ -55,5 +62,4 @@ class TyreRetreading(models.Model):
     cost = fields.Float('Cost')
     doc = fields.Binary('Bill upload')
     file_name = fields.Char("File Name")
-    
-       
+

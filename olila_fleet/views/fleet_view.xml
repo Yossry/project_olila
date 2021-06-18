@@ -22,15 +22,18 @@
                         <span>cm
                             <sup>3</sup></span>
                     </div>
-                    <!-- <field name="cubic_centimeter"/>-->
+                     <field name="vehicle_capacity"/>
                 </field>
                 <field name="fuel_type" position="replace"/>
                 <field name="location" position="after">
-                    <field name="department_id" options="{'no_create_edit': True}"/>
+                    <field name="vehicle_asign_id"  widget = "selection"/>
+                    <field name="department_id" widget = "selection"/>
                     <field name="vehicle_asign_id"/>
-                    <field name="fuel_type" widget="radio" options="{'horizontal': true}"/>
+                    <!-- <field name="fuel_type" widget="radio" options="{'horizontal': true}"/> -->
+                    <field name="fuel_type_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                     <field name="average_mileage"/>
                     <field name="vehicle_seat"/>
+                    <field name="tyres_amount"/>
                 </field>
                 <xpath expr="//field[@name='driver_id']" position="after">
                     <field name="driver_number"/>
@@ -47,13 +50,17 @@
                 <xpath expr="//field[@name='contract_count']" position="attributes">
                     <attribute name="string">Vehicle Licenses</attribute>
                 </xpath>
-                <xpath expr="//button[@name='open_assignation_logs']" position="attributes">
+                <xpath expr="//field[@name='first_contract_date']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
-                <xpath expr="//form/sheet/group/group[6]" position="before">
+               <!-- <xpath expr="//button[@name='open_assignation_logs']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>-->
+                <xpath expr="//form/sheet/group/group[6]" position="after">
                     <notebook>
                         <page string="Documents">
                             <group>
+                                <field name="progress" widget="progressbar" modifiers="{'readonly':true}" id="progress"/>
                                 <field filename="file_name" name="doc1"/>
                                 <field invisible="1" name="file_name"/>
                                 <field filename="file_name2" name="doc2"/>
@@ -122,6 +129,10 @@
                 </xpath>
                 <xpath expr="//field[@name='date']" position="attributes">
                     <attribute name="string">Repair Date</attribute>
+                </xpath>
+                <xpath expr="//div[@class='o_row']" position="after">
+                    <field filename="file_name" name="doc"/>
+                    <field invisible="1" name="file_name"/>
                 </xpath>
             </field>
         </record>

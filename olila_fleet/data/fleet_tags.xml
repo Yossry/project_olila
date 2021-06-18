@@ -22,5 +22,43 @@
         <record id="fleet.fleet_vehicle_state_downgraded" model="fleet.vehicle.state">
             <field name="name">Scrap</field>
         </record>
+
+        <record id="gasoline" model="fuel.fuel">
+            <field name="name">Petrol</field>
+            <field name="color">1</field>
+        </record>
+
+        <record id="cng" model="fuel.fuel">
+            <field name="name">CNG</field>
+            <field name="color">2</field>
+        </record>
+
+        <record id="diesel" model="fuel.fuel">
+            <field name="name">Diesel</field>
+            <field name="color">3</field>
+        </record>
+
+        <record id="electric" model="fuel.fuel">
+            <field name="name">Electric</field>
+            <field name="color">4</field>
+        </record>
+
+        <record id="hybrid" model="fuel.fuel">
+            <field name="name">Hybrid</field>
+            <field name="color">5</field>
+        </record>
+
+        <record id="octane" model="fuel.fuel">
+            <field name="name">Octane</field>
+            <field name="color">6</field>
+        </record>
+
+        <record id="lpg" model="fuel.fuel">
+            <field name="name">LPG</field>
+            <field name="color">7</field>
+        </record>
+
+
+
     </data>
 </odoo>
