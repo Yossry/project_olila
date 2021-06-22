@@ -22,7 +22,7 @@
         <field name="arch" type="xml">
             <button name="action_confirm" position="before">
                 <button name="%(action_sale_advance_payment_id)d" string="Advance Payment"
-                    type="action" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                    type="action" attrs="{'invisible': [('state', '!=', 'draft')]}" class="oe_highlight"/>
                 </button>
             <xpath expr="//button[@name='action_view_invoice']" position="before">
             <button 

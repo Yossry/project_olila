@@ -16,7 +16,7 @@ class SaleOrder(models.Model):
     subject = fields.Text("Subject")
     sl_no = fields.Char("S/L number")
     contact_no = fields.Char("Contact No")
-    zone = fields.Char("Zone")
+    zone_id = fields.Many2one('res.zone', string='Zone', copy=False)
     secondary_contact_persion = fields.Char("Secondary Contact Person")
     rfq_id = fields.Many2one('request.for.quote', string="RFQ")
 
@@ -40,7 +40,7 @@ class SaleOrder(models.Model):
             elif self.sale_type == 'secondary_sales':
                 self.distributor_code = self.partner_id.distributor_id.code
             self.contact_no = self.partner_id and self.partner_id.phone or self.partner_id.mobile
-            self.zone = self.partner_id and self.partner_id.zone
+            self.zone_id = self.partner_id and self.partner_id.zone_id.id
             self.secondary_contact_persion = self.partner_id and self.partner_id.secondary_contact_persion
         return super(SaleOrder, self).onchange_partner_id()
 

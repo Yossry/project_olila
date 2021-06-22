@@ -2,3 +2,4 @@ id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
 access_cost_estimation,access_cost_estimation,model_cost_estimation,base.group_user,1,1,1,1
 access_cost_estimation_line,access_cost_estimation_line,model_cost_estimation_line,base.group_user,1,1,1,1
 access_request_for_quote,access_request_for_quote,model_request_for_quote,base.group_user,1,1,1,1
+access_res_zone,access_res_zone,model_res_zone,base.group_user,1,1,1,1

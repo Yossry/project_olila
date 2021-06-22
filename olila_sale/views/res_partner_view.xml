@@ -34,11 +34,11 @@
                             <group>
                                 <field name="deport_warehouse_id" attrs="{'required': [('olila_type', '=', 'distributor')], 'invisible': [('olila_type', '!=', 'distributor')]}"/>
                                 <field name="vertual_location_id" attrs="{'required': [('olila_type', '=', 'distributor')], 'invisible': [('olila_type', '!=', 'distributor')]}"/>
-                                <field name="distributor_id" attrs="{'invisible': [('olila_type', '=', 'distributor')]}"/>
-                                <field name="proprietor_name"/>
-                                <field name="proprietor_contact"/>
-                                <field name="bin_no"/>
-                                <field name="zone"/>
+                                <field name="distributor_id" attrs="{'invisible': [('olila_type', 'in', ('distributor', 'corporater'))]}"/>
+                                <field name="proprietor_name" attrs="{'invisible': [('olila_type', '=', 'corporater')]}"/>
+                                <field name="proprietor_contact" attrs="{'invisible': [('olila_type', '=', 'corporater')]}"/>
+                                <field name="bin_no" />
+                                <field name="zone_id" attrs="{'invisible': [('olila_type', '=', 'corporater')]}"/>
                                 <field name="secondary_contact_persion"/>
                             </group>
                         </group>

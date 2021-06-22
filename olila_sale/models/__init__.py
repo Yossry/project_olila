@@ -4,3 +4,4 @@ from . import sale
 from . import cost_estimation
 from . import picking
 from . import request_for_quote
+from . import zone

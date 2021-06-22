@@ -28,7 +28,7 @@ class Partner(models.Model):
     olila_ni_document = fields.Binary('National Identification Documents', attachment=True)
     trade_licence = fields.Char(string="Trade Licence", copy=False)
     trade_licence_document = fields.Binary('Copy of Trade Lince', attachment=True)
-    zone = fields.Char("Zone")
+    zone_id = fields.Many2one('res.zone', string='Zone', copy=False)
     secondary_contact_persion = fields.Char("Secondary Contact Person")
 
     @api.model
@@ -36,3 +36,9 @@ class Partner(models.Model):
         res = super(Partner, self).create(vals)
         res.code = self.env['ir.sequence'].next_by_code('res.partner') or '/'
         return res
+
+    @api.onchange('distributor_id')
+    def _onchange_distributor(self):
+        if self.distributor_id:
+            self.proprietor_name = self.distributor_id.proprietor_name
+            self.proprietor_contact = self.distributor_id.proprietor_contact

@@ -34,7 +34,7 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//header" position="inside">
-                    <button type="action" name="%(return_sale_order.action_sale_wizard)d"  string="Return Picking" class="oe_highlight"/>
+                    <button type="action" name="%(return_sale_order.action_sale_wizard)d"  string="Return Picking" class="oe_highlight" attrs="{'invisible': [('delivery_count', '=', 0)]}"/>
                 </xpath>
             </field>
         </record>

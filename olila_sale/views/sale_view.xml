@@ -7,12 +7,12 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='payment_term_id']" position="after">
-                    <field name="dealer_code"/>
+                    <field name="dealer_code" readonly="1"/>
                     <field name="distributor_code" attrs="{'invisible': [('sale_type', '!=', 'secondary_sales')]}"/>
                     <field name="subject" attrs="{'invisible': [('sale_type', '!=', 'corporate_sales')]}"/>
                     <field name="sl_no" attrs="{'invisible': [('sale_type', '!=', 'corporate_sales')]}"/>
                     <field name="secondary_contact_persion"/>
-                    <field name="zone"/>
+                    <field name="zone_id" options='{"no_open": True, "no_create": True}' readonly="1"/>
                     <field name="sale_type" readonly="1" force_save="1"/>
                     <field name="rfq_id"/>
                 </xpath>

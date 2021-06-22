@@ -10,7 +10,7 @@ class SaleAdvancePayment(models.TransientModel):
     amount_to_pay = fields.Monetary(string='Amount', required=True, default=0.0)
     amount_total = fields.Float('Total Amount', readonly=True)
     currency_id = fields.Many2one("res.currency", "Currency", readonly=True)
-    partner_bank_id = fields.Many2one('res.partner.bank', string="Bank")
+    partner_bank_id = fields.Many2one('res.partner.bank', string="Bank Account No")
     bank_branch = fields.Char(string="Branch")
     file_attachment = fields.Binary("Attachment")
     is_bank_journal = fields.Boolean(string="IS Bank")
@@ -78,5 +78,4 @@ class SaleAdvancePayment(models.TransientModel):
                               'file_attachment' : self.file_attachment,
                           }
             payment = self.env['account.payment'].create(payment_dict)
-            payment.action_post()
         return {'type': 'ir.actions.act_window_close'}
