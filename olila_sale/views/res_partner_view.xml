@@ -9,6 +9,9 @@
                 <group name="purchase" position="inside">
                     <field name="olila_seller_type" widget="radio" options="{'horizontal': true}" string="Vendor Type"/>
                 </group>
+                <xpath expr="//group[@name='sale']" position="inside">
+                    <field name="responsible"/>
+                </xpath>
                 <xpath expr="//notebook[last()]" position="inside">
                     <page string="Olila Sale">
                         <group>

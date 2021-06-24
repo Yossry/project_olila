@@ -12,9 +12,12 @@
                     <field name="subject" attrs="{'invisible': [('sale_type', '!=', 'corporate_sales')]}"/>
                     <field name="sl_no" attrs="{'invisible': [('sale_type', '!=', 'corporate_sales')]}"/>
                     <field name="secondary_contact_persion"/>
-                    <field name="zone_id" options='{"no_open": True, "no_create": True}' readonly="1"/>
+                    <field name="zone_id" options='{"no_open": True, "no_create": True}' attrs="{'readonly': [('sale_type', '=', 'primary_sales')]}"/>
                     <field name="sale_type" readonly="1" force_save="1"/>
                     <field name="rfq_id"/>
+                </xpath>
+                <xpath expr="//field[@name='payment_term_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('sale_type', '=', 'primary_sales')]}</attribute>
                 </xpath>
                 <xpath expr="//button[@name='%(sale.action_view_sale_advance_payment_inv)d'][1]" position="replace">
                     <button name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"
@@ -30,9 +33,12 @@
                     <button name="action_cost_estimation" string="Create Estimation"
                         type="object" class="btn-primary" attrs="{'invisible': ['|', ('state', '=', 'sale'), ('sale_type', '!=', 'corporate_sales')]}"/>
                 </xpath>
-                 <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="after">
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="after">
                     <field name="capture_gps_location" invisible="1"/>
                 </xpath>
+                <field name="user_id" position="after">
+                    <field name="responsible"/>
+                </field>
                 <xpath expr="//notebook[last()]" position="inside" >
                     <page string="Estimation Details" attrs="{'invisible': [('sale_type', '!=', 'corporate_sales')]}">
                         <field name="estimation_lines">

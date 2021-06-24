@@ -6,7 +6,7 @@
     'author': "Preciseways",
     'website': "http://www.preciseways.com",
     'version': '14.0',
-    'depends': ['sale_management', 'sale_stock', 'fleet'],
+    'depends': ['sale_management', 'sale_stock', 'fleet', 'hr'],
     'data': [
         'security/ir.model.access.csv',
         'data/olial_seq.xml',
@@ -16,5 +16,6 @@
         'views/stock_picking.xml',
         'views/request_for_quote_view.xml',
         'views/zone_view.xml',
+        'views/product_view.xml',
     ],
 }

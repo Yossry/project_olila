@@ -18,10 +18,14 @@
                             <group>
                                 <field name="transport_type"/>
                                 <field name="transporter_name"/>
+                                <field name="requestion_number"/>
+                                <field name="carton_type"/>
                             </group>
                             <group>
                                 <field name="driver_name"/>
                                 <field name="driver_mobile"/>
+                                <field name="capture_barcode"/>
+                                <field name="job_article_number"/>
                             </group>
                             <group colspan='6' col='4'>
                                 <field name="vehicle_no"/>

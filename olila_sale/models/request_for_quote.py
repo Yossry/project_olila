@@ -25,11 +25,11 @@ class RequestForQuote(models.Model):
         ondelete='restrict', domain="[('country_id', '=?', country_id)]")
     country_id = fields.Many2one('res.country', string='Country', ondelete='restrict')
     item_specification = fields.Text(string="Item Specification")
-    quantity = fields.Float(string="Quantity", default=1.0)
     expected_delivery = fields.Date(string="Expected Delivery Date")
     remarks = fields.Text(string="Remarks")
     note = fields.Text(string="Terms & Condition")
     rfq_count = fields.Integer(compute='_rfq_count', string='# Requests')
+    quote_lines = fields.One2many("request.for.quote.line", 'request_quote_id', string="Lines")
 
     def _rfq_count(self):
         for rec in self:
@@ -48,16 +48,24 @@ class RequestForQuote(models.Model):
             'domain': [('id', 'in', rfq_ids.ids)],
         }
 
+    def _prepare_sale_order_line(self, line):
+        return {
+            'product_id' : line.product_id.id,
+            'name' : line.product_id.display_name,
+            'product_uom_qty' : line.quantity,
+            'price_unit' : line.product_id.list_price
+        }
+
     def create_sale_order(self):
+        lines = [(0,0, self._prepare_sale_order_line(line)) for line in self.quote_lines]
         order_id = self.env['sale.order'].create({
                 'partner_id' : self.partner_id.id,
                 'date_order': datetime.now().date(),
                 'sale_type' : 'corporate_sales',
                 'rfq_id' : self.id,
+                'order_line' : lines
             })
         return True
-
-
 
     def action_confirm(self):
         self.create_sale_order()
@@ -74,3 +82,19 @@ class RequestForQuote(models.Model):
         if vals.get('name', 'New') == 'New':
             vals['name'] = self.env['ir.sequence'].next_by_code('request.for.quote') or '/'
         return super(RequestForQuote, self).create(vals)
+
+
+class RequestForQuoteLine(models.Model):
+    _name = 'request.for.quote.line'
+    _description = "Request For Quote"
+
+    product_id = fields.Many2one('product.product', string='Product', track_visibility='onchange', required=True)
+    item_code = fields.Char(string="Item Code")
+    quantity = fields.Float(string="Quantity", default=1.0)
+    request_quote_id = fields.Many2one("request.for.quote", string="Quote id")
+
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        if self.product_id:
+            self.item_code = self.product_id.display_name

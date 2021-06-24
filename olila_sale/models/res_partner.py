@@ -30,6 +30,7 @@ class Partner(models.Model):
     trade_licence_document = fields.Binary('Copy of Trade Lince', attachment=True)
     zone_id = fields.Many2one('res.zone', string='Zone', copy=False)
     secondary_contact_persion = fields.Char("Secondary Contact Person")
+    responsible = fields.Many2one('hr.employee', string="Responsible")
 
     @api.model
     def create(self, vals):
@@ -42,3 +43,8 @@ class Partner(models.Model):
         if self.distributor_id:
             self.proprietor_name = self.distributor_id.proprietor_name
             self.proprietor_contact = self.distributor_id.proprietor_contact
+
+    @api.onchange('vertual_location_id')
+    def _onchange_olila_type(self):
+        if self.olila_type == 'distributor' and self.vertual_location_id:
+            self.property_stock_customer = self.vertual_location_id.id
