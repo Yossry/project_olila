@@ -29,6 +29,7 @@ class RequestForQuote(models.Model):
     remarks = fields.Text(string="Remarks")
     note = fields.Text(string="Terms & Condition")
     rfq_count = fields.Integer(compute='_rfq_count', string='# Requests')
+    responsible = fields.Many2one('hr.employee', string="Responsible", related='partner_id.responsible', store=True, readonly=False)
     quote_lines = fields.One2many("request.for.quote.line", 'request_quote_id', string="Lines")
 
     def _rfq_count(self):
@@ -89,10 +90,10 @@ class RequestForQuoteLine(models.Model):
     _description = "Request For Quote"
 
     product_id = fields.Many2one('product.product', string='Product', track_visibility='onchange', required=True)
-    item_code = fields.Char(string="Item Code")
+    item_code = fields.Char(string="Description")
     quantity = fields.Float(string="Quantity", default=1.0)
+    expected_delivery = fields.Date(string="Expected Delivery Date")
     request_quote_id = fields.Many2one("request.for.quote", string="Quote id")
-
 
     @api.onchange('product_id')
     def _onchange_product_id(self):

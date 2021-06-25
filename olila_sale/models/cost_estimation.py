@@ -68,7 +68,7 @@ class CostEstimation(models.Model):
             Product = self.env['product.product'].sudo()
             self.product_id = Product.create({'name': self.description_sale, 'default_code': self.code})
             price_unit = self.total_estimation / self.quantity
-            self.order_id.order_line.create({'product_id': self.product_id.id, 'product_uom_qty': self.quantity, 'price_init': price_unit, 'order_id': self.order_id.id})
+            self.order_id.order_line.create({'product_id': self.product_id.id, 'product_uom_qty': self.quantity, 'price_unit': price_unit, 'order_id': self.order_id.id})
             self.write({'state': 'accept'})
         else:
             raise UserError(_('Need to approve before accept cost estimation.'))
