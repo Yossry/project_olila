@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
+from datetime import timedelta, datetime
 
 class CostEstimation(models.Model):
     _name = 'cost.estimation'
@@ -28,6 +29,7 @@ class CostEstimation(models.Model):
     currency_id = fields.Many2one("res.currency", default=lambda self: self.env.company.currency_id)
     rfq_number = fields.Char(string="RFQ Number")
     order_id = fields.Many2one('sale.order', 'Quotation')
+    partner_id = fields.Many2one("res.partner", string="Partner")
     product_id = fields.Many2one('product.product', 'Product')
     description_sale = fields.Char('Description', size=256)
     is_primary_approved = fields.Boolean("Is Primary Approved")
@@ -37,6 +39,7 @@ class CostEstimation(models.Model):
         string='Status', readonly=True, index=True, copy=False, default='draft')
     margin = fields.Monetary(string="Margin")
     total_estimation = fields.Monetary(string="Final Price", compute="_compute_amount_all")
+    rfq_id = fields.Many2one("request.for.quote", "Corporate RFQ")
     estimation_line_ids  = fields.One2many('cost.estimation.line', 'estimation_id', string='Estimation Lines')
 
     @api.onchange('product_id')
@@ -68,8 +71,18 @@ class CostEstimation(models.Model):
             Product = self.env['product.product'].sudo()
             self.product_id = Product.create({'name': self.description_sale, 'default_code': self.code})
             price_unit = self.total_estimation / self.quantity
+            if not self.order_id:
+                # Find Order or create one
+                self.order_id = self.env['sale.order'].create({
+                        'partner_id' : self.partner_id.id,
+                        'date_order': datetime.now().date(),
+                        'sale_type' : 'corporate_sales',
+                        'rfq_id' : self.rfq_id.id,
+                    })
             self.order_id.order_line.create({'product_id': self.product_id.id, 'product_uom_qty': self.quantity, 'price_unit': price_unit, 'order_id': self.order_id.id})
             self.write({'state': 'accept'})
+            if self.rfq_id:
+                self.rfq_id.state = 'done'
         else:
             raise UserError(_('Need to approve before accept cost estimation.'))
         return True

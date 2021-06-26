@@ -16,8 +16,11 @@
                     <field name="sale_type" readonly="1" force_save="1"/>
                     <field name="rfq_id"/>
                 </xpath>
+                <xpath expr="//field[@name='pricelist_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('sale_type', 'in', ['primary_sales', 'corporate_sales'])]}</attribute>
+                </xpath>
                 <xpath expr="//field[@name='payment_term_id']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('sale_type', '=', 'primary_sales')]}</attribute>
+                    <attribute name="attrs">{'readonly': [('sale_type', 'in', ['primary_sales', 'corporate_sales'])]}</attribute>
                 </xpath>
                 <xpath expr="//button[@name='%(sale.action_view_sale_advance_payment_inv)d'][1]" position="replace">
                     <button name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"

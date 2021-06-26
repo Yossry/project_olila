@@ -34,42 +34,39 @@ class RequestForQuote(models.Model):
 
     def _rfq_count(self):
         for rec in self:
-            rfq_ids = self.env['sale.order'].search([('rfq_id', '=', self.id)])
+            rfq_ids = self.env['cost.estimation'].search([('rfq_id', '=', self.id)])
             rec.rfq_count = len(rfq_ids.ids)
 
-    def open_sale_order(self):
-        rfq_ids = self.env['sale.order'].search([('rfq_id', '=', self.id)])
+    def open_estimations(self):
+        estimations = self.env['cost.estimation'].search([('rfq_id', '=', self.id)])
         return {
-            'name': _('Corporate Sales'),
+            'name': _('Cost Estimation'),
             'view_type': 'form',
             'view_mode': 'tree,form',
-            'res_model': 'sale.order',
+            'res_model': 'cost.estimation',
             'view_id': False,
             'type': 'ir.actions.act_window',
-            'domain': [('id', 'in', rfq_ids.ids)],
+            'domain': [('id', 'in', estimations.ids)],
         }
 
-    def _prepare_sale_order_line(self, line):
+    def _prepare_cost_estimation_line(self, line):
         return {
             'product_id' : line.product_id.id,
-            'name' : line.product_id.display_name,
-            'product_uom_qty' : line.quantity,
+            'product_qty' : line.quantity,
             'price_unit' : line.product_id.list_price
         }
 
-    def create_sale_order(self):
-        lines = [(0,0, self._prepare_sale_order_line(line)) for line in self.quote_lines]
-        order_id = self.env['sale.order'].create({
+    def create_cost_estimation(self):
+        lines = [(0,0, self._prepare_cost_estimation_line(line)) for line in self.quote_lines]
+        order_id = self.env['cost.estimation'].create({
                 'partner_id' : self.partner_id.id,
-                'date_order': datetime.now().date(),
-                'sale_type' : 'corporate_sales',
                 'rfq_id' : self.id,
-                'order_line' : lines
+                'estimation_line_ids' : lines
             })
         return True
 
     def action_confirm(self):
-        self.create_sale_order()
+        self.create_cost_estimation()
         self.write({'state' : 'confirm'})
 
     def action_done(self):
