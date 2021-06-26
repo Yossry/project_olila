@@ -155,7 +155,7 @@
 
         <!-- Secondary Actions -->
 
-        <record id="action_quotation_secondary" model="ir.actions.act_window">
+<!--         <record id="action_quotation_secondary" model="ir.actions.act_window">
             <field name="name">Secondary Quotation</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">sale.order</field>
@@ -188,7 +188,7 @@
                 </p>
             </field>
         </record>
-
+ -->
         <!-- Corporate Actions -->
 
         <record id="action_quotation_corporate" model="ir.actions.act_window">
@@ -274,10 +274,10 @@
             parent="sale.sale_order_menu"
             sequence="10" groups="sales_team.group_sale_salesman"/>
 
-        <menuitem id="secondary_sales_menu"
+<!--         <menuitem id="secondary_sales_menu"
             name="Secondary Orders"
             parent="sale.sale_order_menu"
-            sequence="10" groups="sales_team.group_sale_salesman"/>
+            sequence="10" groups="sales_team.group_sale_salesman"/> -->
 
         <menuitem id="corporate_sales_menu"
             name="Corporate Orders"
@@ -301,7 +301,7 @@
 
 
         <!-- Secondary Sales -->
-
+<!-- 
         <menuitem id="menu_quotation_secondary"
             name="Quotation"
             action="action_quotation_secondary"
@@ -312,7 +312,7 @@
             name="Sales Orders"
             action="action_orders_secondary"
             parent="olila_sale.secondary_sales_menu"
-            sequence="2" groups="sales_team.group_sale_salesman"/>
+            sequence="2" groups="sales_team.group_sale_salesman"/> -->
 
 
         <!-- Corporate Sales -->
