@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="sequence_inter_warehouse_transfer" model="ir.sequence">
+            <field name="name">inter.warehouse.transfer</field>
+            <field name="code">inter.warehouse.transfer</field>
+            <field name="prefix">INTTRN</field>
+            <field name="padding">4</field>
+            <field eval="1" name="number_next"/>
+            <field eval="1" name="number_increment"/>
+            <field eval="False" name="company_id"/>
+        </record>
+        <record id="inter_warehouse_stock_location" model="stock.location">
+            <field name="name">Inter Warehouse Transfer</field>
+            <field name="usage">transit</field>
+            <field name="company_id"></field>
+        </record>
+    </data>
+</odoo>

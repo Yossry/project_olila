@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sale_order_form_discount_inherit" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='note']" position="before">
+                <group class="oe_left">
+                    <group colspan="2" style="width: 70%;">
+                        <field name="discount_type"/>
+                        <field name="discount_fix" string="Global Discount"/>
+                    </group>
+                    <button name="apply_discount" string="Apply" type="object" attrs="{'invisible': [('state', 'in', ('sale', 'done'))]}"/>
+                </group>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']//tree//field[@name='discount']" position="before">
+                <field name="discount_type"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']//tree//field[@name='discount']" position="after">
+                <field name="discount_fix" attrs="{'readonly': [('discount_type', '=', 'percentage')]}" force_save="1"/>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']//tree//field[@name='discount']" position="attributes">
+                <attribute name="attrs">{'readonly': [('discount_type', '=', 'fixed')]}</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath> 
+
+            <xpath expr="//field[@name='amount_tax']" position="before">
+                <field name="discount"/>
+                <field name="discount_per" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="inherit_account_invoice_form_view_sale_discount" model="ir.ui.view">
+        <field name="name">account.invoice.form.inherit.sale.discount</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='discount']" position="replace">
+                <field name="discount_type"/>
+                <field name="discount" string="Disc(%)" attrs="{'readonly': [('discount_type', '=', 'fixed')]}" force_save="1"/>
+                <field name="discount_fix" string="Disc" attrs="{'readonly': [('discount_type', '=', 'percentage')]}" force_save="1"/>
+            </xpath>
+            <field name="amount_untaxed" position="after">
+                <field name="total_discount"/>
+                <field name="discount_per" invisible="1"/>
+            </field>
+            <xpath expr="//group[hasclass('oe_subtotal_footer')]" position="before">
+                <group class="oe_left">
+                    <group colspan="2" style="width: 70%;">
+                        <field name="discount_type"/>
+                        <field name="discount_fix" string="Global Discount"/>
+                    </group>
+                    <button name="apply_discount" string="Apply" type="object" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
