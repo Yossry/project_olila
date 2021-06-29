@@ -21,7 +21,29 @@ class VehicleDistribution(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = "Vehicle Distribution"
 
-    @api.onchange('transport_type')
+    def action_view_invoice(self):
+        action = {
+            'name': _('Transport Bills'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.move',
+            'target': 'current',
+        }
+        invoice_ids = self.invoice_id.ids
+        if len(invoice_ids) == 1:
+            invoice = invoice_ids[0]
+            action['res_id'] = invoice
+            action['view_mode'] = 'form'
+            form_view = [(self.env.ref('account.view_move_form').id, 'form')]
+            if 'views' in action:
+                action['views'] = form_view + [(state,view) for state,view in action['views'] if view != 'form']
+            else:
+                action['views'] = form_view
+        else:
+            action['view_mode'] = 'tree,form'
+            action['domain'] = [('id', 'in', invoice_ids)]
+        return action
+
+    @api.onchange('transport_type','transport_company')
     def on_change_transport(self):
         self.rent_vehicle_nbr = ''
         self.vehicle_id = False
@@ -30,11 +52,11 @@ class VehicleDistribution(models.Model):
         if self.transport_type == 'own':
             return {'domain': {'driver_id': [('is_driver', '=', True),('nature_driver','=','driver')]}}
         else:
-            return {'domain': {'driver_id': [('is_driver', '=', True),('parent_id','=',self.transport_company.id)]}}
+            return {'domain': {'driver_id': [('parent_id','=',self.transport_company.id)]}}
 
             
 
-    @api.onchange('vehicle_id', 'driver_id')
+    @api.onchange('vehicle_id')
     def on_change_vehicle_id(self):
         for i in self:
             if i.vehicle_id:
@@ -48,16 +70,35 @@ class VehicleDistribution(models.Model):
         filb_values = [(5,0,0)]
         if self.delivery_ids:
             for delivery in self.delivery_ids:
-                for line in delivery.move_ids_without_package:
+                for line in delivery.move_line_ids_without_package:
                     prod = (0, 0, {'product_id': line.product_id.id, 
-                                  'product_qty': line.product_uom_qty,
+                                  'product_qty': line.qty_done,
                                   'partner_id' : delivery.partner_id.id, 
-                                  'picking_id': delivery.id
+                                  'picking_id': line.picking_id.id
                         })
                     filb_values.append(prod)
         self.update({
               'product_line_ids': filb_values,
             })
+
+    def create_invoice(self, type='in_invoice', invoice_amount=None, currency_id=None, partner_id=None, date_invoice=None):
+        date_invoice = self.date
+
+        invoice_vals = {
+            'currency_id':currency_id.id,
+            'move_type': type,
+            'partner_id': self.transport_company.id,
+            'invoice_date': date_invoice,
+            'date': date_invoice,
+            'invoice_line_ids': [(0, 0, {
+                'name': 'Total Transportation Cost %s' % invoice_amount,
+                'quantity': 1,
+                'price_unit': invoice_amount,
+                'tax_ids': [(6, 0, [])],
+            })]
+        }
+        invoice = self.env['account.move'].with_context(default_move_type=type).create(invoice_vals)
+        return invoice
 
 
     def send_for_approval(self):
@@ -66,51 +107,35 @@ class VehicleDistribution(models.Model):
     def approve_vehicle(self):
         self.state = 'approved'
         if self.transport_type == 'own':
-            context = self._context
-            current_uid = context.get('uid')
-            user = self.env['res.users'].browse(current_uid)
-            vehicle_found = self.env['vehicle.history'].search([('vehicle_id', '=', self.vehicle_id.id),('driver_id','=' ,self.driver_id.id),
-                                                                ('date', '=', self.date)])
-            if vehicle_found:
-                for line in self.product_line_ids:
-                    updated_data = {
-                        'product_line_ids': [(0, 0, {'product_id': line.product_id.id, 'product_qty': line.product_qty,
-                                   'picking_id' : line.picking_id.id,'partner_id': line.partner_id.id, 'is_done': True})]}
-                    vehicle_found.write(updated_data)
-            else:
-                history = self.env['vehicle.history'].create(
-                {'user_id': user.id, 'date': fields.date.today(), 'vehicle_id': self.vehicle_id.id,
-                 'driver_id': self.driver_id.id})
-                for line in self.product_line_ids:
-                    updated_data = {
-                        'product_line_ids': [(0, 0, {'product_id': line.product_id.id, 'product_qty': line.product_qty,
-                                   'picking_id' : line.picking_id.id,'partner_id': line.partner_id.id, 'is_done': True})]}
-                    history.write(updated_data)
-
-            bill= self.env['account.move']
-            journal_id = self.env['account.journal'].search([('name', '=','Vendor Bills')], limit=1)
-            bill_data = {
-                'type': 'in_invoice',
-                'ref': self.name,
-                'partner_id': self.driver_id.id,
-                'invoice_date': self.date,
-                'journal_id': journal_id,
-            }
-            bill_id = bill.create(bill_data)
-            if self.product_id.property_account_expense_id:
-                account = self.product_id.property_account_expense_id
-            else:
-                account = self.product_id.categ_id.property_account_expense_categ_id
-            bill_id.write({
-                'invoice_line_ids': [(0, 0, {
-                    'move_id': bill_id.id,
-                    'product_id': self.product_id.id,
-                    'quantity': 1.0,
-                    'price_unit': self.cost,
-                    'account_id': account.id
-                 })]
+            Vehicle_history = self.env['vehicle.history']
+            vehicle_found = Vehicle_history.search([
+                                    ('vehicle_id', '=', self.vehicle_id.id),
+                                    ('driver_id','=' ,self.driver_id.id),
+                                    ('date', '=', self.date)
+                                    ],limit=1)
+            if not vehicle_found:
+                vehicle_found = Vehicle_history.create({
+                                'user_id': self.env.user.id,
+                                'date': fields.date.today(),
+                                'vehicle_id': self.vehicle_id.id,
+                                'driver_id': self.driver_id.id
+                            })
+            filb_values = []
+            for line in self.product_line_ids:
+                prod = (0, 0, {'product_id': line.product_id.id,
+                              'product_qty': line.product_qty,
+                               'picking_id' : line.picking_id.id,
+                               'partner_id': line.partner_id.id, 
+                               'is_done': True
+                        })
+                filb_values.append(prod)
+            vehicle_found.update({
+              'product_line_ids': filb_values,
             })
-
+        else:
+            invoice_record = self.create_invoice(type='in_invoice', invoice_amount=self.cost, currency_id=self.currency_id)
+            # import pdb;pdb.set_trace();
+            self.invoice_id = invoice_record.id
 
     def changed_vehicle_status(self):
         if self.transport_type =='own' and self.vehicle_id:
@@ -121,7 +146,7 @@ class VehicleDistribution(models.Model):
     def genarate_product_line(self):
         for delivery in self.delivery_ids:
             for line in delivery.move_ids_without_package:
-                updated_data = {'product_line_ids': [(0, 0, {'product_id': line.product_id.id, 'product_qty': line.product_uom_qty,
+                updated_data = {'product_line_ids': [(0, 0, {'product_id': line.product_id.id, 'product_qty': line.qty_done,
                                                              'partner_id' : delivery.partner_id.id, 'picking_id': delivery.id})] }
                 self.write(updated_data)
 
@@ -146,6 +171,9 @@ class VehicleDistribution(models.Model):
     product_line_ids = fields.One2many('distribution.product.line', 'distribution_id', string='Product Lines')
     delivery_ids = fields.Many2many('stock.picking', domain= "[('picking_type_code','in',('outgoing','internal')), ('state','not in',('done','cancel'))]" , string="Pickings")
     product_id = fields.Many2one('product.product', string="Product")
+    invoice_id = fields.Many2one('account.move' , string='Bills')
+    
+    
     
 
     @api.model
@@ -164,3 +192,5 @@ class DistributionProductLine(models.Model):
     partner_id = fields.Many2one('res.partner', 'Delivery Address')
     is_done = fields.Boolean('Done')
     picking_id = fields.Many2one('stock.picking', string="Picking ID")
+
+

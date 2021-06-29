@@ -19,6 +19,13 @@
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="object"  name="action_view_invoice"
+                                class="oe_stat_button"
+                                icon="fa-pencil-square-o" attrs="{'invisible':['|', ('invoice_id', '=', False), ('state', 'in', ('draft','approval'))]}" string="Transport Bills">
+                                <field name='invoice_id' invisible="1"/>
+                            </button>
+                        </div>
                         <group>
                             <group>
                                 <field  name="transport_type" widget="radio" attrs="{'readonly': [('state','!=','draft')]}" options="{'horizontal': true}"/>
@@ -91,7 +98,10 @@
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="vehicle_distribution_tree"/>
         </record>
-        <menuitem action="vehicle_distribution_action" id="vehicle_distribution_main_menu" name="Vehicle Distribution" parent="olila_distribution.menu_distribution" sequence="10"/>
+        <menuitem action="vehicle_distribution_action" id="vehicle_distribution_main_menu" name="Vehicle Distribution" parent="olila_distribution.menu_distribution" sequence="10" />
+        <menuitem name="Inventory Report" action="stock.action_view_quants" id="inventory_report_menu" parent="olila_distribution.menu_distribution"/>
+        <menuitem name="Pending Delivery" action="stock.action_picking_tree_all" id="pending_deliver_menu" parent="olila_distribution.menu_distribution"/>
+
 
         
 

@@ -20,14 +20,17 @@
           <!--      <div class="oe_title"><h1><field name="name"/></h1></div>-->
           <group col="2">
             <group string="Date">
-              <field attrs="{'readonly': [('state','=','done')]}" name="date_from"/>
+              <field attrs="{'readonly': [('state','=','done')]}" name="date_from" required="1"/>
               <field attrs="{'readonly': [('state','=','done')]}" name="date_to"/>
-              <field attrs="{'readonly': [('state','=','done')]}" name="licence_id"/>
+              <field attrs="{'readonly': [('state','=','done')]}" name="licence_id" required="1"/>
+               <field filename="file_name" name="doc1"/>
+               <field invisible="1" name="file_name"/>
             </group>
             <group string="Cost">
-              <field attrs="{'readonly': [('state','=','done')]}" name="cost"/>
-              <field attrs="{'readonly': [('state','=','done')]}" name="speed_money"/>
-              <field attrs="{'readonly': [('state','=','done')]}" name="total_cost"/>
+              <field  name="currency_id" invisible="1"/>
+              <field attrs="{'readonly': [('state','=','done')]}" name="cost" widget="monetary"/>
+              <field attrs="{'readonly': [('state','=','done')]}" name="speed_money" widget="monetary"/>
+              <field attrs="{'readonly': [('state','=','done')]}" name="total_cost" widget="monetary"/>
             </group>
           </group>
         </sheet>
@@ -42,9 +45,10 @@
         <!--            <field name="name"/>-->
         <field name="date_from"/>
         <field name="date_to"/>
-        <field name="cost"/>
-        <field name="speed_money"/>
-        <field name="total_cost"/>
+        <field  name="currency_id" invisible="1"/>
+        <field name="cost" widget="monetary"/>
+        <field name="speed_money" widget="monetary"/>
+        <field name="total_cost" widget="monetary"/>
       </tree>
     </field>
   </record>

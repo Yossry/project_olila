@@ -10,7 +10,7 @@
     'author': "rohitsrivastava99@gmail.com",
     'category': 'stock',
     'version': '0.1',
-    'depends': ['olila_fleet','account'],
+    'depends': ['olila_fleet','account', 'stock'],
     'data': [
         'security/distribution_security.xml',
         'security/ir.model.access.csv',

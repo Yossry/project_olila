@@ -4,7 +4,7 @@ from odoo import api, fields, models, _
 
 
 class LicenseRenewal(models.Model):
-    
+    _rec_name = 'date_from'
     _name = 'vehicle.liecense.renew'
     
   
@@ -18,16 +18,20 @@ class LicenseRenewal(models.Model):
 #                       index=True, default=lambda self: _('New'))
     date_from = fields.Date('From Date')
     date_to = fields.Date ("To Date")
-    cost = fields.Float('Cost')
-    speed_money = fields.Float('Speed Money')
-    total_cost = fields.Float('Total Cost', compute='_compute_total_cost')
-    state = fields.Selection([('draft', 'Draft'),('done', 'Done')], readonly=True, copy=False, index=True, default='draft')
+    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
+    cost = fields.Monetary('Cost')
+    speed_money = fields.Monetary('Speed Money')
+    total_cost = fields.Monetary('Total Cost', compute='_compute_total_cost', store=True)
+    state = fields.Selection([('draft', 'Draft'),('done', 'Done')], readonly=True, copy=False, default='draft')
     licence_id = fields.Many2one('fleet.vehicle.log.contract', string="License ID")
-    
-    @api.depends('cost', 'speed_money')
-    
+    doc1 = fields.Binary('Licence Renewal')
+    file_name = fields.Char("Licence Renewal")
+
+
+    @api.depends('cost', 'speed_money')    
     def _compute_total_cost(self):
-        self.total_cost = self.cost + self.speed_money
+        for rec in self:
+            rec.total_cost = rec.cost + rec.speed_money
     
  
  
