@@ -17,13 +17,13 @@
               </xpath>
        
               <xpath expr="//form[1]/header[1]/button[@name='action_confirm'][1]" position="attributes">
-    <attribute name="groups">pway_order_approval.group_sale_order_approval</attribute>
-                  <attribute name="attrs">{"invisible": ["|",["state","!=","sent"],["state","!=","waiting_for_approval"]]}</attribute>
-  </xpath>
+                    <attribute name="groups">pway_order_approval.group_sale_order_approval</attribute>
+                    <attribute name="attrs">{"invisible": [["state","not in",["draft", "waiting_for_approval"]]]}</attribute>
+              </xpath>
               <xpath expr="//form[1]/header[1]/button[@name='action_confirm'][2]" position="attributes">
-    <attribute name="groups">pway_order_approval.group_sale_order_approval</attribute>
-                  <attribute name="attrs">{"invisible": ["|",["state","!=","draft"],["state","!=","waiting_for_approval"]]}</attribute>
-  </xpath>
+                    <attribute name="groups">pway_order_approval.group_sale_order_approval</attribute>
+                    <attribute name="attrs">{"invisible": [["state","not in",["draft", "waiting_for_approval"]]]}</attribute>
+              </xpath>
               
               <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='order_lines']/field[@name='order_line']" position="attributes">
                 <attribute name="attrs">{"readonly": [('state', 'in', ['done','cancel','waiting_for_approval'])]}</attribute>
@@ -36,11 +36,11 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.sale_order_view_search_inherit_quotation"/>
             <field name="arch" type="xml">
-            	<xpath expr="//filter[@name='my_quotation']" position="after">
-            		<separator/>
+                <xpath expr="//filter[@name='my_quotation']" position="after">
+                    <separator/>
                     <filter name="filter_waiting_for_approval" string="Waiting for approval" domain="[('state','=','waiting_for_approval')]"/>
                     <filter name="filter_waiting_for_final_approval" string="Waiting for final approval" domain="[('state','=','waiting_for_final_approval')]"/>
-            	</xpath>
+                </xpath>
             </field>
         </record>
       <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">

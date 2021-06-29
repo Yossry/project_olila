@@ -53,6 +53,7 @@ class RequestForQuote(models.Model):
         return {
             'product_id' : line.product_id.id,
             'product_qty' : line.quantity,
+            'product_uom_id': line.product_uom_id.id,
             'price_unit' : line.product_id.list_price
         }
 
@@ -89,6 +90,7 @@ class RequestForQuoteLine(models.Model):
     product_id = fields.Many2one('product.product', string='Product', track_visibility='onchange', required=True)
     item_code = fields.Char(string="Description")
     quantity = fields.Float(string="Quantity", default=1.0)
+    product_uom_id = fields.Many2one('uom.uom', string='Uom',)
     expected_delivery = fields.Date(string="Expected Delivery Date")
     request_quote_id = fields.Many2one("request.for.quote", string="Quote id")
 
@@ -96,3 +98,4 @@ class RequestForQuoteLine(models.Model):
     def _onchange_product_id(self):
         if self.product_id:
             self.item_code = self.product_id.display_name
+            self.product_uom_id = self.product_id.uom_id.id

@@ -31,9 +31,14 @@
                         <button name="button_reset_draft" type="object" string="Set to Draft" attrs="{'invisible':[('state','not in', ('accept', 'draft'))]}"/>
                     </header>
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="open_sales" type="object" class="oe_stat_button" icon="fa-id-card" attrs="{'invisible': [('rfq_count', '=', 0)]}">
+                                <field name="rfq_count" widget="statinfo" string="Corporate Sales"/>
+                            </button>
+                        </div>
                         <div class="oe_title">
                             <h1>
-                                <field name="name"/>
+                                <field name="name" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             </h1>
                         </div>
                         <group>
@@ -41,10 +46,11 @@
                                 <field name="date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                 <field name="partner_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                 <field name="order_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                                <field name="quantity"/>
+                                <field name="quantity" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             </group>
                             <group>
                                 <field name="company_id" readonly="1"/>
+                                <field name="responsible" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                 <field name="currency_id"/>
                                 <field name="rfq_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                 <field name="product_id" readonly="1"/>
@@ -69,7 +75,7 @@
                                         <field name="note" nolabel="1" placeholder="Terms and conditions..." attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                     </group>
                                     <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
-                                        <field name="margin"/>
+                                        <field name="margin" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                         <field name="total_estimation"/>
                                     </group>
                                     <div class="oe_clear"/>

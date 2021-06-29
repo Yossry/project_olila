@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from datetime import timedelta, datetime
 
 class CostEstimation(models.Model):
@@ -40,7 +40,14 @@ class CostEstimation(models.Model):
     margin = fields.Monetary(string="Margin")
     total_estimation = fields.Monetary(string="Final Price", compute="_compute_amount_all")
     rfq_id = fields.Many2one("request.for.quote", "Corporate RFQ")
+    rfq_count = fields.Integer(compute='_rfq_count', string='# Requests')
     estimation_line_ids  = fields.One2many('cost.estimation.line', 'estimation_id', string='Estimation Lines')
+    responsible = fields.Many2one('hr.employee', string="Responsible", related='partner_id.responsible', store=True, readonly=False)
+
+    def _rfq_count(self):
+        for rec in self:
+            rfq_ids = self.env['sale.order'].search([('rfq_id', '=', self.id)])
+            rec.rfq_count = len(rfq_ids.ids)
 
     @api.onchange('product_id')
     def onchange_product_id(self):
@@ -77,6 +84,9 @@ class CostEstimation(models.Model):
                         'partner_id' : self.partner_id.id,
                         'date_order': datetime.now().date(),
                         'sale_type' : 'corporate_sales',
+                        'payment_term_id': self.partner_id.property_payment_term_id.id,
+                        'pricelist_id': self.partner_id.property_product_pricelist.id,
+                        'zone_id': self.partner_id.zone_id.id,
                         'rfq_id' : self.rfq_id.id,
                     })
             self.order_id.order_line.create({'product_id': self.product_id.id, 'product_uom_qty': self.quantity, 'price_unit': price_unit, 'order_id': self.order_id.id})
@@ -86,6 +96,18 @@ class CostEstimation(models.Model):
         else:
             raise UserError(_('Need to approve before accept cost estimation.'))
         return True
+
+    def open_sales(self):
+        sale_order = self.env['sale.order'].search([('rfq_id', '=', self.id)])
+        return {
+            'name': _('Corporate Sales'),
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'sale.order',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+            'domain': [('id', 'in', sale_order.ids)],
+        }
 
     def button_confirm(self):
         self.write({'state': 'confirm'})
