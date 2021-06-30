@@ -7,7 +7,7 @@
         </record>
     </data>
     <data>
-        <record id="view_order_form_inherit_multi" model="ir.ui.view">
+        <record id="pw_view_order_form_inherit_multi" model="ir.ui.view">
             <field name="name">pw.sale.order.form.inherit.multi</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
