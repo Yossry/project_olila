@@ -46,11 +46,15 @@ class PurchaseRequest(models.Model):
     show_tender = fields.Boolean(compute='_compute_tender')
     show_transfer = fields.Boolean(compute='_compute_show_transfer')
     director_approval = fields.Boolean()
+    
 
     @api.depends('request_lines_ids')
     def _compute_amount_total(self):
         for rec in self:
-            rec.amount_total = sum(rec.request_lines_ids.mapped('price_subtotal'))
+            total = 0.0
+            for line in rec.request_lines_ids.filtered(lambda x: x.product_id):
+                total += (line.extra_qty + line.quantity) * line.product_id.standard_price
+            rec.amount_total = total
 
     def _compute_availability(self):
         if all([line.available_qty == (line.quantity+line.extra_qty) for line in self.request_lines_ids]):
@@ -63,9 +67,13 @@ class PurchaseRequest(models.Model):
     def button_approve_direct(self):
         self.write({'state': 'approve', 'director_approval': True})
 
-    @api.depends('request_lines_ids.price_subtotal')
-    def _price_total(self):
-        self.amount_total = sum(line.price_subtotal for line in self.request_lines_ids)
+    # @api.depends('request_lines_ids')
+    # def _price_total(self):
+    #     for rec in self:
+    #         total = 0.0
+    #         for line in rec.request_lines_ids.filtered(lambda x: x.product_id):
+    #             total += (line.extra_qty + line.quantity) * line.product_id.standard_price
+    #         rec.amount_total = total
 
     def _compute_show_check_availability(self):
         show_check_availability = False
@@ -126,7 +134,7 @@ class PurchaseRequest(models.Model):
 
     def _compute_tender(self):
         for request in self:
-            request.tender_count = len(request.request_lines_ids.mapped('tender_id').filtered(lambda x: x.state != 'cancel'))
+            request.tender_count = len(request.request_lines_ids.mapped('tender_id').filtered(lambda x: x.state != 'cancel' and request.id in x.purchase_request_ids.ids))
             if request.tender_count == 0 and request.state in ('confirm', 'waiting') and request.availability != 'available':
                 request.show_tender = True
             request.show_tender = False
@@ -148,8 +156,8 @@ class PurchaseRequest(models.Model):
         if not self.department_id and self.department_id.picking_type:
             raise UserError(_('Please select department or purchase type in department'))
         for line in self.request_lines_ids.filtered(lambda x:(x.quantity + x.extra_qty) > x.available_qty):
-            remaining_qty = abs((line.quantity + line.extra_qty) - line.available_qty)
-            if remaining_qty:
+            remaining_qty = abs(line.quantity + line.extra_qty)
+            if remaining_qty > 0:
                 tendor_vals = {
                     'origin': self.name,
                     'date_end': self.schedule_date,
@@ -157,7 +165,8 @@ class PurchaseRequest(models.Model):
                     'warehouse_id': self.warehouse_id.id,
                     'company_id': self.company_id.id,
                     'picking_type_id': self.department_id.picking_type.id,
-                    'purchase_request_id': self.id,
+                    'purchase_request_ids': self.ids,
+                    'department_id' : self.department_id.id or False,
                     'line_ids': [(0, 0, {
                                     'product_id': line.product_id.id,
                                     'product_uom_id': line.product_uom.id,
@@ -188,9 +197,10 @@ class PurchaseRequest(models.Model):
         self.write({'state': 'approve'})
 
     def button_confirm(self):
-        if self.amount_total > 25000 and not self.director_approval:
-            raise ValidationError(_('You needs approval of director becuase amount is more then 25000'))
-        self.write({'state': 'confirm'})
+        for rec in self:
+            if rec.amount_total > 25000 and not rec.director_approval:
+                raise ValidationError(_('You needs approval of director becuase amount is more then 25000'))
+            rec.write({'state': 'confirm'})
 
     def button_draft(self):
         self.write({'state': 'draft', 'director_approval': False})
@@ -281,4 +291,5 @@ class PurchaseRequestLine(models.Model):
     def _onchange_product_id(self):
         if self.product_id:
             self.name = self.product_id.display_name
+            self.price_unit = self.product_id.standard_price
             self.product_uom = self.product_id.uom_id and self.product_id.uom_id.id or False

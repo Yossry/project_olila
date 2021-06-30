@@ -2,6 +2,33 @@
 <odoo>
     <data>
 
+        <record id="view_stock_picking_inherit_multi_image_form" model="ir.ui.view">
+            <field name="name">view.stock.picking.inherit.multi.image.form</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <notebook position="inside">
+                 <page string="Carton">
+                    <form string="Details">
+                        <sheet>
+                            <group>
+                                <group>
+                                     <field name="vehicle_type"/>
+                                     <field name="carton_type"/>
+                                     <field name="capture_barcode"/>
+                                </group>
+                                <group>     
+                                     <field name="job_number"/>
+                                     <field name="requestion_number"/>
+                                </group>    
+                            </group>
+                        </sheet>
+                    </form>     
+                 </page>
+                </notebook>
+            </field>
+        </record>
+
          <record id="res_partner_form_insurance_vendor_inherit" model="ir.ui.view">
             <field name="name">res.partner.insurance.vendor.form.inherit</field>
             <field name="model">res.partner</field>
@@ -24,46 +51,72 @@
             </field>
         </record>
 
+        <record id="purchase_requisition_list_view_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.inherit.purchase.order.tree</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_kpis_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='amount_total']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="purchase_type"/>
+                    <field name="country_id"/>
+                </xpath>
+            </field>
+        </record>
+
     	 <record id="purchase_order_form_inherit" model="ir.ui.view">
             <field name="name">purchase.order.form.inherit</field>
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//button[@name='print_quotation']" position="after">
-                    <button name="create_landed_cost" type="object" string="Create Landed Cost Fund" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'purchase'),('purchase_type', '=', 'local')]}"/>
+                    <button name="create_landed_cost" type="object" string="Create Letter of Credit" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'purchase'),('purchase_type', '=', 'local')]}"/>
                 </xpath>
                 <xpath expr="//div[@name='button_box']" position="inside">
-                    <button class="open_landed_cost" name="open_landed_cost"  type="object" icon="fa-dollar" attrs="{'invisible': [('landed_cost_count', '=', 0)]}">
-                            <field string="Landed Cost Fund" name="landed_cost_count" widget="statinfo" />
+                    <button class="open_landed_cost" name="open_landed_cost"  type="object" icon="fa-file-o" attrs="{'invisible': [('landed_cost_count', '=', 0)]}">
+                            <field string="Letter of Credit" name="landed_cost_count" widget="statinfo" />
                     </button>
                 </xpath>
                 <xpath expr="//field[@name='date_order']" position="after">
                     <field name='mode_of_shipment'/>
                     <field name='country_id'/>
                 </xpath>
+                <!-- <field name="date_order" attrs="{'invisible': [('state','=','purchase')]}"/> -->
+                <xpath expr="//field[@name='date_order']" position="attributes">
+                    <attribute name="attrs">{}</attribute>
+                    <attribute name="string">PO Date</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_ref']" position="attributes">
+                    <attribute name="string">PI No</attribute>
+                </xpath>
                 <xpath expr="//field[@name='partner_ref']" position="after">
+                    <field name='pi_date'/>
                     <field name='purchase_type' widget='radio'/>
                 </xpath>
                 <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="after">
                     <field name="hs_code"/>
+                    <field name="packing_details"/>
                 </xpath>
                 <xpath expr="//page[@name='purchase_delivery_invoice']" position="after">
                     <page string="Import Purchase Details" name="import_purchase_details" attrs="{'invisible':[('purchase_type', '=', 'local')]}">
                         <group>
                             <group>
-                                <field name='beneficiary'/>
-                                <field name='swift_code'/>
+                                <field name='beneficiary' widget="res_partner_many2one" context="{'res_partner_search_mode': 'supplier', 'show_vat': True}"/>
                                 <field name='beneficiary_address'/>
                                 <field name='beneficiary_bank_name'/>
                                 <field name='beneficiary_bank_branch'/>
                                 <field name='beneficiary_bank_account_no'/>
+                                <field name='swift_code'/>
                             </group>
                             <group>
                                 <field name='date_of_last_shipment'/>
                                 <field name='port_of_loading'/>
+                                <field name='port_of_landing'/>
+                                <field name='partial_shipment'/>
                                 <field name='transportation_time'/>
                                 <field name='transhipment'/>
-                                <field name='packing_details'/>
                             </group>
                         </group>
                     </page>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_purchase_tender_wizard" model="ir.ui.view">
+        <field name="name">Purchase Tender Wizard</field>
+        <field name="model">purchase.request.tender.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Merge Purchase Requistions">
+                <group>
+                    <group>
+                        <field name="partner_id" required='1'/>
+                    </group>
+                    <group>
+                        <field name="tender_date" required='1'/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="merge_tender" string="Merge Requistions" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_merge_tender_wizard" model="ir.actions.act_window">
+        <field name="name">Merge Requistions</field>
+        <field name="res_model">purchase.request.tender.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_purchase_request"/>
+        <field name="binding_view_types">list</field>
+    </record>
+
+
+</odoo>
+

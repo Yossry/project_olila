@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_lc_opening_wizard" model="ir.ui.view">
+        <field name="name">Lc Opening Wizard</field>
+        <field name="model">lc.opening.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Lc Opening Wizard">
+                <group>
+                    <group>
+                        <field name="journal_id" required='1'/>
+                    </group>
+                    <group>
+                        <field name="journal_date" required='1'/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="create_account" string="Create Account Entries" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+     <record id="action_lc_journal_wizard" model="ir.actions.act_window">
+        <field name="name">Create Journal Entry</field>
+        <field name="res_model">lc.opening.wizard</field>
+        <field name="view_id" ref="lc_opening.view_lc_opening_wizard"/>
+        <field name="target">new</field>
+    </record>
+
+</odoo>
+

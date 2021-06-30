@@ -1,5 +1,16 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
+from odoo.tools.float_utils import float_is_zero
+
+class Picking(models.Model):
+    _inherit = 'stock.picking'
+
+    vehicle_type =  fields.Selection([('on chassis', 'On Chassis'), ('covered van', 'Covered Van')],string="Vehicle Type")
+    carton_type = fields.Selection([('inner', 'Inner'), ('master', 'Master')],string="Carton Type")
+    capture_barcode = fields.Char(string="Capture Barcode")
+    job_number = fields.Char(string="Job/Article Number")
+    requestion_number =fields.Char(string="Requestion Number")
+
 
 class Partner(models.Model):
     _inherit = 'res.partner'
@@ -14,7 +25,8 @@ class ProductTemplate(models.Model):
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
-    hs_code = fields.Char('HS Code', size=256)
+    hs_code = fields.Char('HS Code')
+    packing_details = fields.Text()
 
     @api.onchange('product_id')
     def onchange_product_id(self):
@@ -23,27 +35,90 @@ class PurchaseOrderLine(models.Model):
             self.hs_code = self.product_id.hs_code
         return res
 
+    @api.depends('invoice_lines.move_id.state', 'invoice_lines.quantity', 'qty_received', 'product_uom_qty', 'order_id.state')
+    def _compute_qty_invoiced(self):
+        for line in self:
+            # compute qty_invoiced
+            qty = 0.0
+            for inv_line in line.invoice_lines:
+                if inv_line.move_id.state not in ['cancel']:
+                    if inv_line.move_id.move_type == 'in_invoice':
+                        qty += inv_line.product_uom_id._compute_quantity(inv_line.quantity, line.product_uom)
+                    elif inv_line.move_id.move_type == 'in_refund':
+                        qty -= inv_line.product_uom_id._compute_quantity(inv_line.quantity, line.product_uom)
+            line.qty_invoiced = qty
+
+            # compute qty_to_invoice
+            if line.order_id.state in ['purchase', 'done', 'landed_cost']:
+                if line.product_id.purchase_method == 'purchase':
+                    line.qty_to_invoice = line.product_qty - line.qty_invoiced
+                else:
+                    line.qty_to_invoice = line.qty_received - line.qty_invoiced
+            else:
+                line.qty_to_invoice = 0
+
 class Purchase(models.Model):
     _inherit = 'purchase.order'
 
     country_id = fields.Many2one('res.country', string='Country')
-    beneficiary = fields.Char()
-    beneficiary_address = fields.Char()
-    beneficiary_bank_name = fields.Char()
-    beneficiary_bank_branch = fields.Char()
-    beneficiary_bank_account_no = fields.Char()
-    swift_code  = fields.Char()
+    beneficiary = fields.Many2one('res.partner')
+    beneficiary_address = fields.Char(string="Beneficiary address")
+    beneficiary_bank_name = fields.Char(string="Beneficiary Bank Name")
+    beneficiary_bank_branch = fields.Char(string="Beneficiary Bank Branch")
+    beneficiary_bank_account_no = fields.Char(string="Beneficiary Account No")
+    swift_code  = fields.Char(string="Swift Code")
     # transport
-    packing_details = fields.Text()
     date_of_last_shipment =  fields.Date()
+    pi_date =  fields.Date()
     port_of_loading  = fields.Char()
     transportation_time = fields.Char()
-    transhipment = fields.Char()
+    transhipment = fields.Char(string="Transhipment", copy=False)
+    partial_shipment = fields.Char(string="Partial Shipment", copy=False)
+    port_of_landing  = fields.Char(string="Port of Landing", copy=False)
     # others
-    purchase_type = fields.Selection([('local', 'Local'), ('import', 'Import')], default='local', copy=False)
+    purchase_type = fields.Selection([('local', 'Local'), ('import', 'Import')], copy=False)
     state = fields.Selection(selection_add=[('landed_cost', 'LC Opening')], ondelete={'landed': 'set default'})
     landed_cost_count = fields.Integer(compute='_landed_cost_count', string='# Landed Cost')
-    mode_of_shipment = fields.Selection([('air', 'Air'), ('ship', 'Ship'), ('road', 'Road')], copy=False) 
+    mode_of_shipment = fields.Selection([('air', 'Air'), ('ship', 'Ship'), ('road', 'Road')], copy=False)
+    
+
+    @api.onchange('partner_id', 'company_id')
+    def onchange_partner_id(self):
+        res = super(Purchase, self).onchange_partner_id()
+        if self.partner_id:
+            self.purchase_type = self.partner_id.olila_seller_type
+            self.beneficiary = self.partner_id and self.partner_id.id
+        return res
+
+    @api.depends('state', 'order_line.qty_to_invoice')
+    def _get_invoiced(self):
+        precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
+        for order in self:
+            if order.state not in ('purchase', 'done' , 'landed_cost'):
+                order.invoice_status = 'no'
+                continue
+
+            if any(
+                not float_is_zero(line.qty_to_invoice, precision_digits=precision)
+                for line in order.order_line.filtered(lambda l: not l.display_type)
+            ):
+                order.invoice_status = 'to invoice'
+            elif (
+                all(
+                    float_is_zero(line.qty_to_invoice, precision_digits=precision)
+                    for line in order.order_line.filtered(lambda l: not l.display_type)
+                )
+                and order.invoice_ids
+            ):
+                order.invoice_status = 'invoiced'
+            else:
+                order.invoice_status = 'no'
+
+    def unlink(self):
+        for line in self:
+            if line.state in ['purchase', 'done', 'landed_cost']:
+                raise UserError(_('Cannot delete a purchase order line which is in state \'%s\'.') % (line.state,))
+        return super(PurchaseOrderLine, self).unlink()
 
     def button_approve(self, force=False):
         rec = super(Purchase, self).button_approve()
@@ -95,7 +170,8 @@ class Purchase(models.Model):
             'description' : line.name,
             'hs_code' : line.product_id.hs_code,
             'product_qty' : line.product_qty,
-            'price_unit' : line.price_unit
+            'price_unit' : line.price_unit,
+            'currency_id': line.currency_id and line.currency_id.id
         }
 
     def _prepare_values(self):
@@ -106,6 +182,10 @@ class Purchase(models.Model):
             'lc_requisition_date' : fields.Date.today(),
             'department_id' : self.department_id and self.department_id.id,
             'purchase_id' : self.id,
+            'origin': self.country_id and self.country_id.id,
+            'currency_id': self.currency_id and self.currency_id.id,
+            'pi_number' : self.partner_ref,
+            'pi_date' : self.pi_date,
             'requisition_line_ids' : lines
         }
 

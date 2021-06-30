@@ -26,7 +26,7 @@ class IRattachment(models.Model):
 
 class AgentsCharge(models.Model):
 	_name = "agents.charge"
-	_description = "agents.charge"
+	_description = "agents charge"
 
 	user_id = fields.Many2one('res.users', string="User")
 	details = fields.Char(string="Details", copy=False)

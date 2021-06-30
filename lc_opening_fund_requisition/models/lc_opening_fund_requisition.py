@@ -3,13 +3,36 @@ from odoo import models, fields, api, _
 
 class LCOpeningFundRequisition(models.Model):
     _name = 'lc.opening.fund.requisition'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Lc Opening Fund Requisition'
 
-    @api.depends('margin','commission', 'source_tax','vat_on_commission','pt_charge','insurance_charge')
+    @api.depends('requisition_line_ids')
+    def _compute_foreign_total(self): 
+        for rec in self:
+            foreign_total = 0.0
+            for line in rec.requisition_line_ids:
+                foreign_total += line.sub_total
+            rec.lc_foreign_total = foreign_total
+
+    @api.depends('lc_foreign_total', 'conversion_rate')
     def _compute_lc_total(self):
         for rec in self:
-            rec.lc_fund_total = rec.margin + rec.commission + rec.source_tax + rec.vat_on_commission + rec.pt_charge + rec.insurance_charge
+            foreign_rate = self.currency_id._get_conversion_rate(self.currency_id, self.bdt_currency_id, self.env.company, fields.Date.context_today(self))
+            rate = self.conversion_rate/foreign_rate
+            final_total = rec.lc_foreign_total * rate
+            rec.lc_fund_total = final_total
 
+    @api.depends('lc_fund_total','margin','commission','source_tax','vat_on_commission','pt_charge','insurance_charge')
+    def _compute_total(self): 
+        for rec in self:
+            lc_total_amount = rec.lc_fund_total + rec.margin + rec.commission + rec.source_tax + rec.vat_on_commission + rec.pt_charge + rec.insurance_charge
+            # lc_currency_total = self.bdt_currency_id._convert(lc_total_amount, self.bdt_currency_id, self.currency_id, fields.Date.context_today(self))
+            rec.lc_total = lc_total_amount
+
+
+
+    pi_number = fields.Char()
+    pi_date  = fields.Date()
     purchase_id = fields.Many2one('purchase.order', string="Purchase No")
     name = fields.Char('Name', required=True, index=True, readonly=True, copy=False, default='New')
     purchase_order_date = fields.Datetime(string="Purchase Date")
@@ -31,9 +54,9 @@ class LCOpeningFundRequisition(models.Model):
     pt_charge = fields.Float(string="P&T Charge", copy=False) 
     insurance_charge  = fields.Float(string="Insurance Charge", copy=False) 
     remarks = fields.Text(string="Remarks", copy=False) 
-    currency_id = fields.Many2one('res.currency', 'Currency', required=True, readonly=True,default=lambda self: self.env.company.currency_id.id)
+    currency_id = fields.Many2one('res.currency', 'Currency')
+    bdt_currency_id = fields.Many2one('res.currency', 'Currency (BDT)', readonly=True, default=lambda self: self.env.company.currency_id.id)
     requisition_line_ids  = fields.One2many('lc.opening.fund.requisition.line', 'lc_requisition_id', string='Lc Opening Fund Requisition Line')
-    cf_aggent_ids  = fields.One2many('res.cf.aggent', 'lc_requisition_id', string='CF Agent')
     charges_ids  = fields.One2many('custom.charges', 'lc_requisition_id', string='Custom Charges')
     insurance_count = fields.Integer(compute='_insurance_count', string='# Insurances')
     explosive_count = fields.Integer(compute='_explosive_count', string='# Approvals')
@@ -44,7 +67,10 @@ class LCOpeningFundRequisition(models.Model):
     pre_appoval = fields.Boolean(string="Approval", copy=False)
     lc_request = fields.Boolean(string="Request", copy=False)
     picking = fields.Boolean(string="Picking")
-    lc_fund_total = fields.Float(string="Total", compute='_compute_lc_total') 
+    conversion_rate = fields.Float()
+    lc_fund_total = fields.Float(string="BDT Total", compute='_compute_lc_total', store=True)
+    lc_foreign_total = fields.Float(string="Foreign Total", compute='_compute_foreign_total', store=True)
+    lc_total = fields.Float(string="Total", compute='_compute_total') 
 
     def _explosive_count(self):
         for rec in self:
@@ -58,7 +84,7 @@ class LCOpeningFundRequisition(models.Model):
 
     def _lc_request_count(self):
         for rec in self:
-            lc_request_ids = self.env['lc.request'].search([('lcaf_no', '=', self.id)])
+            lc_request_ids = self.env['lc.request'].search([('requisition_id', '=', self.id)])
             rec.request_count = len(lc_request_ids.ids)
 
     def _picking_count(self):
@@ -67,11 +93,11 @@ class LCOpeningFundRequisition(models.Model):
 
     def _opening_count(self):
         for rec in self:
-            opening_ids = self.env['lc.opening'].search([('lc_no', '=', rec.id)])
+            opening_ids = self.env['lc.opening'].search([('requisition_id', '=', rec.id)])
             rec.opening_count = len(opening_ids.ids)
 
     def view_lc_opening(self):
-        opening_ids = self.env['lc.opening'].search([('lc_no', '=', self.id)])
+        opening_ids = self.env['lc.opening'].search([('requisition_id', '=', self.id)])
         return {
             'name': _('Opening'),
             'view_type': 'form',
@@ -107,7 +133,7 @@ class LCOpeningFundRequisition(models.Model):
         }
 
     def open_lc_request(self):
-        lc_request_ids = self.env['lc.request'].search([('lcaf_no', '=', self.id)])
+        lc_request_ids = self.env['lc.request'].search([('requisition_id', '=', self.id)])
         return {
             'name': _('LC Opening Request'),
             'view_type': 'form',
@@ -174,8 +200,9 @@ class LCOpeningFundRequisition(models.Model):
         return {
             'purchase_order_no': self.purchase_id and self.purchase_id.id,
             'purchase_order_date': self.purchase_order_date,
-            'lcaf_no': self.id,
-            'lc_amount': self.lc_fund_total
+            'requisition_id': self.id,
+            'lcaf_no' : self.lcaf_no,
+            'lc_amount': self.lc_total
         }
 
     def _prepare_lines(self, line):
@@ -196,7 +223,7 @@ class LCOpeningFundRequisition(models.Model):
         }
 
     def create_insurance_cover(self):
-        lines = [(0,0, self._prepare_lines(line)) for line in self.requisition_line_ids]
+        lines = [(0,0, self._prepare_lines(line)) for line in self.requisition_line_ids.filtered(lambda x: x.product_id and x.product_id.material_type != 'sodium_nitrate')]
         self.is_insurance = True
         return {
             'name': _('Insurance Cover'),
@@ -246,6 +273,11 @@ class LCOpeningFundRequisitionLine(models.Model):
     _name = 'lc.opening.fund.requisition.line'
     _description = 'Lc Opening Fund Requisition Line'
 
+    @api.depends('price_unit', 'product_qty')
+    def _compute_sub_total(self):
+        for line in self:
+            line.sub_total = line.price_unit * line.product_qty
+
     sequence = fields.Integer(string='Sequence', default=10)
     lc_requisition_id = fields.Many2one('lc.opening.fund.requisition', string="LC Requisition")
     product_id = fields.Many2one('product.product', 'Item Name', track_visibility='onchange', required=True)
@@ -253,7 +285,8 @@ class LCOpeningFundRequisitionLine(models.Model):
     hs_code = fields.Char('HS Code', size=256, track_visibility='onchange')
     product_qty = fields.Float('Quantity', track_visibility='onchange', default=1.0)
     price_unit = fields.Float(string='Unit Price', help='Price Unit')
-    
+    sub_total = fields.Float(string='Subtotal', help='Subtotal', compute='_compute_sub_total', store=True)
+    currency_id = fields.Many2one('res.currency', 'Foreign Currency')
 
     @api.onchange('product_id')
     def onchange_product_id(self):

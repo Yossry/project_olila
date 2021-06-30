@@ -1,12 +1,51 @@
 from odoo import api, fields, models
 from datetime import date, datetime
 
+class LcOpening(models.Model):
+    _inherit="lc.opening"
+
+    ammendment_count = fields.Integer(compute='_ammendment_count', string='#Ammendments')
+
+    def view_lc_opening_ammendment(self):
+        opening_ids = self.env['purchase.lc.ammendment'].search([('lc_no', '=', self.id)])
+        return {
+            'name': _('Ammendments'),
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'purchase.lc.ammendment',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+            'domain': [('id', 'in', opening_ids.ids)],
+        }
+
+    def _ammendment_count(self):
+        for rec in self:
+            opening_ids = self.env['purchase.lc.ammendment'].search([('lc_no', '=', rec.id)])
+            rec.ammendment_count = len(opening_ids.ids)
+
+    def create_amendment_rec(self):
+        for rec in self:
+            vals = {
+                'purchase_order_no': rec.order_id and rec.order_id.id,
+                'purchase_order_date': rec.po_date,
+                'lc_no': rec.id,
+            }
+            self.env['purchase.lc.ammendment'].create(vals)
+
+    def button_ammendment(self):
+        for rec in self:
+            if rec.requisition_id:
+                rec.requisition_id.state = 'amendment'
+            rec.create_amendment_rec()
+        self.write({'state': 'amendment'})
+
 class PurchaseLcAmmendment(models.Model):
     _name="purchase.lc.ammendment"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description="Purchase Ammendment"
 
     name = fields.Char('Name', required=True, index=True, readonly=True, copy=False, default='New')
-    purchase_order_no = fields.Many2one("purchase.order",string='Purchase Order No')
+    purchase_order_no = fields.Many2one("purchase.order", string='Purchase Order No')
     purchase_order_date = fields.Date(string="Purchase Order Date")
     lc_no = fields.Many2one('lc.opening', string='LC Opening')
     mur = fields.Char(string="MUR")

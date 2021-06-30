@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<data>
+		<record id="sequence_document_letter" model="ir.sequence">
+			<field name="name">Document Letter</field>
+			<field name="code">document.release.letter</field>	
+			<field name="padding">5</field>
+			<field name="prefix">RDL/</field>
+			<field name="company_id" eval="False" />
+		</record>
+	</data>
+</odoo>

@@ -2,5 +2,9 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_insurance_cover,access_insurance_cover,model_insurance_cover,base.group_user,1,1,1,1
 access_insurance_cover_lines,access_insurance_cover_lines,model_insurance_cover_lines,base.group_user,1,1,1,1
 access_res_branch,access_res_branch,model_res_branch,base.group_user,1,1,1,1
+access_post_approval_explosive,access_post_approval_explosive,model_post_approval_explosive,base.group_user,1,1,1,1
+access_post_approval_explosive_line,access_post_approval_explosive_line,model_post_approval_explosive_line,base.group_user,1,1,1,1
 access_approval_explosive,access_approval_explosive,model_approval_explosive,base.group_user,1,1,1,1
 access_approval_explosive_line,access_approval_explosive_line,model_approval_explosive_line,base.group_user,1,1,1,1
+access_insurance_cover_marine,access_insurance_cover_marine,model_insurance_cover_marine,base.group_user,1,1,1,1
+access_insurance_cover_marine_lines,access_insurance_cover_marine_lines,model_insurance_cover_marine_lines,base.group_user,1,1,1,1

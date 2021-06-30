@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+	 <record id="release_letter_view_inherit" model="ir.ui.view">
+            <field name="name">document.letter.inherit.view</field>
+            <field name="model">lc.opening</field>
+            <field name="inherit_id" ref="lc_opening.pway_lc_opening_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='button_accept']" position="after">
+                    <button name="button_release_letter" string="Create Release Letter" type="object" class="btn-primary" states='accept'/>
+                </xpath>
+                <xpath expr="//button[@name='view_journal_entry']" position="after">
+                    <button name="view_release_letter" type="object" class="oe_stat_button" icon="fa-edit" attrs="{'invisible': [('release_count', '=', 0)]}">
+                        <field name="release_count" widget="statinfo" string="Release Letters"/>
+                    </button> 
+                </xpath>
+            </field>
+        </record>
+
+	<!-- tree  view -->
+	<record model="ir.ui.view" id="document_release_letter_tree_view">
+		<field name="name">document.letter.tree</field>
+		<field name="model">document.release.letter</field>
+		<field name="arch" type="xml">
+			<tree>
+				<field name="name"/>
+				<field name="lc_number"/>
+				<field name="lc_open_id" string='LC Opening'/>
+				<field name="lc_date"/>
+			</tree>
+		</field>
+	</record>
+
+	<!-- form veiw -->
+	<record model="ir.ui.view" id="document_release_letter_form_view">
+		<field name="name">document.letter.form</field>
+		<field name="model">document.release.letter</field>
+		<field name="arch" type="xml">
+			<form string="Document Letter">		
+				<sheet>
+					<div class="oe_title">
+						<h1><field name="name"/></h1>
+					</div>
+					<group>
+						<group>
+							<field name="lc_open_id" string='LC Opening'/>
+							<field name="lc_number"/>
+							<field name="lc_date"/>
+							<field name="bl_number"/>
+							<field name="bl_date"/>
+						</group>
+						<group>
+							<field name="invoice_value"/>
+							<field name="commercial_number"/>
+							<field name="commercial_date"/>
+						</group>
+					</group>
+					<notebook>
+						<page string="Opening Lines">
+							<field name="product_lines">
+								<tree editable="bottom">
+									<field name="product_name"/>
+									<field name="product_code"/>
+									<field name="name"/>
+									<field name="hs_code"/>
+									<field name="quantity"/>
+									<field name="unit_price"/>
+									<field name="total_price"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+				    <group class="oe_subtotal_footer oe_right">
+				       <field name="total_amount" class="oe_subtotal_footer_separator"/>
+						<field name="margin"/>
+						<field name="commission"/>
+						<field name="vat"/>
+						<field name="postage"/>
+						<field name="source_tax"/>
+						<field name="other_charges"/>
+				       	<field name="final_amount" class="oe_subtotal_footer_separator"/>
+				    </group>
+				    <field name="note" class="oe_inline"  placeholder="Terms and conditions..."/>
+				</sheet>
+				<div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+			</form>
+		</field>
+	</record>
+
+	<!-- Action -->
+	<record model="ir.actions.act_window" id="action_view_document_letter">
+        <field name="name">Document Release Letter</field>
+        <field name="res_model">document.release.letter</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+        <menuitem id="document_release_letter" 
+            name="Document Release Letter" 
+            sequence="102"
+            parent="purchase.menu_procurement_management"
+            action="action_view_document_letter"/>
+    
+</odoo>

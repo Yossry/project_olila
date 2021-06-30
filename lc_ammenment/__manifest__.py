@@ -1,8 +1,8 @@
 {
 	
-	'name':"Landed Cost Ammenment",
-	'summary':"""Landed Cost Ammenment""",
-	'description':"Landed Cost Ammenment",
+	'name':"Letter of Credit Ammenment",
+	'summary':"""Letter of Credit Ammenment""",
+	'description':"Letter of Credit Ammenment",
 	'category':"Purchase",
 	'version':"14.0",
 	'depends':['lc_opening_fund_requisition', 'lc_fund_insurance', 'lc_opening'],

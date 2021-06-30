@@ -39,6 +39,7 @@
 					</div>
 					<group>
 						<group>
+							<field name="requisition_id"/>
 							<field name="lcaf_no"/>
 							<field name="lc_type"/>
 							<field name="lc_amount"/>							
@@ -46,13 +47,14 @@
 							<field name="bank_branch"/>
 							<field name="bank_code"/>
 							<field name="bank_address"/>
+							<field name="bank_bin_no"/>
 							<field name="account_no"/>
 						</group>
 						<group>
 							<field name="application_date"/>
 							<field name="purchase_order_date"/>
 							<field name="purchase_order_no"/>
-							<field name="currency"/>
+							<field name="currency_id"/>
 							<field name="margin"/>
 							<field name="maturity_balance"/>
 							<field name="total_amount"/>
@@ -62,6 +64,11 @@
 						</group>
 					</group>
 				</sheet>
+				<div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
 			</form>
 		</field>
 	</record>

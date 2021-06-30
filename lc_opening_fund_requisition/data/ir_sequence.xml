@@ -8,14 +8,6 @@
 	        <field name="padding">5</field>
 	        <field name="company_id" eval="False" />
 	    </record>
-
-	    <record id="seq_res_cf_aggents" model="ir.sequence">
-	        <field name="name">CF Aggent</field>
-	        <field name="code">res.cf.aggent</field>
-	        <field name="prefix">CFA/</field>
-	        <field name="padding">5</field>
-	        <field name="company_id" eval="False" />
-	    </record>
 	    <record id="seq_charge" model="ir.sequence">
 	        <field name="name">Custom Charges</field>
 	        <field name="code">custom.charges</field>

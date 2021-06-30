@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id='loan_control_tree' model='ir.ui.view'>
+            <field name="name">loan.control.tree</field>
+            <field name="model">loan.control</field>
+            <field name="arch" type="xml">
+                <tree string="Loan Control">
+                    <field name="facility_size"/>
+                    <field name="interest_rate"/>
+                    <field name="tenure"/>
+                    <field name="payments_per_year"/>
+                    <field name="instalment_size"/>
+                    <field name="due_date"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id='loan_control_form' model='ir.ui.view'>
+            <field name="name">loan.control.form</field>
+            <field name="model">loan.control</field>
+            <field name="arch" type="xml">
+                <form string="Loan Control">
+                    <header>
+                        <button name="button_confirm" states="draft" string="Confirm" type="object" class="btn-primary"/>
+                        <button name="button_cancel" states="draft,confirm" string="Cancel" type="object" class="btn-primary"/>
+                        <field name="state"  widget="statusbar" statusbar_visible="draft,confirm,cancel"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="number"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="facility_size"/>
+                                <field name="interest_rate"/>
+                                <field name="tenure"/>
+                                <field name="payments_per_year"/>
+                            </group>
+                            <group>
+                                <field name="due_date"/>
+                                <field name="instalment_size"/>
+                                <field name="payment_balance"/>
+                                <field name="overdue_status"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id='loan_control_action' model='ir.actions.act_window'>
+            <field name="name">LC Loan Control</field>
+            <field name="res_model">loan.control</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p>
+                    Let's create Loan Control.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="loan_Control_menu"
+            action="loan_control_action" 
+            parent="purchase.menu_procurement_management"
+            sequence="105"/>
+    </data>
+</odoo>

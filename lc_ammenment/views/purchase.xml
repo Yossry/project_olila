@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <!-- tree  view -->
+        <record id="lc_ammenment_view_inherit" model="ir.ui.view">
+            <field name="name">lc_ammenment.inherit.view</field>
+            <field name="model">lc.opening</field>
+            <field name="inherit_id" ref="lc_opening.pway_lc_opening_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='button_accept']" position="after">
+                    <button name="button_ammendment" string="Ammendment" type="object" class="btn-primary" states='confirm'/>
+                </xpath>
+                <xpath expr="//button[@name='view_journal_entry']" position="after">
+                    <button name="view_lc_opening_ammendment" type="object" class="oe_stat_button" icon="fa-edit" attrs="{'invisible': [('ammendment_count', '=', 0)]}">
+                        <field name="ammendment_count" widget="statinfo" string="Ammendments"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
     <record model="ir.ui.view" id="purchase_lc_ammendment_tree_view">
         <field name="name">purchase.lc.ammendment.tree</field>
         <field name="model">purchase.lc.ammendment</field>
@@ -15,7 +30,6 @@
         </field>
     </record>
 
-    <!-- form veiw -->
     <record model="ir.ui.view" id="purchase_lc_ammendment_form_view">
         <field name="name">purchase.lc.ammendment.form.view</field>
         <field name="model">purchase.lc.ammendment</field>
@@ -69,6 +83,11 @@
                         </group>    
                     </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>

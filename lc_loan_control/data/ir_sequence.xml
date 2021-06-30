@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="seq_loan_control" model="ir.sequence">
+	        <field name="name">Loan Control</field>
+	        <field name="code">loan.control</field>
+	        <field name="prefix">Loan/</field>
+	        <field name="padding">5</field>
+	        <field name="company_id" eval="False" />
+	    </record>
+	</data>
+</odoo>
