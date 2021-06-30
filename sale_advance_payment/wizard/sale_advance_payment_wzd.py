@@ -33,7 +33,7 @@ class SaleAdvancePayment(models.TransientModel):
       payments = self.env['account.payment'].search([('sale_id', '=', sale_id.id)])
       if payments:
         amount_to_pay = sum(payments.mapped('amount'))
-      return sale_id.amount_total - amount_to_pay
+      return sale_id.amount_untaxed - amount_to_pay
 
     @api.model
     def default_get(self, fields):
@@ -53,8 +53,8 @@ class SaleAdvancePayment(models.TransientModel):
       sale_id = self.env.context.get('active_id', False)
       if sale_id:
         sale = self.env['sale.order'].browse(sale_id)
-        if sale and self.amount_to_pay > self.amount_total:
-          raise UserError(_("Paid amount must be less than or equal to sale total !"))
+        if sale and self.amount_to_pay < self.amount_total:
+          raise UserError(_("Paid amount must be greater than or equal to sale total !"))
 
     def make_advance_payment(self):
         sale_id = self.env.context.get('active_id', False)
