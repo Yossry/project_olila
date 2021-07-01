@@ -96,7 +96,7 @@
                     <field name='purchase_type' widget='radio'/>
                 </xpath>
                 <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="after">
-                    <field name="hs_code"/>
+                    <field name="hs_code" required='1'/>
                     <field name="packing_details"/>
                 </xpath>
                 <xpath expr="//page[@name='purchase_delivery_invoice']" position="after">

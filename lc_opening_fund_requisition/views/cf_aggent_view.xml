@@ -6,7 +6,7 @@
             <field name="model">res.cf.aggent</field>
             <field name="arch" type="xml">
                 <tree string="CF Agent">
-                    <field name="date"/>
+                    <field name="date" string='Date of doc handover'/>
                     <field name="be_date"/>
                     <field name="be_no"/>
                 </tree>
@@ -26,7 +26,7 @@
                         </div>
                         <group>
                             <group>
-                                <field name="date"/>
+                                <field name="date" string='Date of doc handover'/>
                                 <field name="be_date"/>
                                 <field name="be_no"/>
                                 <field name="containers_details"/>

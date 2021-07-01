@@ -67,14 +67,6 @@ class PurchaseRequest(models.Model):
     def button_approve_direct(self):
         self.write({'state': 'approve', 'director_approval': True})
 
-    # @api.depends('request_lines_ids')
-    # def _price_total(self):
-    #     for rec in self:
-    #         total = 0.0
-    #         for line in rec.request_lines_ids.filtered(lambda x: x.product_id):
-    #             total += (line.extra_qty + line.quantity) * line.product_id.standard_price
-    #         rec.amount_total = total
-
     def _compute_show_check_availability(self):
         show_check_availability = False
         for picking in self.picking_ids:
@@ -151,34 +143,38 @@ class PurchaseRequest(models.Model):
                 raise UserError(_('You cannot delete an request which is not draft or cancelled.'))
         return super(PurchaseRequest, self).unlink()
 
-    def button_tender(self):
-        lines = []
-        if not self.department_id and self.department_id.picking_type:
-            raise UserError(_('Please select department or purchase type in department'))
-        for line in self.request_lines_ids.filtered(lambda x:(x.quantity + x.extra_qty) > x.available_qty):
-            remaining_qty = abs(line.quantity + line.extra_qty)
-            if remaining_qty > 0:
-                tendor_vals = {
-                    'origin': self.name,
-                    'date_end': self.schedule_date,
-                    'ordering_date': fields.Date.today(),
-                    'warehouse_id': self.warehouse_id.id,
-                    'company_id': self.company_id.id,
-                    'picking_type_id': self.department_id.picking_type.id,
-                    'purchase_request_ids': self.ids,
-                    'department_id' : self.department_id.id or False,
-                    'line_ids': [(0, 0, {
-                                    'product_id': line.product_id.id,
-                                    'product_uom_id': line.product_uom.id,
-                                    'product_qty': remaining_qty,
-                                    'price_unit': line.price_unit if line.request_id.purchase_type == 'gem' else 0.0,
-                                    'schedule_date': line.date if line.request_id.purchase_type == 'gem' else False,
-                                    'move_dest_id': line.move_ids.mapped('move_dest_ids') and line.move_ids.mapped('move_dest_ids')[0].id or False,
-                                })],
+    def  get_lines(self,line):
+        total_qty = abs(line.quantity + line.extra_qty)
+        return {
+                    'product_id': line.product_id.id,
+                    'product_uom_id': line.product_uom.id,
+                    'product_qty': total_qty,
+                    'price_unit': line.price_unit if line.request_id.purchase_type == 'gem' else 0.0,
+                    'schedule_date': line.date if line.request_id.purchase_type == 'gem' else False,
+                    'move_dest_id': line.move_ids.mapped('move_dest_ids') and line.move_ids.mapped('move_dest_ids')[0].id or False,
                 }
-                tender_id = self.env['purchase.requisition'].create(tendor_vals)
-                line.write({'tender_id': tender_id.id})
 
+    def button_tender(self):
+        if not self.department_id and not self.department_id.picking_type:
+            raise UserError(_('Please select department or purchase type in department'))
+        lines = [(0, 0, self.get_lines(line)) for line in self.request_lines_ids]
+        tendor_vals = {
+            'origin': self.name,
+            'date_end': self.schedule_date,
+            'ordering_date': fields.Date.today(),
+            'warehouse_id': self.warehouse_id.id,
+            'purchase_request_ids' : self.id,
+            'company_id': self.company_id.id,
+            'picking_type_id': self.department_id.picking_type and self.department_id.picking_type.id,
+            'purchase_request_ids': self.ids,
+            'department_id' : self.department_id and self.department_id.id or False,
+            'line_ids': lines
+        }
+        tender_id = self.env['purchase.requisition'].create(tendor_vals)
+        if tender_id:
+            self.request_lines_ids.write({'tender_id': tender_id and tender_id.id})
+
+       
     def button_transfer(self):
         if not self.department_id.location_id:
             raise ValidationError(_('Please set location on department.'))

@@ -133,10 +133,11 @@
                                         </div>
                                         <group>
                                             <group>
-                                                <field name="date"/>
+                                                <field name="date" string='Date of Doc Handover'/>
                                                 <field name="be_date"/>
                                                 <field name="be_no"/>
                                                 <field name="containers_details"/>
+                                                <!-- <field name="notes"/> -->
                                             </group>
                                             <group>
                                                 <field name="product_id"/>
@@ -148,15 +149,6 @@
                                             </group>
                                         </group>
                                         <notebook>
-                                            <page string="Attachments" name="Attachments">
-                                                <field name="attachment_ids">
-                                                    <tree editable="bottom">
-                                                        <field name="name"/>
-                                                        <field name="type"/>
-                                                        <field name="datas" widget='file'/>
-                                                    </tree>
-                                                </field>
-                                            </page>
                                             <page string="Agents Charge" name="Agents Charge">
                                                 <field name="agents_charge_ids">
                                                    <tree editable="bottom">
@@ -170,15 +162,25 @@
                                                         <field name="cf_aggent_id" invisible="1"/>
                                                     </tree>
                                                 </field>
-                                                <group class="oe_subtotal_footer oe_right">
-					                                <field name="total_charge" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-					                            </group>
                                             </page>
+                                            <page string="Attachments" name="Attachments">
+                                                <field name="attachment_ids">
+                                                    <tree editable="bottom">
+                                                        <field name="name"/>
+                                                        <field name="type"/>
+                                                        <field name="datas" widget='file'/>
+                                                    </tree>
+                                                </field>
+                                            </page>
+                                           
+                                            <group class="oe_subtotal_footer oe_right">
+				                                <field name="total_charge" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+				                            </group>
                                         </notebook>
                                     </form>
                                     <tree string="LC Agent Lines">
                                         <field name="name"/>
-                                        <field name="date"/>
+                                        <field name="date" string='Date of Doc Handover'/>
                                         <field name="product_id"/>
                                         <field name="item_code"/>
                                         <field name="net_weight"/>

@@ -212,7 +212,8 @@ class LCOpeningFundRequisition(models.Model):
             'item_code' : line.product_id.default_code,
             'hs_code' : line.product_id.hs_code,
             'quantity' : line.product_qty,
-            'unit_price' : line.price_unit
+            'unit_price' : line.price_unit,
+            'country_id': self.origin and self.origin.id,
         }
 
     def _prepare_values(self):

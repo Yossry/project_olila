@@ -26,11 +26,11 @@
                     <field name="show_transfer" invisible="1"/>
                     <field name="director_approval" invisible="1"/>
                     <field name="id" invisible="1"/>
-                    <button name="check_availability" string="Check Availability" type="object" attrs="{'invisible': [('state', 'in', ['ready','confirm','waiting', 'cancel'])]}" class="oe_highlight"/>
+                    <button name="check_availability" string="Check Availability" type="object" attrs="{'invisible': [('state', 'in', ['draft', 'cancel', 'done'])]}" class="oe_highlight"/>
                     <button name="button_approve_direct" string="Approve" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                     <button name="button_draft" states='cancel' string="Set to Draft" type="object" class="oe_highlight"/>
                     <button name="button_confirm" states='approve' string="Confirm" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['approve'])]}"/>
-                    <button name="button_tender" string="Create Tendor" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['confirm', 'waiting'])]}"/>
+                    <button name="button_tender" string="Create Tendor" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['draft', 'cancel','done'])]}"/>
                     <button name="button_transfer" string="Transfer" type="object" class="oe_highlight" attrs="{'invisible': ['|',('state', '!=', 'ready'), ('availability', '!=', 'available')]}"/>
                     <button name="button_cancel" string="Cancel" type="object" attrs="{'invisible': [('id', '=', False)]}"/>
                     <field name="state" widget="statusbar"/>

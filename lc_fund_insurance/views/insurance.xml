@@ -31,7 +31,7 @@
 				<sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="view_marine" type="object" class="oe_stat_button" icon="fa-folder-open-o" attrs="{'invisible': [('marine_count', '=', 0)]}">
-                            <field name="marine_count" widget="statinfo" string="Insurance Marine"/>
+                            <field name="marine_count" widget="statinfo" string="Marine Policy"/>
                         </button>
                     </div>
 					<div class="oe_title">

@@ -123,7 +123,7 @@ class Insurance(models.Model):
             'product_id' : line.product_id.id or False,
             'item_code' : line.item_code,
             'hs_code' : line.hs_code,
-            'country_id' : line.country_id or False,
+            'country_id' : line.country_id and line.country_id.id or False,
             'quantity' : line.quantity,
             'unit_price' : line.unit_price,
             'price_subtotal' : line.price_subtotal

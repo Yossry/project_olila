@@ -9,6 +9,7 @@ class CfAggent(models.Model):
     date = fields.Date(string="Date")
     be_date = fields.Date(string="BE Date")
     be_no = fields.Char(string="BE No")
+    notes = fields.Char()
     product_id = fields.Many2one('product.product', string="Product")
     item_code = fields.Char(string="Item Code")
     containers_details = fields.Char(string="Containers Details")

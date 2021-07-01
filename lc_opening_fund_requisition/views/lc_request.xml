@@ -40,9 +40,9 @@
 					<group>
 						<group>
 							<field name="requisition_id"/>
-							<field name="lcaf_no"/>
-							<field name="lc_type"/>
-							<field name="lc_amount"/>							
+							<field name="lc_opening_bank"/>		
+							<field name="lc_account_no"/>	
+							<field name="lc_bank_address"/>			
 							<field name="bank_name"/>
 							<field name="bank_branch"/>
 							<field name="bank_code"/>
@@ -51,9 +51,12 @@
 							<field name="account_no"/>
 						</group>
 						<group>
+							<field name="lcaf_no"/>
 							<field name="application_date"/>
 							<field name="purchase_order_date"/>
 							<field name="purchase_order_no"/>
+							<field name="lc_type"/>
+							<field name="lc_amount"/>
 							<field name="currency_id"/>
 							<field name="margin"/>
 							<field name="maturity_balance"/>
@@ -75,7 +78,7 @@
 
 	<!-- Action -->
 	<record model="ir.actions.act_window" id="action_view_lc_request">
-            <field name="name">LC Opening Request</field>
+            <field name="name">LC Prayer Application</field>
             <field name="res_model">lc.request</field>
             <field name="view_mode">tree,form</field>
     </record>

@@ -28,8 +28,8 @@
 					    <tbody>
 					      <tr>
 					        <td class="text-center"><span t-esc="doc.application_date"/></td>
-					        <td class="text-center"><span t-esc="doc.lcaf_no.name"/></td>
-					        <td class="text-center"><span t-esc="doc.lcaf_no.lc_requisition_date"/></td>
+					        <td class="text-center"><span t-esc="doc.requisition_id.name"/></td>
+					        <td class="text-center"><span t-esc="doc.requisition_id.lc_requisition_date"/></td>
 					        <td class="text-center"><span t-esc="doc.lc_amount"/></td>
 					      </tr>
 					    </tbody>
@@ -61,7 +61,7 @@
 					      </tr>
 					    </thead>
 					    <tbody>
-                            <t t-foreach="doc.lcaf_no.requisition_line_ids" t-as="line">
+                            <t t-foreach="doc.requisition_id.requisition_line_ids" t-as="line">
                             <tr>
                                 <td class="text-center"><span t-esc="line.product_id.name"/></td>
                                 <td class="text-center"><span t-esc="line.product_qty"/></td>

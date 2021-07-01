@@ -11,9 +11,10 @@ class PurchaseRequisition(models.Model):
         res = [('local', 'Local'), ('import', 'Import')]
         return res
 
-    purchase_request_ids = fields.Many2many('purchase.request', string='Requests')
+    purchase_request_ids = fields.Many2many('purchase.request', string='Requisitions')
     department_id = fields.Many2one('hr.department', string='Department')
-    seller_type = fields.Selection(selection=_get_seller_type, string="Vendor Type", default='local')
+    seller_type = fields.Selection(selection=_get_seller_type, string="Vendor Type")
+    remark = fields.Text(string='Remark')
 
     @api.onchange('vendor_id')
     def onchange_vendor_type(self):
