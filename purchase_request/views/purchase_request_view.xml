@@ -63,9 +63,7 @@
                         <group>
                             <field name="department_id" required="1"/>
                             <field name="availability" attrs="{'invisible': [('state', 'in', ['draft', 'approve'])]}"/>
-                            <field name="purchase_type" attrs="{'invisible': ['|', ('availability', '=', 'available'), ('state', '!=', 'waiting')]}"/>
-                            <!-- <field name="team_id" attrs="{'invisible': [('purchase_type', '!=', 'committee')], 'required': [('purchase_type', '=', 'committee')]}"/> -->
-                            
+                            <field name="purchase_type" attrs="{'invisible': ['|', ('availability', '=', 'available'), ('state', '!=', 'waiting')]}" readonly='1'/>
                         </group>
                     </group>
                     <notebook>

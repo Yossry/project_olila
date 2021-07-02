@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="res_partner_form_total_product" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+           <!--  -->
+            <xpath expr="//notebook" position="inside">
+                <page name="Deals" string="Deals">
+                    <field name="vendor_info_ids">
+                        <tree editable="bottom">
+                            <field name="product_id"/>
+                            <field name="price_unit"/>
+                            <field name="product_qty" />
+                            <field name="vendor_id" invisible="1"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- tree  view -->
+    <record model="ir.ui.view" id="product_vendor_info_tree">
+        <field name="name">product.vendor.info.tree</field>
+        <field name="model">product.vendor.info</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="product_id"/>
+                <field name="price_unit"/>
+                <field name="product_qty"/>
+                <field name="vendor_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- form veiw -->
+    <record model="ir.ui.view" id="product_vendor_info_form">
+        <field name="name">product.vendor.info.form</field>
+        <field name="model">product.vendor.info</field>
+        <field name="arch" type="xml">
+            <form string="Product Vendor">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="vendor_id"/>
+                        </group>
+                        <group>    
+                            <field name="product_id"/>
+                            <field name="price_unit"/>
+                            <field name="product_qty"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="product_vendor_info_filter" model="ir.ui.view">
+        <field name="name">product.vendor.info.search</field>
+        <field name="model">product.vendor.info</field>
+        <field name="arch" type="xml">
+            <search string="Vendor Info">
+                <field name="vendor_id"/>
+                <field name="product_id"/>
+                <group expand="0" name="group_by" string="Group By">
+                    <filter name="group__vendor_id" string="Vendor" domain="[]" context="{'group_by' : 'vendor_id'}" />
+                    <filter name="group_product_id" string="Product" context="{'group_by': 'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record model="ir.actions.act_window" id="action_product_vendor_info">
+        <field name="name">Vendor Products</field>
+        <field name="res_model">product.vendor.info</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="product_vendor_info_filter"/>
+    </record>
+
+    <!-- <menuitem id="product_vendor_info" 
+        name="Vendor Products" 
+        sequence="25"
+        parent="purchase.menu_purchase_products"
+        action="action_product_vendor_info"/> -->
+
+</odoo>

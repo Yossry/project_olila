@@ -159,7 +159,7 @@
                                     </tree>
                                 </field>
                             </page> -->
-                            <page string="Custom Charges" name="Custom Charges" attrs="{}">
+                            <!-- <page string="Custom Charges" name="Custom Charges" attrs="{}">
                                 <field name="charges_ids" mode="form,tree">
                                     <form>
                                         <div class="oe_title">
@@ -209,7 +209,7 @@
                                         <field name="declaration_no"/>
                                     </tree>
                                 </field>
-                            </page>
+                            </page> -->
                             <page string="Extra" id="extra_info">
                                 <group>
                                     <group>

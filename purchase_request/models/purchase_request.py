@@ -173,8 +173,7 @@ class PurchaseRequest(models.Model):
         tender_id = self.env['purchase.requisition'].create(tendor_vals)
         if tender_id:
             self.request_lines_ids.write({'tender_id': tender_id and tender_id.id})
-
-       
+ 
     def button_transfer(self):
         if not self.department_id.location_id:
             raise ValidationError(_('Please set location on department.'))
@@ -233,6 +232,8 @@ class PurchaseRequest(models.Model):
         location_id = warehouse_id.lot_stock_id
         location_dest_id = self.department_id.location_id
         picking_type = self.department_id.picking_type
+        if not picking_type:
+            raise UserError('Please assign picking type in department')
         if not self.group_id:
             self.group_id = self.group_id.create({'name': self.name})
         for line in self.request_lines_ids:

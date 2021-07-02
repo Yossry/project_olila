@@ -66,7 +66,18 @@
             </field>
         </record>
 
-    	 <record id="purchase_order_form_inherit" model="ir.ui.view">
+         <record id="po_inherit_purchase_order_view_tree" model="ir.ui.view">
+            <field name="name">po.purchase.order.view.tree.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_view_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='amount_total']" position="replace">
+                    <field name="amount_total" widget="monetary" optional="show" decoration-bf="1"/>
+                </xpath>
+            </field>
+        </record>
+
+    	 <record id="purchase_order_form_lc_inherit" model="ir.ui.view">
             <field name="name">purchase.order.form.inherit</field>
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
@@ -76,24 +87,26 @@
                 </xpath>
                 <xpath expr="//div[@name='button_box']" position="inside">
                     <button class="open_landed_cost" name="open_landed_cost"  type="object" icon="fa-file-o" attrs="{'invisible': [('landed_cost_count', '=', 0)]}">
-                            <field string="Letter of Credit" name="landed_cost_count" widget="statinfo" />
+                        <field string="Letter of Credit" name="landed_cost_count" widget="statinfo" />
                     </button>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name='purchase_type' widget='radio'/>
                 </xpath>
                 <xpath expr="//field[@name='date_order']" position="after">
                     <field name='mode_of_shipment'/>
                     <field name='country_id'/>
                 </xpath>
-                <!-- <field name="date_order" attrs="{'invisible': [('state','=','purchase')]}"/> -->
+                <xpath expr="//field[@name='partner_ref']" position="attributes">
+                    <attribute name="string">PI No</attribute>
+                    <attribute name="attrs">{'invisible':[('purchase_type', '=', 'local')]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_ref']" position="after">
+                    <field name='pi_date' attrs="{'invisible':[('purchase_type', '=', 'local')]}"/>
+                </xpath>
                 <xpath expr="//field[@name='date_order']" position="attributes">
                     <attribute name="attrs">{}</attribute>
                     <attribute name="string">PO Date</attribute>
-                </xpath>
-                <xpath expr="//field[@name='partner_ref']" position="attributes">
-                    <attribute name="string">PI No</attribute>
-                </xpath>
-                <xpath expr="//field[@name='partner_ref']" position="after">
-                    <field name='pi_date'/>
-                    <field name='purchase_type' widget='radio'/>
                 </xpath>
                 <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="after">
                     <field name="hs_code" required='1'/>

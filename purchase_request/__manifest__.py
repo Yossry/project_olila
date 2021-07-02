@@ -4,7 +4,7 @@
     'summary': 'Purchase Request',
     'sequence': 1,
     'description': """ Purchase Request """,
-    'depends': ['hr', 'stock', 'purchase', 'purchase_requisition'],
+    'depends': ['hr', 'stock', 'purchase', 'purchase_requisition_stock'],
     'data': [
         'data/purchase_request_data.xml',
         'security/res_groups.xml',

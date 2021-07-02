@@ -69,7 +69,7 @@ class Purchase(models.Model):
     swift_code  = fields.Char(string="Swift Code")
     # transport
     date_of_last_shipment =  fields.Date()
-    pi_date =  fields.Date()
+    pi_date =  fields.Date(string='PI Date')
     port_of_loading  = fields.Char()
     transportation_time = fields.Char()
     transhipment = fields.Char(string="Transhipment", copy=False)

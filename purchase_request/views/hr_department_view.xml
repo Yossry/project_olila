@@ -6,8 +6,8 @@
         <field name="inherit_id" ref="hr.view_department_form"/>
         <field name="arch" type="xml">
             <field name="parent_id" position="after">
-                <field name="picking_type"/>
-                <field name="location_id"/>
+                <field name="picking_type" required='1'/>
+                <field name="location_id" required='1'/>
             </field>
         </field>
     </record>

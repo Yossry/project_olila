@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<record id="purchase_request_form_inherit_readonly" model="ir.ui.view">
+        <field name="name">purchase.request.form.purchase.inherit</field>
+        <field name="model">purchase.request</field>
+        <field name="inherit_id" ref="purchase_request.view_purchase_request_from"/>
+        <field name="arch" type="xml">
+        	<field name="availability" position="after">
+                <field name="is_purchase_rfq" invisible="1"/>
+            </field>
+            <xpath expr="//field[@name='department_id']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('is_purchase_rfq', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('is_purchase_rfq', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='schedule_date']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('is_purchase_rfq', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='warehouse_id']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('is_purchase_rfq', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='request_lines_ids']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('is_purchase_rfq', '=', True)]}</attribute>
+            </xpath>
+		</field>
+	</record>
+</odoo>

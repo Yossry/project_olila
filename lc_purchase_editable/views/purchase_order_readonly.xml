@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="purchase_order_form_inherit_purchase_request" model="ir.ui.view">
+        <field name="name">purchase.order.form.purchase_request.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase_request.purchase_order_form_inherit_po_request"/>
+        <field name="arch" type="xml">
+             <xpath expr="//field[@name='department_id']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+	<record id="purchase_order_form_inherit_readonly" model="ir.ui.view">
+        <field name="name">purchase.order.form.purchase.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="lc_opening_fund_requisition.purchase_order_form_inherit"/>
+        <field name="arch" type="xml">
+        	<xpath expr="//field[@name='partner_ref']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='pi_date']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='purchase_type']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='mode_of_shipment']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='country_id']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+             <xpath expr="//field[@name='origin']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='requisition_id']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='incoterm_id']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='beneficiary']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='beneficiary_address']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='beneficiary_bank_name']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='beneficiary_bank_account_no']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='swift_code']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='beneficiary_bank_branch']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_of_last_shipment']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='port_of_loading']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='transportation_time']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='port_of_landing']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partial_shipment']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='transhipment']" position="attributes">
+                 <attribute name="attrs">{"readonly": [('state', 'in', ('purchase', 'done', 'cancel'))]}</attribute>
+            </xpath>
+            
+		</field>
+	</record>
+</odoo>
