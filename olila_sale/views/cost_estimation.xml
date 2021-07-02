@@ -54,8 +54,8 @@
                                 <field name="currency_id"/>
                                 <field name="rfq_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                 <field name="product_id" readonly="1"/>
-                                <field name="code" required="1" attrs="{'readonly': [('state', '!=', 'draft')]}" />
-                                <field name="description_sale" required="1" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="code" required="1"/>
+                                <field name="description_sale" required="1"/>
                             </group>
                         </group>
                         <notebook>
