@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 from datetime import timedelta, datetime
+from odoo.exceptions import UserError
 
 class CostEstimation(models.Model):
     _name = 'cost.estimation'
@@ -75,6 +76,8 @@ class CostEstimation(models.Model):
 
     def button_accept(self):
         if self.is_final_approved:
+            if not self.code or not self.description_sale:
+                raise UserError(_("Need to set code and description for product."))
             Product = self.env['product.product'].sudo()
             self.product_id = Product.create({'name': self.description_sale, 'type': 'product', 'default_code': self.code})
             price_unit = self.total_estimation / self.quantity
