@@ -76,7 +76,7 @@ class CostEstimation(models.Model):
     def button_accept(self):
         if self.is_final_approved:
             Product = self.env['product.product'].sudo()
-            self.product_id = Product.create({'name': self.description_sale, 'default_code': self.code})
+            self.product_id = Product.create({'name': self.description_sale, 'type': 'product', 'default_code': self.code})
             price_unit = self.total_estimation / self.quantity
             if not self.order_id:
                 # Find Order or create one

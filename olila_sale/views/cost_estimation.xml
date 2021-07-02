@@ -49,13 +49,13 @@
                                 <field name="quantity" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                             </group>
                             <group>
-                                <field name="company_id" readonly="1"/>
+                                <field name="company_id" invisible="1"/>
                                 <field name="responsible" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                 <field name="currency_id"/>
                                 <field name="rfq_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                                 <field name="product_id" readonly="1"/>
-                                <field name="code" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                                <field name="description_sale" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="code" attrs="{'readonly': [('state', '!=', 'draft')], 'required': [('state', '!=', 'draft')]}" />
+                                <field name="description_sale" attrs="{'readonly': [('state', '!=', 'draft')], 'required': [('state', '!=', 'draft')]}"/>
                             </group>
                         </group>
                         <notebook>

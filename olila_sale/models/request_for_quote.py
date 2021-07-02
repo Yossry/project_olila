@@ -22,7 +22,7 @@ class RequestForQuote(models.Model):
     zip = fields.Char(change_default=True)
     city = fields.Char()
     state_id = fields.Many2one("res.country.state", string='State', 
-        ondelete='restrict', domain="[('country_id', '=?', country_id)]")
+        ondelete='restrict', domain="[('country_id', '=', country_id)]")
     country_id = fields.Many2one('res.country', string='Country', ondelete='restrict')
     item_specification = fields.Text(string="Item Specification")
     expected_delivery = fields.Date(string="Expected Delivery Date")
@@ -31,6 +31,16 @@ class RequestForQuote(models.Model):
     rfq_count = fields.Integer(compute='_rfq_count', string='# Requests')
     responsible = fields.Many2one('hr.employee', string="Responsible", related='partner_id.responsible', store=True, readonly=False)
     quote_lines = fields.One2many("request.for.quote.line", 'request_quote_id', string="Lines")
+
+
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        self.zip =  self.partner_id.zip
+        self.street = self.partner_id.street
+        self.street2 = self.partner_id.street2
+        self.city = self.partner_id.city
+        self.state_id = self.partner_id.state_id.id
+        self.country_id = self.partner_id.country_id.id
 
     def _rfq_count(self):
         for rec in self:

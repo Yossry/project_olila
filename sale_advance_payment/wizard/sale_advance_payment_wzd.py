@@ -9,6 +9,8 @@ class SaleAdvancePayment(models.TransientModel):
     journal_id = fields.Many2one('account.journal', 'Payment Method', required=True)
     amount_to_pay = fields.Monetary(string='Amount', required=True, default=0.0)
     amount_total = fields.Float('Total Amount', readonly=True)
+    check_date = fields.Date(string="Check Date")
+    check_no = fields.Char(string="Check No")
     currency_id = fields.Many2one("res.currency", "Currency", readonly=True)
     partner_bank_id = fields.Many2one('res.partner.bank', string="Bank Account No")
     bank_branch = fields.Char(string="Branch")
@@ -72,6 +74,8 @@ class SaleAdvancePayment(models.TransientModel):
                               'currency_id': sale.pricelist_id.currency_id and sale.pricelist_id.currency_id.id,
                               'date': sale.date_order,
                               'amount': currency_amount,
+                              'check_no': self.check_no,
+                              'check_date': self.check_date,
                               'payment_method_id': self.env.ref('account.account_payment_method_manual_in').id,
                               'partner_bank_id' : self.partner_bank_id.id,
                               'bank_branch' : self.partner_bank_id.bank_id.bank_branch,

@@ -14,7 +14,7 @@
                     <field name="secondary_contact_persion"/>
                     <field name="zone_id" options='{"no_open": True, "no_create": True}' attrs="{'readonly': [('sale_type', '=', 'primary_sales')]}"/>
                     <field name="sale_type" readonly="1" force_save="1"/>
-                    <field name="rfq_id"/>
+                    
                 </xpath>
                 <xpath expr="//field[@name='pricelist_id']" position="attributes">
                     <attribute name="attrs">{'readonly': [('sale_type', 'in', ['primary_sales', 'corporate_sales'])]}</attribute>
@@ -66,6 +66,8 @@
                 <xpath expr="//field[@name='partner_id']" position="attributes">
                      <attribute name="domain">[('olila_type', 'in', ['dealer', 'distributor'])]</attribute>
                 </xpath>
+
+                
             </field>
         </record>
 
@@ -78,6 +80,9 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='partner_id']" position="attributes">
                      <attribute name="domain">[('olila_type', '=', 'corporater')]</attribute>
+                </xpath>
+                <xpath expr="//field[@name='sale_type']" position="after">
+                     <field name="rfq_id" readonly="1"/>
                 </xpath>
             </field>
         </record>
@@ -145,7 +150,7 @@
             <field name="name">Primary Sales Orders</field>
             <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
             <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
-            <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel')), ('sale_type', '=', 'primary_sales')]</field>
+            <field name="domain">[('sale_type', '=', 'primary_sales')]</field>
             <field name="context">{'default_sale_type': 'primary_sales'}</field>
         </record>
 
@@ -294,7 +299,7 @@
             name="Quotation"
             action="sale.action_quotations_with_onboarding"
             parent="olila_sale.primary_sales_menu"
-            sequence="2" groups="sales_team.group_sale_salesman"/>
+            sequence="2" groups="base.group_no_one"/>
 
         <menuitem id="sale.menu_sale_order"
             name="Sales Orders"

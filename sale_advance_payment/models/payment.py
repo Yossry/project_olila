@@ -14,4 +14,6 @@ class AccountPayment(models.Model):
     dealer = fields.Boolean('Dealer')
     distributor_code = fields.Char()
     bank_branch = fields.Char(string="Branch")
+    check_date = fields.Date(string="Check Date")
+    check_no = fields.Char(string="Check No")
     file_attachment = fields.Binary("Attachment")

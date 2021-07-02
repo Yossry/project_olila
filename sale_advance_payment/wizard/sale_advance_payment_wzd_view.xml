@@ -20,8 +20,11 @@
                         <field name="currency_id"/>
                         <field name="partner_bank_id" attrs="{'invisible':[('is_bank_journal', '!=', True)]}"/>
                         <field name="bank_branch" attrs="{'invisible':[('is_bank_journal', '!=', True)]}"/>
+                        <field name="check_no"/>
+                        <field name="check_date"/>
                         <field name="file_attachment" attrs="{'invisible':[('is_bank_journal', '!=', True)]}"/>
                         <field name="is_bank_journal" invisible="1"/>
+
                     </group>
                 </group>
                 <footer>
