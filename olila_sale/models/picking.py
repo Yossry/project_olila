@@ -11,7 +11,7 @@ class Picking(models.Model):
     driver_name = fields.Char(string="Driver Name")
     driver_mobile = fields.Integer(string="Driver Mobile No")
     contact_no = fields.Integer()
-    requestion_number = fields.Char(string="Requestion Number")
+    requestion_number = fields.Char(string="Requisition Number")
     carton_type = fields.Selection([('normal', 'Normal'), ('other', 'Other')], string="Carton Type")
     capture_barcode = fields.Char(string="Capture Barcode")
     job_article_number = fields.Char(string="Job Article Number")

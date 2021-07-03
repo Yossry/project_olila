@@ -3,6 +3,8 @@
     'name' : 'Olila Sale',
     'category': 'Sale',
     'version': '14.0.1.0',
+    'author': "Preciseways",
+    'website': "http://www.preciseways.com",
     'description': """
         This Module will install all the modules related sales flow olila 
     """,
