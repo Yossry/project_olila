@@ -1,8 +1,8 @@
 {
 	
-	'name':"Purchase Indent Readonly",
-	'summary':"""Purchase Request Readonly""",
-	'description':"Purchase Request Readonly",
+	'name':"Purchase Requistion Editable",
+	'summary':"""Purchase Requistion Editable""",
+	'description':"Purchase Requistion Editable",
 	'category':"purchase",
 	'version':"14.0",
 	'depends':['purchase_request'],
