@@ -32,7 +32,7 @@ class StockPicking(models.Model):
     def _compute_invoice_count(self):
         """This compute function used to count the number of invoice for the picking"""
         for picking_id in self:
-            move_ids = picking_id.env['account.move'].search([('invoice_origin', '=', picking_id.name)])
+            move_ids = picking_id.env['account.move'].sudo().search([('invoice_origin', '=', picking_id.name)])
             if move_ids:
                 self.invoice_count = len(move_ids)
             else:
