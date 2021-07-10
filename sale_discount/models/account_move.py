@@ -52,6 +52,7 @@ class AccountInvoice(models.Model):
             total = 0.0
             total_currency = 0.0
             total_discount = 0.0
+            amount_untaxed = 0.0
             currencies = set()
 
             for line in move.line_ids:
@@ -93,6 +94,7 @@ class AccountInvoice(models.Model):
             
             if move.partner_id.discount:
                 total_discount = (move.amount_untaxed * move.partner_id.discount)  / 100.0
+            move.amount_untaxed =  move.amount_untaxed - total_discount
             move.amount_tax = sign * (total_tax_currency if len(currencies) == 1 else total_tax)
             move.amount_total = sign * (total_currency if len(currencies) == 1 else total)
             move.amount_residual = -sign * (total_residual_currency if len(currencies) == 1 else total_residual)

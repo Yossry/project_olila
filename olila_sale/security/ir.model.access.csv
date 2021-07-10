@@ -4,3 +4,4 @@ access_cost_estimation_line,access_cost_estimation_line,model_cost_estimation_li
 access_request_for_quote,access_request_for_quote,model_request_for_quote,base.group_user,1,1,1,1
 access_res_zone,access_res_zone,model_res_zone,base.group_user,1,1,1,1
 access_request_for_quote_line,access_request_for_quote_line,model_request_for_quote_line,base.group_user,1,1,1,1
+access_target_history,access_target_history,model_target_history,base.group_user,1,1,1,1

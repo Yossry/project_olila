@@ -17,5 +17,6 @@
         'views/request_for_quote_view.xml',
         'views/zone_view.xml',
         'views/product_view.xml',
+        'views/hr_employee_view.xml',
     ],
 }
