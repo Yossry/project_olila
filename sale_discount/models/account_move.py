@@ -96,7 +96,7 @@ class AccountInvoice(models.Model):
                 total_discount = (move.amount_untaxed * move.partner_id.discount)  / 100.0
             move.amount_untaxed =  move.amount_untaxed - total_discount
             move.amount_tax = sign * (total_tax_currency if len(currencies) == 1 else total_tax)
-            move.amount_total = sign * (total_currency if len(currencies) == 1 else total)
+            move.amount_total = sign * (total_currency if len(currencies) == 1 else total) - total_discount
             move.amount_residual = -sign * (total_residual_currency if len(currencies) == 1 else total_residual)
             move.amount_untaxed_signed = -total_untaxed
             move.amount_tax_signed = -total_tax

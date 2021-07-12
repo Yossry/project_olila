@@ -22,11 +22,10 @@ class SaleOrder(models.Model):
                 amount_tax += line.price_tax
             if order.partner_id.discount:
                 total_discount = (amount_untaxed * order.partner_id.discount)  / 100.0
-            amount_untaxed = amount_untaxed - total_discount
             order.update({
                 'amount_untaxed': amount_untaxed,
                 'amount_tax': amount_tax,
-                'amount_total': amount_untaxed + amount_tax + total_discount,
+                'amount_total': (amount_untaxed + amount_tax ) - total_discount,
                 'total_discount' : total_discount,
             })
 
