@@ -15,8 +15,7 @@ class SaleOrder(models.Model):
         Compute the total amounts of the SO.
         """
         for order in self:
-            amount_untaxed = amount_tax = 0.0
-            total_discount = amount_total = 0.0
+            amount_untaxed = amount_tax = total_discount = 0.0
             for line in order.order_line:
                 amount_untaxed += line.price_subtotal
                 amount_tax += line.price_tax
@@ -25,8 +24,8 @@ class SaleOrder(models.Model):
             order.update({
                 'amount_untaxed': amount_untaxed,
                 'amount_tax': amount_tax,
-                'amount_total': (amount_untaxed + amount_tax ) - total_discount,
-                'total_discount' : total_discount,
+                'amount_total': (amount_untaxed - total_discount) + amount_tax,
+                'total_discount' : total_discount
             })
 
     total_discount = fields.Monetary(string='Total Discount', store=True, readonly=True,

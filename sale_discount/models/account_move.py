@@ -53,6 +53,7 @@ class AccountInvoice(models.Model):
             total_currency = 0.0
             total_discount = 0.0
             amount_untaxed = 0.0
+            amount_residual = 0.0
             currencies = set()
 
             for line in move.line_ids:
@@ -94,10 +95,12 @@ class AccountInvoice(models.Model):
             
             if move.partner_id.discount:
                 total_discount = (move.amount_untaxed * move.partner_id.discount)  / 100.0
-            move.amount_untaxed =  move.amount_untaxed - total_discount
+
+            move.amount_untaxed =  move.amount_untaxed
             move.amount_tax = sign * (total_tax_currency if len(currencies) == 1 else total_tax)
-            move.amount_total = sign * (total_currency if len(currencies) == 1 else total) - total_discount
-            move.amount_residual = -sign * (total_residual_currency if len(currencies) == 1 else total_residual)
+            move.amount_total = (move.amount_untaxed - total_discount) + move.amount_tax
+            amount_residual = -sign * (total_residual_currency if len(currencies) == 1 else total_residual)
+            move.amount_residual = amount_residual - total_discount
             move.amount_untaxed_signed = -total_untaxed
             move.amount_tax_signed = -total_tax
             move.amount_total_signed = abs(total) if move.move_type == 'entry' else -total
@@ -135,4 +138,24 @@ class AccountInvoice(models.Model):
     total_discount = fields.Monetary(string='Total Discount', store=True, readonly=True,
         compute='_compute_amount')
 
+class AccountPaymentRegister(models.TransientModel):
+    _inherit = 'account.payment.register'
+    _description = 'Register Payment'
 
+    @api.depends('source_amount', 'source_amount_currency', 'source_currency_id', 'company_id', 'currency_id', 'payment_date')
+    def _compute_amount(self):
+        for wizard in self:
+            move_id = self.env['account.move'].browse(self._context.get('active_id', []))
+            amount_total = 0.0
+            if wizard.source_currency_id == wizard.currency_id:
+                # Same currency.
+                amount_total = wizard.source_amount_currency
+                wizard.amount = amount_total - move_id.total_discount
+            elif wizard.currency_id == wizard.company_id.currency_id:
+                # Payment expressed on the company's currency.
+                amount_total = wizard.source_amount
+                wizard.amount = amount_total - move_id.total_discount
+            else:
+                # Foreign currency on payment different than the one set on the journal entries.
+                amount_payment_currency = wizard.company_id.currency_id._convert(wizard.source_amount, wizard.currency_id, wizard.company_id, wizard.payment_date)
+                wizard.amount = amount_payment_currency - move.total_discount
