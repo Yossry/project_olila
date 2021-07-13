@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ammendment_wizard" model="ir.ui.view">
+        <field name="name">ammendment.wizard.form</field>
+        <field name="model">ammendment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Ammendment Process">
+                <group>
+                    <field name="type" widget="radio" options="{'horizontal': true}"/>
+                </group>
+                <footer>
+                    <button name="create_ammendment" string="Create Ammendment" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+        </field>
+    </record>
+
+     <record id="action_partial_picking_wizard" model="ir.actions.act_window">
+        <field name="name">Ammendment Process</field>
+        <field name="res_model">ammendment.wizard</field>
+        <field name="view_id" ref="view_ammendment_wizard"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

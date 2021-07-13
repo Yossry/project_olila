@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 from odoo.tools.float_utils import float_is_zero
+from odoo.exceptions import UserError
 
 class Picking(models.Model):
     _inherit = 'stock.picking'
@@ -60,6 +61,7 @@ class PurchaseOrderLine(models.Model):
 class Purchase(models.Model):
     _inherit = 'purchase.order'
 
+    old_purchase_id = fields.Many2one('purchase.order', string='Previous Order')
     country_id = fields.Many2one('res.country', string='Country')
     beneficiary = fields.Many2one('res.partner')
     beneficiary_address = fields.Char(string="Beneficiary address")
@@ -77,7 +79,7 @@ class Purchase(models.Model):
     port_of_landing  = fields.Char(string="Port of Landing", copy=False)
     # others
     purchase_type = fields.Selection([('local', 'Local'), ('import', 'Import')], copy=False)
-    state = fields.Selection(selection_add=[('landed_cost', 'LC Opening')], ondelete={'landed': 'set default'})
+    state = fields.Selection(selection_add=[('landed_cost', 'LC Opening'), ('amendment', 'Amendment')])
     landed_cost_count = fields.Integer(compute='_landed_cost_count', string='# Landed Cost')
     mode_of_shipment = fields.Selection([('air', 'Air'), ('ship', 'Ship'), ('road', 'Road')], copy=False)
     
@@ -128,6 +130,8 @@ class Purchase(models.Model):
 
     def button_confirm(self):
         for order in self:
+            if not order.purchase_type:
+                raise UserError(_('Please select purchase type'))
             if order.state not in ['draft', 'sent', 'landed_cost']:
                 continue
             order._add_supplier_to_product()
@@ -168,10 +172,11 @@ class Purchase(models.Model):
         return {
             'product_id' : line.product_id.id,
             'description' : line.name,
-            'hs_code' : line.product_id.hs_code,
+            'hs_code' : line.product_id.hs_code if line.product_id.hs_code else line.hs_code,
             'product_qty' : line.product_qty,
             'price_unit' : line.price_unit,
-            'currency_id': line.currency_id and line.currency_id.id
+            'currency_id': line.currency_id and line.currency_id.id,
+            'po_line_id': line.id,
         }
 
     def _prepare_values(self):
@@ -182,6 +187,7 @@ class Purchase(models.Model):
             'lc_requisition_date' : fields.Date.today(),
             'department_id' : self.department_id and self.department_id.id,
             'purchase_id' : self.id,
+            'old_purchase_id':  self.old_purchase_id and self.old_purchase_id.id,
             'origin': self.country_id and self.country_id.id,
             'currency_id': self.currency_id and self.currency_id.id,
             'pi_number' : self.partner_ref,
@@ -191,6 +197,7 @@ class Purchase(models.Model):
 
     def create_landed_cost(self):
         values = self._prepare_values()
+        print("VVVVVVVV", values)
         self.env['lc.opening.fund.requisition'].create(values)
         self.write({'state' : 'landed_cost'})
         return True

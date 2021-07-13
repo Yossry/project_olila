@@ -7,6 +7,7 @@ class LCRequest(models.Model):
     _description="Lc Request"
 
     name = fields.Char('Name', required=True, index=True, readonly=True, copy=False, default='New')
+    old_purchase_id = fields.Many2one('purchase.order', string='Previous Order')
     application_date = fields.Date(string="Application Date", default=fields.Date.today())
     purchase_order_no = fields.Many2one("purchase.order", string='Purchase No')
     purchase_order_date = fields.Date(string="Purchase Date")
@@ -30,7 +31,7 @@ class LCRequest(models.Model):
     remarks = fields.Text()
     maturity_balance = fields.Float(string='Maturity Balance Percentage', copy=False)
     opening_count = fields.Integer(compute='_opening_count', string='# Opening')
-    state = fields.Selection([('draft','Draft'),('confirm','Confirm'),('open','Open'),('print','Print'),('cancel','Cancel')], string="State", default='draft', copy=False)
+    state = fields.Selection([('draft','Draft'),('confirm','Confirm'),('open','Open'),('print','Print'),('amendment', 'Amendment'),('cancel','Cancel')], string="State", default='draft', copy=False)
 
     def _opening_count(self):
         for rec in self:
@@ -60,11 +61,12 @@ class LCRequest(models.Model):
             'product_id' : line.product_id.id,
             'item_code' : line.product_id.default_code,
             'quantity' : line.product_qty,
-            'unit_price' : line.price_unit
+            'unit_price' : line.price_unit,
+            'po_line_id' : line.po_line_id and line.po_line_id.id
         }
 
-    def create_lc_opening(self):
-        vals = {
+    def _prepare_opening_data(self):
+        return {
                 'order_id': self.purchase_order_no and self.purchase_order_no.id,
                 'currency_id' : self.currency_id.id or False,
                 'po_date' : self.purchase_order_date,
@@ -72,6 +74,7 @@ class LCRequest(models.Model):
                 'lc_amount' : self.lc_amount,
                 'bank_name' : self.bank_name,
                 'lc_request': self.id,
+                'old_purchase_id' :  self.old_purchase_id and self.old_purchase_id.id,
                 'lcaf_no' : self.requisition_id.lcaf_no,
                 'shipment_date' : self.purchase_order_no.date_planned,
                 'partial_shipment' : self.purchase_order_no.partial_shipment,
@@ -84,7 +87,11 @@ class LCRequest(models.Model):
                 'bank_branch' : self.purchase_order_no.swift_code,
                 'lc_opening_lines' : [(0,0, self._prepare_lines(line)) for line in self.requisition_id.requisition_line_ids]
         }
+
+    def create_lc_opening(self):
+        vals = self._prepare_opening_data()
         self.env['lc.opening'].create(vals)
+        return True
 
     def button_draft(self):
        self.write({'state': 'draft'})

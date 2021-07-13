@@ -27,7 +27,6 @@
                         <button name="create_insurance_cover" string="Create Insurance Cover" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'request')]}"/>
                         <button name="create_approval_explosive" string="Approval For Explosive" type="object" class="btn-primary" attrs="{'invisible': [('state', 'not in', ('confirm', 'request'))]}"/>
                         <button name="button_cancel" string="Cancel" type="object" class="btn-primary" attrs="{'invisible': [('state', '=', 'cancel')]}"/>
-                        <button name="button_draft" string="Set to Draft" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'amendment')]}"/>
                         <field name="state"  widget="statusbar"/>
                     </header>
                     <sheet>
@@ -41,7 +40,7 @@
                             <button name="open_explosive_cost" type="object" class="oe_stat_button" icon="fa-user" attrs="{'invisible': [('explosive_count', '=', 0)]}">
                                 <field name="explosive_count" widget="statinfo" string="Approvals"/>
                             </button>
-                            <button name="open_lc_request" type="object" class="oe_stat_button" icon="fa-edit" attrs="{'invisible': [('request_count', '=', 0)]}">
+                            <button name="open_lc_request" type="object" class="oe_stat_button" icon="fa-file-text" attrs="{'invisible': [('request_count', '=', 0)]}">
                                 <field name="request_count" widget="statinfo" string="LC Prayer Application"/>
                             </button>
                             <button name="open_picking" type="object" class="oe_stat_button" icon="fa-truck" attrs="{'invisible': [('picking_count', '=', 0)]}">
@@ -67,6 +66,7 @@
                                 <field name="purchase_id" required="1"/>
                                 <field name="purchase_order_date" required="1"/>
                                 <field name="lc_requisition_date" required="1"/>
+                                <field name='old_purchase_id' attrs="{}"/>
                                 <field name="pi_date"/>
                                 <field name="is_lcaf"/>
                                 <field name="is_tm"/>

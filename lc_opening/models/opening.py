@@ -44,6 +44,7 @@ class LcOpening(models.Model):
 
     name = fields.Char('Name', required=True, index=True, readonly=True, copy=False, default='New')
     order_id = fields.Many2one("purchase.order",string='Purchase')
+    old_purchase_id = fields.Many2one('purchase.order', string='Previous Order')
     po_date = fields.Date(string="PO Date")
     lc_no = fields.Char( string='LC No')
     requisition_id = fields.Many2one('lc.opening.fund.requisition', string='LC Fund Requisition')
@@ -94,6 +95,7 @@ class LcOpeningLines(models.Model):
             rec.total_price = rec.unit_price * rec.quantity
 
     opening_id = fields.Many2one("lc.opening", string='Opning')
+    po_line_id = fields.Many2one('purchase.order.line', string="LC Purchase Line")
     product_id = fields.Many2one("product.product", string='Product')
     item_code = fields.Char(string='Item  Code')
     unit_price = fields.Float(string='Unit price')

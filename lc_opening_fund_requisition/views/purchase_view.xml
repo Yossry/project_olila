@@ -86,7 +86,7 @@
                     <button name="create_landed_cost" type="object" string="Create Letter of Credit" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'purchase'),('purchase_type', '=', 'local')]}"/>
                 </xpath>
                 <xpath expr="//div[@name='button_box']" position="inside">
-                    <button class="open_landed_cost" name="open_landed_cost"  type="object" icon="fa-file-o" attrs="{'invisible': [('landed_cost_count', '=', 0)]}">
+                    <button class="open_landed_cost" name="open_landed_cost"  type="object" icon="fa-clipboard" attrs="{'invisible': [('landed_cost_count', '=', 0)]}">
                         <field string="Letter of Credit" name="landed_cost_count" widget="statinfo" />
                     </button>
                 </xpath>
@@ -102,7 +102,8 @@
                     <attribute name="attrs">{'invisible':[('purchase_type', '=', 'local')]}</attribute>
                 </xpath>
                 <xpath expr="//field[@name='partner_ref']" position="after">
-                    <field name='pi_date' attrs="{'invisible':[('purchase_type', '=', 'local')]}"/>
+                    <field name='pi_date' attrs="{'invisible': [('purchase_type', '=', 'local')]}"/>
+                    <field name='old_purchase_id' attrs="{}"/>
                 </xpath>
                 <xpath expr="//field[@name='date_order']" position="attributes">
                     <attribute name="attrs">{}</attribute>
@@ -158,7 +159,7 @@
             <field name="res_model">purchase.order</field>
             <field name="view_mode">tree,kanban,form,pivot,graph,calendar,activity</field>
             <field name="view_id" ref="purchase.purchase_order_view_tree"/>
-            <field name="domain">[('state','in', ('landed_cost', 'purchase', 'done'))]</field>
+            <field name="domain">[('state','in', ('amendment', 'landed_cost', 'purchase', 'done'))]</field>
             <field name="search_view_id" ref="purchase.purchase_order_view_search"/>
             <field name="context">{}</field>
             <field name="help" type="html">

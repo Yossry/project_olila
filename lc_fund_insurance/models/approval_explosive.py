@@ -17,7 +17,7 @@ class PostApprovalExplosive(models.Model):
 	street2 = fields.Char()
 	city = fields.Char()
 	state_id = fields.Many2one("res.country.state", string='State', ondelete='restrict', domain="[('country_id', '=?', country_id)]")
-	state = fields.Selection([('draft','Draft'), ('confirm','Confirm'), ('approve','Approve'),('done','Done'), ('cancel','Cancel')], 
+	state = fields.Selection([('draft','Draft'), ('confirm','Confirm'), ('approve','Approve'),('done','Done'),('amendment', 'Amendment'),('cancel','Cancel')], 
 		string='Status', readonly=True, index=True, 
 		copy=False, default='draft', track_visibility='onchange')
 	country_id = fields.Many2one('res.country', string='Country', ondelete='restrict')
@@ -98,7 +98,7 @@ class PreApprovalExplosive(models.Model):
 	street2 = fields.Char()
 	city = fields.Char()
 	state_id = fields.Many2one("res.country.state", string='State', ondelete='restrict', domain="[('country_id', '=?', country_id)]")
-	state = fields.Selection([('draft','Draft'), ('confirm','Confirm'), ('approve','Approve'), ('re_approval','Re Approval'), ('done','Done'), ('cancel','Cancel')], 
+	state = fields.Selection([('draft','Draft'), ('confirm','Confirm'), ('approve','Approve'), ('re_approval','Re Approval'), ('amendment', 'Amendment'),('done','Done'), ('cancel','Cancel')], 
 		string='Status', readonly=True, index=True, 
 		copy=False, default='draft', track_visibility='onchange')
 	country_id = fields.Many2one('res.country', string='Country', ondelete='restrict')

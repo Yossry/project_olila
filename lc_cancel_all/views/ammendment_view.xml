@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- <record id="lc_ammenment_add_state_view_inherit" model="ir.ui.view">
+        <field name="name">purchase.lc.ammendment.form.state.view</field>
+        <field name="model">purchase.lc.ammendment</field>
+        <field name="inherit_id" ref="lc_ammenment.purchase_lc_ammendment_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header"  position="inside">
+                <button name="button_confirm" states="draft" string="Confirm" type="object" class="btn-primary"/>
+                <button name="button_cancel" states="draft,confirm" string="Cancel" type="object" class="btn-primary"/>
+            </xpath>
+        </field>
+    </record> -->
+</odoo>

@@ -48,7 +48,7 @@ class InsuranceMarine(models.Model):
     total_amount = fields.Float(string='Total Amount', compute="_compute_total")
     currency_id = fields.Many2one('res.currency', 'Currency', required=True, readonly=True, default=lambda self: self.env.company.currency_id.id)
     insurance_marine_ids = fields.One2many("insurance.cover.marine.lines", "insurance_marine_id", string="Insurance Lines")
-    state = fields.Selection([('draft','Draft'),('confirm','Confirm'), ('send','Send'),('marine','Marine'),('cancel','Cancel')], 
+    state = fields.Selection([('draft','Draft'),('confirm','Confirm'), ('send','Send'),('amendment', 'Amendment'),('marine','Marine'),('cancel','Cancel')], 
         string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
     total_in_foreign_cr = fields.Float(string="Total In (FC)")
     premium_amount = fields.Float(string="Premium Amount")

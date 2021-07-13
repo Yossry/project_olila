@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partial_picking_wizard" model="ir.ui.view">
+        <field name="name">Partial picking Wizard</field>
+        <field name="model">partial.picking.wizard</field>
+        <field name="arch" type="xml">
+            <form string="LC Picking Wizard">
+                <group>
+                    <group>
+                        <field name="lc_opning_id" readonly="1"/>
+                    </group>
+                    <group></group>
+                </group>
+                <group>
+                    <field name="lines_ids" nolabel="1" mode="tree" options="{'create': false}">
+                        <tree editable="top">
+                            <field name="product_id"/>
+                            <field name="quantity" />
+                            <field name="unit_price" />
+                            <field name="item_code" invisible="1"/>
+                            <field name="wizard_id" invisible="1"/>
+                            <field name="lc_opning_line_id" invisible="1"/>
+                            <field name="po_line_id" invisible="1"/>
+                        </tree>
+                    </field>
+                </group>
+                <footer>
+                    <button name="create_partial_picking" string="Create Picking" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" />
+                    </footer>
+                </form>
+        </field>
+    </record>
+
+     <record id="action_partial_picking_wizard" model="ir.actions.act_window">
+        <field name="name">Partial Picking</field>
+        <field name="res_model">partial.picking.wizard</field>
+        <field name="view_id" ref="view_partial_picking_wizard"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

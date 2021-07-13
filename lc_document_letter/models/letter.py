@@ -71,6 +71,16 @@ class DocumentLetter(models.Model):
     other_charges = fields.Float(string="Other Charges")
     total_amount = fields.Float(string="Amount in (FC)",compute="compute_amount")
     final_amount = fields.Float(string="Total Amount",compute='_get_sum')
+    state = fields.Selection([('draft','Draft'),('confirm','Confirm'),('amendment', 'Amendment'),('cancel','Cancel')], 
+        string='Status', readonly=True, index=True, copy=False, default='draft')
+
+    def button_confirm(self):
+        for rec in self:
+            rec.write({'state': 'confirm'})
+
+    def button_cancel(self):
+        for rec in self:
+            rec.write({'state': 'cancel'})
 
     @api.model
     def create(self, vals):

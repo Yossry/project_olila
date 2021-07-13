@@ -24,7 +24,7 @@
                     <button name="button_send" string="Send" type="object" class="btn-primary" attrs="{'invisible':[('state', 'in', ('send', 'marine', 'draft'))]}"/>
                     <button name="button_cancel" string="Cancel" type="object" class="btn-primary" attrs="{'invisible':[('state', '=', 'cancel')]}"/>
                     <button name="button_draft" string="Set to Draft" type="object" class="btn-primary" attrs="{'invisible':[('state', '=', 'draft')]}"/>
-                    <field name="state"  widget="statusbar" statusbar_visible="draft,confirm,send,cancel"/>
+                    <field name="state"  widget="statusbar"/>
                 </header>
 				<sheet>
 					<div class="oe_title">

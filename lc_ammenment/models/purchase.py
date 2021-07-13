@@ -1,7 +1,29 @@
-from odoo import api, fields, models
+from odoo import api, fields, models,_
 from datetime import date, datetime
 
-class LcOpening(models.Model):
+class LCOpeningFundRequisition(models.Model):
+    _inherit = 'lc.opening.fund.requisition'
+
+    ammendment_count = fields.Integer(compute='_ammendment_count', string='#Ammendments')
+
+    def view_fund_ammendment(self):
+        opening_ids = self.env['purchase.lc.ammendment'].search([('requisition_id', '=', self.id)])
+        return {
+            'name': _('Ammendments'),
+            'view_type': 'form',
+            'view_mode': 'tree,form',
+            'res_model': 'purchase.lc.ammendment',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+            'domain': [('id', 'in', opening_ids.ids)],
+        }
+
+    def _ammendment_count(self):
+        for rec in self:
+            opening_ids = self.env['purchase.lc.ammendment'].search([('requisition_id', '=', rec.id)])
+            rec.ammendment_count = len(opening_ids.ids)
+
+class LCOpening(models.Model):
     _inherit="lc.opening"
 
     ammendment_count = fields.Integer(compute='_ammendment_count', string='#Ammendments')
@@ -29,6 +51,7 @@ class LcOpening(models.Model):
                 'purchase_order_no': rec.order_id and rec.order_id.id,
                 'purchase_order_date': rec.po_date,
                 'lc_no': rec.id,
+                'requisition_id': rec.requisition_id and rec.requisition_id.id,
             }
             self.env['purchase.lc.ammendment'].create(vals)
 
@@ -45,9 +68,11 @@ class PurchaseLcAmmendment(models.Model):
     _description="Purchase Ammendment"
 
     name = fields.Char('Name', required=True, index=True, readonly=True, copy=False, default='New')
+    amment_type = fields.Selection([('major', 'Major'),('minor', 'Minor')], string='Type', default='minor')
     purchase_order_no = fields.Many2one("purchase.order", string='Purchase Order No')
     purchase_order_date = fields.Date(string="Purchase Order Date")
     lc_no = fields.Many2one('lc.opening', string='LC Opening')
+    requisition_id = fields.Many2one('lc.opening.fund.requisition', string='Requisition')
     mur = fields.Char(string="MUR")
     swift_input = fields.Char(string="Swift Input")
     sender_name = fields.Char(string="Sender Name")
@@ -66,6 +91,7 @@ class PurchaseLcAmmendment(models.Model):
     purpose_message = fields.Text(string="Purpose Message") 
     from_of_credit = fields.Char(string="From of Documentary Credit")
     application_rules = fields.Text(string="Application Rules")
+    ammendment_charges = fields.Float()
     date_of_entry = fields.Date(string="Date of Entry")
     place_of_entry = fields.Char(string="Place of Entry")
     last_date_of_shipment = fields.Date(string="Last Date of Shipment")
@@ -78,6 +104,12 @@ class PurchaseLcAmmendment(models.Model):
         if vals.get('name', 'New') == 'New':
             vals['name'] = self.env['ir.sequence'].next_by_code('purchase.lc.ammendment') or ('New')
         return super(PurchaseLcAmmendment, self).create(vals)
+
+    def button_confirm(self):
+        self.write({'state' : 'confirm'})
+
+    def button_cancel(self):
+        self.write({'state' : 'cancel'})
 
 
 

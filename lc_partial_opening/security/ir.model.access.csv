@@ -1,0 +1,5 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_partial_release_letter_wizard,access_partial_release_letter_wizard,model_partial_release_letter_wizard,base.group_user,1,1,1,1
+access_partial_release_letter_line,access_partial_release_letter_line,model_partial_release_letter_line,base.group_user,1,1,1,1
+access_partial_picking_line,access_partial_picking_line,model_partial_picking_line,base.group_user,1,1,1,1
+access_partial_picking_wizard,access_partial_picking_wizard,model_partial_picking_wizard,base.group_user,1,1,1,1

@@ -26,7 +26,7 @@
                     <button name="button_cancel" string="Cancel" type="object" class="btn-primary" attrs="{'invisible':[('state', '=', 'cancel')]}"/>
                     <button name="button_draft" string="Set to Draft" type="object" class="btn-primary" attrs="{'invisible':[('state', '=', 'draft')]}"/>
                     <button name="insurance_cover_marine" string="Marine Insurance Cover" type="object" class="btn-primary"/>
-                    <field name="state"  widget="statusbar" statusbar_visible="draft,confirm,cancel,send,marine"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
 				<sheet>
                     <div class="oe_button_box" name="button_box">

@@ -9,6 +9,7 @@
                 <field name="name"/>
                 <field name="purchase_order_no"/>
                 <field name="lc_requisition_id"/>
+                <field name="state"/>
             </tree>
         </field>
     </record>
@@ -23,7 +24,7 @@
                     <button name="button_approve" string="Approve" type="object" class="btn-primary" attrs="{'invisible':[('state', '!=', 'confirm')]}"/>
                     <button name="button_cancel" string="Cancel"  type="object" class="btn-primary" attrs="{'invisible':[('state', 'in', ('cancel'))]}"/>
                     <button name="button_done" string="Done"  type="object" class="btn-primary" attrs="{'invisible':[('state', 'not in', ('approve'))]}"/>
-                    <field name="state"  widget="statusbar" statusbar_visible="draft,confirm,approve,done,cancel"/>
+                    <field name="state"  widget="statusbar"/>
                 </header>
                 <sheet>
                     
@@ -115,6 +116,7 @@
 				<field name="name"/>
 				<field name="purchase_order_no"/>
                 <field name="lc_requisition_id"/>
+                <field name="state"/>
 			</tree>
 		</field>
 	</record>
@@ -130,7 +132,7 @@
                     <button name="button_re_approval" string="Re-Approval" type="object" class="btn-primary" attrs="{'invisible':[('state', '!=', 'approve')]}"/>
                     <button name="button_cancel" string="Cancel"  type="object" class="btn-primary" attrs="{'invisible':[('state', 'in', ('cancel'))]}"/>
                     <button name="button_done" string="Done"  type="object" class="btn-primary" attrs="{'invisible':[('state', 'not in', ('approve', 're_approval'))]}"/>
-                    <field name="state"  widget="statusbar" statusbar_visible="draft,confirm,approve,re_approval,done,cancel"/>
+                    <field name="state"  widget="statusbar"/>
                 </header>
 				<sheet>
                     <div class="oe_button_box" name="button_box">
@@ -186,20 +188,6 @@
                             <field name="remark" class="oe_inline" placeholder="Remark and note here..."/>
                             <div class="oe_clear"/> 
                         </page>
-                        <!-- <page string="Final Approvals" attrs="{}">
-                        	<group>
-                        		<group>
-                        			<field name="commercial_invoice"/>
-									<field name="bill_of_lading"/>
-									<field name="lc_no"/>
-                        		</group>
-                        		<group>
-                        			<field name="packing_list"/>
-									<field name="certificate_of_origin"/>
-									<field name="arrival_date"/>
-                        		</group>
-                        	</group>
-                        </page> -->
                     </notebook> 
 				</sheet>
                 <div class="oe_chatter">

@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+        <record id="lc_fund_requisition_ammenment_view_inherit" model="ir.ui.view">
+            <field name="name">lc.fund.requisition.ammenment.inherit.view</field>
+            <field name="model">lc.opening.fund.requisition</field>
+            <field name="inherit_id" ref="lc_opening_fund_requisition.lc_opening_fund_requisition_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='open_lc_request']" position="after">
+                    <button name="view_fund_ammendment" type="object" class="oe_stat_button" icon="fa-edit" attrs="{'invisible': [('ammendment_count', '=', 0)]}">
+                        <field name="ammendment_count" widget="statinfo" string="Ammendments"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
         <record id="lc_ammenment_view_inherit" model="ir.ui.view">
             <field name="name">lc_ammenment.inherit.view</field>
             <field name="model">lc.opening</field>
             <field name="inherit_id" ref="lc_opening.pway_lc_opening_form_view"/>
             <field name="arch" type="xml">
-                <xpath expr="//button[@name='button_accept']" position="after">
-                    <button name="button_ammendment" string="Ammendment" type="object" class="btn-primary" states='confirm'/>
-                </xpath>
                 <xpath expr="//button[@name='view_journal_entry']" position="after">
                     <button name="view_lc_opening_ammendment" type="object" class="oe_stat_button" icon="fa-edit" attrs="{'invisible': [('ammendment_count', '=', 0)]}">
                         <field name="ammendment_count" widget="statinfo" string="Ammendments"/>
@@ -26,6 +36,8 @@
                 <field name="purchase_order_no"/>
                 <field name="lc_no"/>
                 <field name="date_of_amendant"/>
+                <field name="amment_type"/>
+                <field name="state"/>
             </tree>
         </field>
     </record>
@@ -36,6 +48,8 @@
         <field name="arch" type="xml">
             <form string="Purchase Lc Ammendment">
                 <header>
+                    <button name="button_confirm" states="draft" string="Confirm" type="object" class="btn-primary"/>
+                    <button name="button_cancel" states="draft,confirm" string="Cancel" type="object" class="btn-primary"/>
                     <field name="state"  widget="statusbar"/>
                 </header>
                 <sheet>
@@ -47,8 +61,8 @@
                             <field name="purchase_order_no"/>
                             <field name="purchase_order_date"/>
                             <field name="lc_no"/>
+                            <field name="amment_type"/>
                             <field name="swift_input"/>
-                            
                         </group>
                         <group>    
                             <field name="sender_name"/>
@@ -80,8 +94,15 @@
                         <group>    
                            <field name="purpose_message"/>
                            <field name="information"/>
-                        </group>    
+                        </group>   
                     </group>
+                    <notebook>
+                        <page string='Ammendment Charges' name='Ammendment Charges'>
+                            <group>
+                                <field name="ammendment_charges"/>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" groups="base.group_user"/>

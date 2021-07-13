@@ -22,18 +22,16 @@ class LCOpeningFundRequisition(models.Model):
             final_total = rec.lc_foreign_total * rate
             rec.lc_fund_total = final_total
 
-    @api.depends('lc_fund_total','margin','commission','source_tax','vat_on_commission','pt_charge','insurance_charge')
+    @api.depends('margin','commission','source_tax','vat_on_commission','pt_charge','insurance_charge')
     def _compute_total(self): 
         for rec in self:
-            lc_total_amount = rec.lc_fund_total + rec.margin + rec.commission + rec.source_tax + rec.vat_on_commission + rec.pt_charge + rec.insurance_charge
-            # lc_currency_total = self.bdt_currency_id._convert(lc_total_amount, self.bdt_currency_id, self.currency_id, fields.Date.context_today(self))
+            lc_total_amount = rec.margin + rec.commission + rec.source_tax + rec.vat_on_commission + rec.pt_charge + rec.insurance_charge
             rec.lc_total = lc_total_amount
 
-
-
-    pi_number = fields.Char()
-    pi_date  = fields.Date()
+    pi_number = fields.Char(string='PI Number')
+    pi_date  = fields.Date(string='PI Date')
     purchase_id = fields.Many2one('purchase.order', string="Purchase No")
+    old_purchase_id = fields.Many2one('purchase.order', string='Previous Order')
     name = fields.Char('Name', required=True, index=True, readonly=True, copy=False, default='New')
     purchase_order_date = fields.Datetime(string="Purchase Date")
     lc_requisition_date = fields.Date(string="LC Requisition Date")
@@ -199,6 +197,7 @@ class LCOpeningFundRequisition(models.Model):
     def _prepare_request_data(self):
         return {
             'purchase_order_no': self.purchase_id and self.purchase_id.id,
+            'old_purchase_id' :  self.old_purchase_id and self.old_purchase_id.id,
             'purchase_order_date': self.purchase_order_date,
             'requisition_id': self.id,
             'lcaf_no' : self.lcaf_no,
@@ -288,6 +287,7 @@ class LCOpeningFundRequisitionLine(models.Model):
     price_unit = fields.Float(string='Unit Price', help='Price Unit')
     sub_total = fields.Float(string='Subtotal', help='Subtotal', compute='_compute_sub_total', store=True)
     currency_id = fields.Many2one('res.currency', 'Foreign Currency')
+    po_line_id = fields.Many2one('purchase.order.line', string="LC Purchase Line")
 
     @api.onchange('product_id')
     def onchange_product_id(self):

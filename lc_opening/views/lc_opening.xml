@@ -62,8 +62,9 @@
 					</div>
 					<group>
 						<group>
-							<field name="order_id" required='1'/>
-							<field name="po_date" required='1'/>
+                            <field name="order_id" required='1'/>
+                            <field name="po_date" required='1'/>
+                            <field name="old_purchase_id"/>
 							<field name="shipment_date"/>
 							<field name="expire_date"/>
 							<field name="origin"/>
