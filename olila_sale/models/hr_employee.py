@@ -55,13 +55,13 @@ class HrEmployee(models.Model):
                 total_count_so = len(child_so)
                 for so in child_so:
                     if target_line:
-                        target_line.target = emp.target / len(total_count_so)
+                        target_line.target = emp.target / total_count_so
                     else:
                         self.env['target.history'].sudo().create({
                             'emp_id': so.id,
                             'month': current_month,
                             'year': current_year,
-                            'target': emp.target / len(total_count_so)
+                            'target': emp.target / total_count_so
                         })
 
 class TargetHistory(models.Model):
