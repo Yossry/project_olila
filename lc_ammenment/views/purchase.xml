@@ -102,6 +102,9 @@
                                 <field name="ammendment_charges"/>
                             </group>
                         </page>
+                        <page string="Report Details">
+                            <field name="description" widget='html'/>
+                        </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">

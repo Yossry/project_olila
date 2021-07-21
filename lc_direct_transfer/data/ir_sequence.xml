@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="seq_lc_direct_transfer" model="ir.sequence">
+	        <field name="name">Direct Transfer</field>
+	        <field name="code">lc.direct.transfer</field>
+	        <field name="prefix">DTN/</field>
+	        <field name="padding">4</field>
+	        <field name="company_id" eval="False" />
+	    </record>
+	</data>
+</odoo>

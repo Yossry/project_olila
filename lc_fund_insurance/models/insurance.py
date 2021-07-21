@@ -41,7 +41,7 @@ class Insurance(models.Model):
     lc_requisition_id = fields.Many2one("lc.opening.fund.requisition")
     insurance_ids = fields.One2many("insurance.cover.lines", "insurance_id", string="Insurance Lines")
     state = fields.Selection([('draft','Draft'),('confirm','Confirm'), ('send','Send'),('amendment', 'Amendment'),('marine','Marine'),('cancel','Cancel')], 
-        string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
+        string='Status', readonly=True, index=True, copy=False, default='draft', tracking=True)
     total_amount = fields.Float(string='Total Amount', compute="_compute_total")
     total_in_foreign_cr = fields.Float(string="Total In (FC)", compute="_compute_total")
     premium_amount = fields.Float(string="Premium Amount")
@@ -158,11 +158,11 @@ class InsuranceCoverLines(models.Model):
  
     insurance_id = fields.Many2one("insurance.cover", string='Insurance')
     sequence = fields.Integer(string='Sequence', default=10)
-    product_id = fields.Many2one('product.product', 'Item Name', track_visibility='onchange', required=True)
+    product_id = fields.Many2one('product.product', 'Item Name', required=True)
     item_code = fields.Char(string='Item Code')
     hs_code = fields.Char(string="HS Code")
     country_id = fields.Many2one('res.country', string='Country', ondelete='restrict')
-    quantity = fields.Float('Quantity', track_visibility='onchange', default=1.0)
+    quantity = fields.Float('Quantity', default=1.0)
     unit_price = fields.Integer(string='Unit price')
     price_subtotal = fields.Float(string='Subtotal', compute="_compute_amount")
 

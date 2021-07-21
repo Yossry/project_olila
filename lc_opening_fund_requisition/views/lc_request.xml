@@ -63,10 +63,15 @@
 							<field name="maturity_balance"/>
 							<field name="total_amount"/>
 						</group>
-						<group colspan='6'>
-							<field name="remarks"/>
-						</group>
 					</group>
+					<notebook>
+                        <page string="Remarks">
+                            <field name="remarks"/>
+                        </page>
+                        <page string="Report Details">
+                            <field name="description" widget='html'/>
+                        </page>
+                	</notebook>
 				</sheet>
 				<div class="oe_chatter">
                     <field name="message_follower_ids" groups="base.group_user"/>

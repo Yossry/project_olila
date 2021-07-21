@@ -10,7 +10,7 @@
 					      <span t-if="doc.bank_address" t-esc="doc.bank_address"/>
 					    </div>
 					</div>
-					<h2 class="mt16 text-center"><span>LC Release Letter</span></h2><br/>
+					<h2 class="mt16 text-center"><span>Opening Application Letter</span></h2><br/>
 					<div class="row mt32 mb16">
 					    <div class="col-12">
 							<h4 class="mt16 text-center"><span t-esc="doc.name" /></h4>

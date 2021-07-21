@@ -6,6 +6,23 @@ class LCRequest(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description="Lc Request"
 
+    report_data = "The Deputy General Manager(Foreign Exchange Department)" \
+                        "Sonali Bank Ltd" \
+                        "Subject : Proposal for opening at sight LC€0.0 at 10% margin favoring Olila Glass Industries Ltd." \
+                        "Dear Sir," \
+                        "Please find hearwith one set of document to open L/C as par beneficiary's Proforma Invoice as under" \
+                        "Proforma Invoice no. PI No , Date.Date.Month.Year for Currency 19.07.2021 for €0.0" \
+                        "We hereby undertake to pay the bill at maturity date of the 90 % of the L/Cvalue from CC(Hypo) Account or our own sources" \
+                        "To open mentioning L/C Plases debit 10 % margin and required charges from our CD account No 31138213 which is" \
+                        "maintaining with your bank," \
+                        "so we therefor request you to plases open the mentioning L/C at your earliest for importing raw materials to meet the" \
+                        "production schedule smoothly." \
+                        "Your kind cooperation in this respect will be highly appreciated." \
+                        "Thank You" \
+                        "Your truly" \
+                        "(Admin)" \
+                        "Chairman" \
+
     name = fields.Char('Name', required=True, index=True, readonly=True, copy=False, default='New')
     old_purchase_id = fields.Many2one('purchase.order', string='Previous Order')
     application_date = fields.Date(string="Application Date", default=fields.Date.today())
@@ -29,6 +46,7 @@ class LCRequest(models.Model):
     lc_amount = fields.Float(string="PI Amount")
     margin = fields.Float(string="Margin Percentage", copy=False)
     remarks = fields.Text()
+    description = fields.Text(default=report_data)
     maturity_balance = fields.Float(string='Maturity Balance Percentage', copy=False)
     opening_count = fields.Integer(compute='_opening_count', string='# Opening')
     state = fields.Selection([('draft','Draft'),('confirm','Confirm'),('open','Open'),('print','Print'),('amendment', 'Amendment'),('cancel','Cancel')], string="State", default='draft', copy=False)

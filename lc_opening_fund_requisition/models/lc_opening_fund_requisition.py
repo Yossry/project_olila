@@ -43,7 +43,7 @@ class LCOpeningFundRequisition(models.Model):
     is_tm = fields.Boolean(string="T/M")
     is_imp = fields.Boolean(string="IMP")
     imp_amount = fields.Float(string="IMP Amount")
-    state = fields.Selection([('draft','Draft'),('confirm', 'Confirm'),('request','Request'),('open','Open'),('accept', 'Accept'),('amendment', 'Amendment'),('done', 'Done'),('cancel','Cancel')], 
+    state = fields.Selection([('draft','Draft'),('confirm', 'Confirm'),('paid', 'Paid'),('request','Request'),('open','Open'),('accept', 'Accept'),('amendment', 'Amendment'),('done', 'Done'),('cancel','Cancel')], 
         string='Status', readonly=True, index=True, copy=False, default='draft')
     margin = fields.Float(string="Margin", copy=False)
     commission = fields.Float(string="Commission", copy=False)
@@ -166,6 +166,10 @@ class LCOpeningFundRequisition(models.Model):
             rec.write({'picking': True, 'state': 'done'})
         return True
 
+    def button_paid(self):
+        self.write({'state': 'paid'})
+        return True
+
     def button_confirm(self):
         self.write({'state': 'confirm'})
         return True
@@ -280,10 +284,10 @@ class LCOpeningFundRequisitionLine(models.Model):
 
     sequence = fields.Integer(string='Sequence', default=10)
     lc_requisition_id = fields.Many2one('lc.opening.fund.requisition', string="LC Requisition")
-    product_id = fields.Many2one('product.product', 'Item Name', track_visibility='onchange', required=True)
-    description = fields.Char('Item Code', size=256, track_visibility='onchange')
-    hs_code = fields.Char('HS Code', size=256, track_visibility='onchange')
-    product_qty = fields.Float('Quantity', track_visibility='onchange', default=1.0)
+    product_id = fields.Many2one('product.product', 'Item Name',required=True)
+    description = fields.Char('Item Code', size=256)
+    hs_code = fields.Char('HS Code', size=256)
+    product_qty = fields.Float('Quantity', default=1.0)
     price_unit = fields.Float(string='Unit Price', help='Price Unit')
     sub_total = fields.Float(string='Subtotal', help='Subtotal', compute='_compute_sub_total', store=True)
     currency_id = fields.Many2one('res.currency', 'Foreign Currency')

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="praposal_document">
+            <t t-call="lc_opening_report.olila_layout">
+                <div class="page">
+                    <div class="row mt32 mb32">
+                        <div class="col-8 text-center">
+                         
+                        </div>
+                        <div class="col-4 text-right"><img t-if="request.env.company.logo" t-att-src="image_data_uri(request.env.company.logo)" alt="Logo" height="120" widget="200"/></div>
+                    </div>
+                   <!--  <div class="row mt-16">
+
+                        <div class="col-12"><h5><span t-esc="o.date_of_amendant and o.date_of_amendant.strftime(' %B %e %Y')" /></h5></div>
+                    </div><br/> -->
+                    <div class="row mt-16">
+                        <div class="col-12"><h5>The Deputy General Manager</h5></div>
+                    </div>
+                     <div class="row mt-16">
+                        <div class="col-12"><h5>(Foreign Exchange Department)</h5></div>
+                    </div>
+                    <div class="row mt-16">
+                        <div class="col-4"><h5>Sonali Bank Ltd</h5></div>
+                    </div>
+                    <!-- <div class="row mt-16">
+                        <div class="col-4"><h5><sapn t-esc="o.sender_branch"/></h5></div>
+                    </div>
+                    <div class="row mt-16">
+                        <div class="col-4"><h5><sapn t-esc="o.sender_address"/></h5></div>
+                    </div><br/><br/> -->
+                    <div class="row">
+                        <div class="col-2" style="width:120px;"><h5>Subject : </h5></div>
+                        <div class="col-11">
+                            <h5>
+                                Proposal for opening at sight LC<span t-esc="o.requisition_id.currency_id and o.requisition_id.currency_id.symbol" /><span t-esc="o.total_amount" /> at 10% margin favoring <u>Olila Glass Industries Ltd.</u>
+                            </h5>
+                        </div>
+                    </div><br/>
+                    <div class="row">
+                        <div class="col-2" style="width:120px;"><h5>Dear Sir,</h5></div>
+                    </div>
+                    <div class="row" style="margin-top:10px;font-family: ui-sans-serif;!important;">
+                        <div class="col-12">
+                            <h5>
+                              Please find hearwith one set of document to open L/C as par beneficiary's Proforma Invoice as under 
+                            </h5>
+                        </div>
+                    </div><br/>
+                    <div class="col-12" style="margin-top:20px; marginbottom:20px;">
+                        <h5>Proforma Invoice no. PI No , Date.Date.Month.Year for Currency 
+                            <span t-esc="o.application_date and o.application_date.strftime(' %d.%m.%Y')" />
+                            for <span t-esc="o.requisition_id.currency_id and o.requisition_id.currency_id.symbol" /><span t-esc="o.total_amount" /></h5>
+                    </div><br/> 
+                    <div class="row" style="margin-top:10px;font-family: ui-sans-serif;!important;">
+                        <div class="col-12">
+                            <h5>
+                              We hereby undertake to pay the bill at maturity date of the 90% of the L/Cvalue from CC(Hypo) Account or our own sources To open mentioning L/C Plases debit 10 % margin and required charges from our CD account No 31138213 which is maintaining with your bank,  
+                            </h5>
+                        </div>
+                    </div><br/>
+                    <div class="row" style="margin-top:10px;font-family: ui-sans-serif;!important;">
+                        <div class="col-12">
+                            <h5>
+                              so we therefor request you to plases open the mentioning L/C at your earliest for importing raw materials to meet the production schedule smoothly.
+                            </h5>
+                        </div>
+                    </div><br/>
+                    <div class="row" style="margin-top:10px;font-family: ui-sans-serif;!important;">
+                        <div class="col-12">
+                            <h5>
+                              Your kind cooperation in this respect will be highly appreciated.
+                            </h5>
+                        </div>
+                    </div><br/>
+                    <div class="row" style="margin-top:10px;font-family: ui-sans-serif;!important;">
+                        <div class="col-12">
+                            <h5>
+                              Thank You 
+                            </h5>
+                        </div>
+                    </div><br/>
+                    <div class="row" style="margin-top:10px;font-family: ui-sans-serif;!important;">
+                        <div class="col-12">
+                            <h5>
+                              Your truly
+                            </h5>
+                        </div>
+                    </div><br/>
+                    <div class="row" style="margin-top:100px;">
+                        <div class="col-12">
+                            <h5>
+                              (<span t-esc="request.env.user and request.env.user.name"/>)
+                            </h5>
+                            <h5>
+                             Chairman
+                            </h5>
+                        </div>
+                    </div><br/>
+                </div>
+            </t>
+        </template>
+
+        <template id="praposal_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="lc_opening_report.praposal_document"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

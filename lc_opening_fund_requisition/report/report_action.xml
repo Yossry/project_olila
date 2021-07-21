@@ -2,7 +2,7 @@
 <odoo>
     <data>
 		<record id="bank_detail_report" model="ir.actions.report">
-	        <field name="name">LC Request</field>
+	        <field name="name">Opening Application Letter</field>
 	        <field name="model">lc.request</field>
 	        <field name="report_type">qweb-pdf</field>
 	        <field name="report_name">lc_opening_fund_requisition.lc_request_template</field>

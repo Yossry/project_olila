@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="lc_ammendment__document">
+            <t t-call="lc_opening_report.olila_layout">
+                <div class="page">
+                    <div class="row">
+                        <div class="col-8 text-center">
+                         
+                        </div>
+                        <div class="col-4 text-right"><img t-if="request.env.company.logo" t-att-src="image_data_uri(request.env.company.logo)" alt="Logo" height="120" widget="200"/></div>
+                    </div>
+                    <div class="row mt-16">
+
+                        <div class="col-12"><h5><span t-esc="o.date_of_amendant and o.date_of_amendant.strftime(' %B %e %Y')" /></h5></div>
+                    </div><br/>
+                    <div class="row mt-16">
+                        <div class="col-12"><h5>The Deputy General Manager</h5></div>
+                    </div>
+                     <div class="row mt-16">
+                        <div class="col-12"><h5>(Foreign Exchange Department)</h5></div>
+                    </div>
+                    <div class="row mt-16">
+                        <div class="col-4"><h5>Sonali Bank Ltd</h5></div>
+                    </div>
+                    <div class="row mt-16">
+                        <div class="col-4"><h5><sapn t-esc="o.sender_branch"/></h5></div>
+                    </div>
+                    <div class="row mt-16">
+                        <div class="col-4"><h5><sapn t-esc="o.sender_address"/></h5></div>
+                    </div><br/><br/>
+                    <div class="row">
+                        <div class="col-2" style="width:120px;"><h5>Subject : </h5></div>
+                        <div class="col-11">
+                            <h5>
+                                Prayer for amendment of L/C no. <sapn t-esc="o.lc_no.lc_no"/> Dated 
+                                <span t-esc="o.lc_no.currency_id and o.date_of_amendant.strftime(' %d.%m.%Y')" />
+                                 for <br/> <u><span t-esc="o.lc_no.currency_id and o.lc_no.currency_id.symbol" /><span t-esc="o.lc_no.total_amount" /> A/c: Olila Glass Industries Ltd.</u>
+                            </h5>
+                        </div>
+                    </div><br/>
+                    <div class="row">
+                        <div class="col-2" style="width:120px;"><h5>Dear Sir,</h5></div>
+                    </div>
+                    <div class="row" style="margin-top:10px;font-family: ui-sans-serif;!important;">
+                        <div class="col-12">
+                            <h5>
+                               With Refrance To the above we would like to inform you that we need amendment of the above mentioned L/C as under,
+                            </h5>
+                        </div>
+                    </div><br/>
+                    <div class="col-12" style="margin-top:20px; marginbottom:20px;">
+                        <h5>1. Field no 31D: Now to be read date of expiry on
+                            <span t-esc="o.lc_no.expire_date and o.lc_no.expire_date.strftime(' %d.%m.%Y')" />
+                            insted or existing</h5>
+                        <h5>1. Field no 44C: Now to be read latest date of Shipment on
+                         <span t-esc="o.lc_no.expire_date and o.lc_no.shipment_date.strftime(' %d.%m.%Y')" /> insted or existing</h5>
+                    </div><br/> 
+                    <div class="row" style="margin-top:10px;font-family: ui-sans-serif;!important;">
+                        <div class="col-12">
+                            <h5>
+                              All other terms and condition will remain unchanged.
+                            </h5>
+                        </div>
+                    </div><br/>
+                    <div class="row" style="margin-top:10px;font-family: ui-sans-serif;!important;">
+                        <div class="col-12">
+                            <h5>
+                              Please debit required charges from CD amount NO. to amendment of above L/C
+                            </h5>
+                        </div>
+                    </div><br/>
+                    <div class="row" style="margin-top:10px;font-family: ui-sans-serif;!important;">
+                        <div class="col-12">
+                            <h5>
+                              We therefore, request you to please arrange to amend as above of the mentioning L/C at your earliest for importing row materials to meet the production schedule smothly 
+                            </h5>
+                        </div>
+                    </div><br/>
+                    <div class="row" style="margin-top:10px;font-family: ui-sans-serif;!important;">
+                        <div class="col-12">
+                            <h5>
+                              Your kind cooperation in this respect will be highly appreciated.
+                            </h5>
+                        </div>
+                    </div><br/>
+                    <div class="row" style="margin-top:10px;font-family: ui-sans-serif;!important;">
+                        <div class="col-12">
+                            <h5>
+                              Thank You 
+                            </h5>
+                        </div>
+                    </div><br/>
+                    <div class="row" style="margin-top:10px;font-family: ui-sans-serif;!important;">
+                        <div class="col-12">
+                            <h5>
+                              Your truly
+                            </h5>
+                        </div>
+                    </div><br/>
+                    <div class="row" style="margin-top:100px;">
+                        <div class="col-12">
+                            <h5>
+                              (<span t-esc="request.env.user and request.env.user.name"/>)
+                            </h5>
+                            <h5>
+                              Managing Director
+                            </h5>
+                        </div>
+                    </div><br/>
+                </div>
+            </t>
+        </template>
+
+        <template id="lc_ammendment_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="lc_opening_report.lc_ammendment__document"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

@@ -19,7 +19,7 @@ class PostApprovalExplosive(models.Model):
 	state_id = fields.Many2one("res.country.state", string='State', ondelete='restrict', domain="[('country_id', '=?', country_id)]")
 	state = fields.Selection([('draft','Draft'), ('confirm','Confirm'), ('approve','Approve'),('done','Done'),('amendment', 'Amendment'),('cancel','Cancel')], 
 		string='Status', readonly=True, index=True, 
-		copy=False, default='draft', track_visibility='onchange')
+		copy=False, default='draft', tracking=True)
 	country_id = fields.Many2one('res.country', string='Country', ondelete='restrict')
 	remark = fields.Text(string="Remark", copy=False)
 	explosive_lines = fields.One2many("approval.explosive.line", 'approval_explosive_id', string="Lines")
@@ -69,7 +69,7 @@ class PostApprovalExplosiveLine(models.Model):
 	_description="post approval explosive line"
 
 	approval_explosive_id = fields.Many2one("post.approval.explosive", string='Approval Explosive')
-	product_id = fields.Many2one('product.product', 'Item', track_visibility='onchange', required=True)
+	product_id = fields.Many2one('product.product', 'Item', required=True)
 	item_code = fields.Char(string='Item Code')
 	importable_quantity = fields.Float(string='Importable Qty')
 	stock_before_approval = fields.Float(string='Stock Before Approval')
@@ -100,7 +100,7 @@ class PreApprovalExplosive(models.Model):
 	state_id = fields.Many2one("res.country.state", string='State', ondelete='restrict', domain="[('country_id', '=?', country_id)]")
 	state = fields.Selection([('draft','Draft'), ('confirm','Confirm'), ('approve','Approve'), ('re_approval','Re Approval'), ('amendment', 'Amendment'),('done','Done'), ('cancel','Cancel')], 
 		string='Status', readonly=True, index=True, 
-		copy=False, default='draft', track_visibility='onchange')
+		copy=False, default='draft', tracking=True)
 	country_id = fields.Many2one('res.country', string='Country', ondelete='restrict')
 	lc_requisition_id = fields.Many2one("lc.opening.fund.requisition")
 	pi_no = fields.Char(string="PI Number", copy=False)
@@ -199,7 +199,7 @@ class PreApprovalExplosiveLine(models.Model):
 	_description="approval.explosive.line"
 
 	approval_explosive_id = fields.Many2one("approval.explosive", string='Approval Explosive')
-	product_id = fields.Many2one('product.product', 'Item', track_visibility='onchange', required=True)
+	product_id = fields.Many2one('product.product', 'Item', required=True)
 	item_code = fields.Char(string='Item Code')
 	importable_quantity = fields.Float(string='Importable Qty')
 	stock_before_approval = fields.Float(string='Stock Before Approval')

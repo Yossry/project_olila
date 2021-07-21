@@ -19,7 +19,7 @@ class LoanControl(models.Model):
         string='Overdue Type', copy=False, default='active')
     state = fields.Selection([('draft','Draft'), ('confirm','Confirm'), ('cancel','Cancel')], 
         string='Status', readonly=True, index=True, 
-        copy=False, default='draft', track_visibility='onchange')
+        copy=False, default='draft', tracking=True)
 
     @api.model
     def create(self, vals):

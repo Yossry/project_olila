@@ -7,6 +7,7 @@ from odoo.exceptions import UserError
 
 class LcOpeningWizard(models.TransientModel):
     _name = 'lc.opening.wizard'
+    _description = 'LC Opening Wizard'
 
     journal_id = fields.Many2one('account.journal', string='Journal', required=True)
     journal_date = fields.Date(string="Date", default=fields.Date.today(), required=True)

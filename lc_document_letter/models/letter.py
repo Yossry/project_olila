@@ -39,6 +39,7 @@ class LcOpening(models.Model):
             'lc_number': self.lc_no,
             'lc_date': self.lc_date,
             'lc_open_id': self.id,
+            'currency_id': self.currency_id and self.currency_id.id,
             'product_lines': lines
         }
 
@@ -66,13 +67,21 @@ class DocumentLetter(models.Model):
     commission = fields.Float()
     vat = fields.Float(string="VAT")
     note = fields.Text()
+    description = fields.Text()
     postage = fields.Float()
     source_tax = fields.Float(string="Source Tax")
     other_charges = fields.Float(string="Other Charges")
     total_amount = fields.Float(string="Amount in (FC)",compute="compute_amount")
     final_amount = fields.Float(string="Total Amount",compute='_get_sum')
-    state = fields.Selection([('draft','Draft'),('confirm','Confirm'),('amendment', 'Amendment'),('cancel','Cancel')], 
+    currency_id = fields.Many2one('res.currency', 'Currency')
+    local_currency_id = fields.Many2one('res.currency', 'Currency (BDT)', readonly=True, default=lambda self: self.env.company.currency_id.id)
+
+    state = fields.Selection([('draft','Draft'),('confirm','Confirm'), ('paid','Paid'),('amendment', 'Amendment'),('cancel','Cancel')], 
         string='Status', readonly=True, index=True, copy=False, default='draft')
+
+    def button_paid(self):
+        for rec in self:
+            rec.write({'state': 'paid'})
 
     def button_confirm(self):
         for rec in self:

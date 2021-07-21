@@ -40,8 +40,9 @@
 			<form string="Release Document Letter">	
 				<header>
                     <button name="button_confirm" string="Confirm" type="object" class="btn-primary" attrs="{'invisible':[('state', '!=', 'draft')]}"/>
+                    <button name="button_paid" string="Paid" type="object" class="btn-primary" attrs="{'invisible':[('state', '!=', 'confirm')]}"/>
                     <button name="button_cancel" string="Cancel" type="object" class="btn-primary" attrs="{'invisible':[('state', '=', 'cancel')]}"/>
-                    <field name="state"  widget="statusbar"/>
+                    <field name="state" widget="statusbar"/>
                 </header>	
 				<sheet>
 					<div class="oe_title">
@@ -59,6 +60,8 @@
 							<field name="invoice_value"/>
 							<field name="commercial_number"/>
 							<field name="commercial_date"/>
+							<field name="currency_id"/>
+							<field name="local_currency_id" invisible='1'/>
 						</group>
 					</group>
 					<notebook>
@@ -75,16 +78,19 @@
                                 </tree>
                             </field>
                         </page>
+                        <page string="Notes">
+                            <field name="description" widget='html'/>
+                        </page>
                     </notebook>
 				    <group class="oe_subtotal_footer oe_right">
-				       <field name="total_amount" class="oe_subtotal_footer_separator"/>
-						<field name="margin"/>
-						<field name="commission"/>
-						<field name="vat"/>
-						<field name="postage"/>
-						<field name="source_tax"/>
-						<field name="other_charges"/>
-				       	<field name="final_amount" class="oe_subtotal_footer_separator"/>
+				       <field name="total_amount" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+						<field name="margin" widget="monetary" options="{'currency_field': 'local_currency_id'}"/>
+						<field name="commission" widget="monetary" options="{'currency_field': 'local_currency_id'}"/>
+						<field name="vat" widget="monetary" options="{'currency_field': 'local_currency_id'}"/>
+						<field name="postage" widget="monetary" options="{'currency_field': 'local_currency_id'}"/>
+						<field name="source_tax" widget="monetary" options="{'currency_field': 'local_currency_id'}"/>
+						<field name="other_charges" widget="monetary" options="{'currency_field': 'local_currency_id'}"/>
+				       	<field name="final_amount" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'local_currency_id'}"/>
 				    </group>
 				    <field name="note" class="oe_inline"  placeholder="Terms and conditions..."/>
 				</sheet>

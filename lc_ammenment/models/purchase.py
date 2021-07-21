@@ -67,6 +67,26 @@ class PurchaseLcAmmendment(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description="Purchase Ammendment"
 
+    report_data = "July 19 2021"  \
+                    "The Deputy General Manager"  \
+                    "(Foreign Exchange Department)"  \
+                    "Sonali Bank Ltd " \
+                    "Subject : Prayer for amendment of L/C no. Dated 19.07.2021 for"  \
+                    "$0.0 A/c: Olila Glass Industries Ltd. "  \
+                    "Dear Sir," \
+                    "With Refrance To the above we would like to inform you that we need amendment of the above mentioned L/C as under," \
+                    "1. Field no 31D: Now to be read date of expiry on insted or existing" \
+                    "1. Field no 44C: Now to be read latest date of Shipment on insted or existing" \
+                    "All other terms and condition will remain unchanged." \
+                    "Please debit required charges from CD amount NO. to amendment of above L/C" \
+                    "We therefore, request you to please arrange to amend as above of the mentioning L/C at your earliest for importing row "\
+                    "materials to meet the production schedule smothly" \
+                    "Your kind cooperation in this respect will be highly appreciated." \
+                    "Thank You" \
+                    "Your truly" \
+                    "(Admin)" \
+                    "Managing Director" \
+
     name = fields.Char('Name', required=True, index=True, readonly=True, copy=False, default='New')
     amment_type = fields.Selection([('major', 'Major'),('minor', 'Minor')], string='Type', default='minor')
     purchase_order_no = fields.Many2one("purchase.order", string='Purchase Order No')
@@ -74,6 +94,7 @@ class PurchaseLcAmmendment(models.Model):
     lc_no = fields.Many2one('lc.opening', string='LC Opening')
     requisition_id = fields.Many2one('lc.opening.fund.requisition', string='Requisition')
     mur = fields.Char(string="MUR")
+    description = fields.Text(default=report_data)
     swift_input = fields.Char(string="Swift Input")
     sender_name = fields.Char(string="Sender Name")
     sender_branch = fields.Char(string="Sender Branch")
@@ -91,7 +112,7 @@ class PurchaseLcAmmendment(models.Model):
     purpose_message = fields.Text(string="Purpose Message") 
     from_of_credit = fields.Char(string="From of Documentary Credit")
     application_rules = fields.Text(string="Application Rules")
-    ammendment_charges = fields.Float()
+    ammendment_charges = fields.Float(string="Charges")
     date_of_entry = fields.Date(string="Date of Entry")
     place_of_entry = fields.Char(string="Place of Entry")
     last_date_of_shipment = fields.Date(string="Last Date of Shipment")

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="purchase_order_form_inherit_apply_group" model="ir.ui.view">
+        <field name="name">purchase.order.form.purchase.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="lc_opening_fund_requisition.purchase_order_form_lc_inherit"/>
+        <field name="arch" type="xml">
+        	<xpath expr="//button[@name='create_landed_cost']" position="attributes">
+        		<attribute name="groups">lc_olila_groups.group_hide_lc</attribute>
+            </xpath>
+            <xpath expr="//button[@name='open_landed_cost']" position="attributes">
+                <attribute name="groups">lc_olila_groups.group_hide_lc</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="lc_opening_fund_requisition.menu_view_lc_request" 
+        name="LC Opening Request" 
+        sequence="100"
+        parent="purchase.menu_procurement_management"
+        action="lc_opening_fund_requisition.action_view_lc_request"
+        groups="lc_olila_groups.group_hide_lc"/>
+
+    <menuitem id="lc_fund_insurance.menu_view_explosive"
+        action="lc_fund_insurance.action_view_explosive" 
+        parent="purchase.menu_procurement_management"
+        sequence="100"
+        groups="lc_olila_groups.group_hide_lc"/>
+
+    <menuitem id="lc_opening.menu_lc_opening"
+        action="lc_opening.action_view_lc_detail" 
+        parent="purchase.menu_procurement_management"
+        sequence="101"
+        groups="lc_olila_groups.group_hide_lc"/>
+
+    <menuitem id="lc_fund_insurance.post_menu_view_explosive"
+        action="lc_fund_insurance.post_action_view_explosive" 
+        parent="purchase.menu_procurement_management"
+        sequence="102"
+        groups="lc_olila_groups.group_hide_lc"/>
+
+    <menuitem id="lc_fund_insurance.insurance_marine_menu"
+        action="lc_fund_insurance.action_view_insurance_marine" 
+        parent="purchase.menu_procurement_management"
+        sequence="102"
+        groups="lc_olila_groups.group_hide_lc"/>
+
+    <menuitem id="lc_opening_fund_requisition.lc_requisition_menu"
+            action="lc_opening_fund_requisition.lc_opening_fund_requisition_action" 
+            parent="purchase.menu_procurement_management"
+            groups="lc_olila_groups.group_hide_lc"
+            sequence="97"/>
+
+    <menuitem id="lc_fund_insurance.insurance_menu"
+        action="lc_fund_insurance.action_view_insurance" 
+        parent="purchase.menu_procurement_management"
+        groups="lc_olila_groups.group_hide_lc"
+        sequence="99"/>
+
+     <menuitem id="lc_ammenment.purchase_lc_ammendment" 
+        name="LC Opening Ammendment" 
+        sequence="102"
+        parent="purchase.menu_procurement_management"
+        action="lc_ammenment.action_purchase_lc_ammendment"
+        groups="lc_olila_groups.group_hide_lc"/>
+
+    <menuitem id="lc_document_letter.document_release_letter" 
+            name="Document Release Letter" 
+            sequence="102"
+            parent="purchase.menu_procurement_management"
+            action="lc_document_letter.action_view_document_letter"
+            groups="lc_olila_groups.group_hide_lc"/>
+
+    <menuitem id="lc_loan_control.loan_Control_menu"
+            action="lc_loan_control.loan_control_action" 
+            parent="purchase.menu_procurement_management"
+            sequence="105"
+            groups="lc_olila_groups.group_hide_lc"/>
+
+
+</odoo>

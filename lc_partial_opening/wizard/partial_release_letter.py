@@ -6,6 +6,7 @@ from odoo.exceptions import UserError
 
 class PartialReleaseLetterLine(models.TransientModel):
     _name = "partial.release.letter.line"
+    _description = 'Partial Release Letter Line'
 
     product_id = fields.Many2one("product.product", string='Product')
     quantity = fields.Float(string="Qty", default=1.0)
@@ -14,16 +15,9 @@ class PartialReleaseLetterLine(models.TransientModel):
     wizard_id = fields.Many2one('partial.release.letter.wizard', string='Unit price')
     lc_opning_line_id = fields.Many2one('lc.opening.lines', string="LC Opening Line")
 
-    # @api.constrains('quantity')
-    # def _check_valid_range(self):
-    #     for rec in self:
-    #         if rec.lc_opning_line_id.partial_qty and rec.lc_opning_line_id.partial_qty < rec.quantity or rec.quantity < 0:
-    #             raise exceptions.Warning(_("Overdue quantity only input %d or lass quantity %d") %  (rec.lc_opning_line_id.partial_qty,rec.quantity ))
-    #         if not rec.lc_opning_line_id.partial_qty and  rec.lc_opning_line_id.quantity < rec.quantity or rec.quantity < 0:
-    #             raise exceptions.Warning(_("Overdue quantity only input %d or lass quantity" %  rec.lc_opning_line_id.quantity))
-
 class PartialReleaseLetter(models.TransientModel):
     _name = 'partial.release.letter.wizard'
+    _description = 'Partial Release Letter'
 
     @api.model
     def _prepare_partial_release_lines(self, line):
@@ -46,7 +40,7 @@ class PartialReleaseLetter(models.TransientModel):
         return res
 
     lines_ids = fields.One2many('partial.release.letter.line', 'wizard_id', string='Lines')
-    lc_opning_id = fields.Many2one('lc.opening', string="LC Opening")
+    lc_opning_id = fields.Many2one('lc.opening', string="Opening")
 
     def _prepare_release_lines(self, line):
         line.lc_opning_line_id.partial_qty += line.quantity
@@ -69,10 +63,10 @@ class PartialReleaseLetter(models.TransientModel):
                 'lc_number': self.lc_opning_id.lc_no,
                 'lc_date': self.lc_opning_id.lc_date,
                 'lc_open_id': self.lc_opning_id.id,
+                'currency_id': self.lc_opning_id.order_id and self.lc_opning_id.order_id.currency_id and self.lc_opning_id.order_id.currency_id.id,
                 'product_lines': lines
             }
         return vals
-            
 
     def create_partial_release(self):
         data = self._prepare_release_data()

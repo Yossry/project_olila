@@ -9,5 +9,5 @@ class AccountMove(models.Model):
 class Company(models.Model):
 	_inherit = "res.company"
 
-	lc_charges_account = fields.Many2one('account.account', String="LC Charges")
-	lc_agent_charges_account = fields.Many2one('account.account', String="LC Agent Charges")
+	lc_charges_account = fields.Many2one('account.account', string="LC Charges Account")
+	lc_agent_charges_account = fields.Many2one('account.account', string="LC Agent Charges Account")

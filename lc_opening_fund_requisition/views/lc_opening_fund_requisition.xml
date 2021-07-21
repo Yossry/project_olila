@@ -21,11 +21,12 @@
             <field name="arch" type="xml">
                 <form string="LC Opening Fund Requisition Form">
                     <header>
-                        <button name="create_lc_request" string="Create LC Request" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'confirm')]}"/>
+                        <button name="create_lc_request" string="Create LC Request" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'paid')]}"/>
                         <button name="button_done" string="Process" states="accept" type="object" class="btn-primary"/>
                         <button name="button_confirm" string="Confirm" states="draft" type="object" class="btn-primary"/>
+                        <button name="button_paid" string="Paid" states="confirm" type="object" class="btn-primary"/>
                         <button name="create_insurance_cover" string="Create Insurance Cover" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'request')]}"/>
-                        <button name="create_approval_explosive" string="Approval For Explosive" type="object" class="btn-primary" attrs="{'invisible': [('state', 'not in', ('confirm', 'request'))]}"/>
+                        <button name="create_approval_explosive" string="Approval For Explosive" type="object" class="btn-primary" attrs="{'invisible': [('state', 'not in', ('paid', 'request'))]}"/>
                         <button name="button_cancel" string="Cancel" type="object" class="btn-primary" attrs="{'invisible': [('state', '=', 'cancel')]}"/>
                         <field name="state"  widget="statusbar"/>
                     </header>

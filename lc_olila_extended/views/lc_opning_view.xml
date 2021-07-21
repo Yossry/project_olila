@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.actions.act_window" id="purchase_requisition.action_purchase_requisition">
+        <field name="name">Olila RFQ</field>
+    </record>
+
+    <menuitem
+        id="purchase_requisition.menu_purchase_requisition_pro_mgt"
+        sequence="10"
+        name="Olila RFQ"
+        parent="purchase.menu_procurement_management"
+        action="purchase_requisition.action_purchase_requisition"/>
+
+    <record id="purchase_request_rename_button" model="ir.ui.view">
+        <field name="name">purchase.request.form.inherit.button</field>
+        <field name="model">purchase.request</field>
+        <field name="inherit_id" ref="purchase_request.view_purchase_request_from"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='button_tender']" position="attributes">
+                <attribute name="string">Create Olila RFQ</attribute>
+            </xpath>
+            <field name="tender_count" position="attributes">
+                <attribute name="string">Olila RFQ</attribute>
+            </field>
+            <xpath expr="//div[hasclass('oe_subtotal_footer')]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="insurance_form_hide_total_field" model="ir.ui.view">
+        <field name="name">insurance.form.inherit.remove.total</field>
+        <field name="model">insurance.cover</field>
+        <field name="inherit_id" ref="lc_fund_insurance.pway_insurance_form_view"/>
+        <field name="arch" type="xml">
+            <field name="phone" position="after">
+                <field name="currency_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="lc_opening_fund_requisition_field_createton_date" model="ir.ui.view">
+        <field name="name">lc.opening.fund.requisition.create_date</field>
+        <field name="model">lc.opening.fund.requisition</field>
+        <field name="inherit_id" ref="lc_opening_fund_requisition.lc_opening_fund_requisition_form"/>
+        <field name="arch" type="xml">
+            <field name="purchase_id" position="before">
+                <field name="create_date" readonly="1"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

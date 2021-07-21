@@ -1,0 +1,33 @@
+<odoo>
+
+    <record id="view_company_form_inherit_account_dr_cr" model="ir.ui.view">
+        <field name="name">res.company.form.dr.cr.inherit.account</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='parent_id']" position="after">
+                <field name="account_receivable_id"/>
+                <field name="account_payable_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_journal_dashboard_kanban_view" model="ir.ui.view">
+        <field name="name">account.journal.dr.cr.dashboard.kanban</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.account_journal_dashboard_kanban_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='sale_purchase_refund']" position="after">
+                <div>
+                    <a type="object" name="open_action_lc_direct_transfer" groups="account.group_account_user">Direct Transfer</a>
+                </div>
+            </xpath>
+            <xpath expr="//a[@name='open_transfer_money']" position="after">
+                <div>
+                    <a role="menuitem" type="object" name="open_action_lc_direct_transfer">Direct Transfer</a>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -6,6 +6,7 @@ from odoo import exceptions
 
 class AmmendmentWizard(models.TransientModel):
     _name = "ammendment.wizard"
+    _description = 'Ammendment Wizard'
 
     type = fields.Selection([
         ('major', 'Major'),
@@ -39,10 +40,9 @@ class AmmendmentWizard(models.TransientModel):
                 'amment_type': self.type,
                 'requisition_id': opening_id.requisition_id and opening_id.requisition_id.id,
             }
-            ammendment_id = self.env['purchase.lc.ammendment'].create(vals)
-            if ammendment_id:
-                opening_id.state = 'amendment'
+            self.env['purchase.lc.ammendment'].create(vals)
             if self.type == 'major':
+                opening_id.state = 'amendment'
                 self.all_state_amendment(opening_id)
         return True
 

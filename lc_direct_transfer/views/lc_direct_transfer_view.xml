@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id='lc_direct_transfer_tree' model='ir.ui.view'>
+            <field name="name">lc.direct.transfer.tree</field>
+            <field name="model">lc.direct.transfer</field>
+            <field name="arch" type="xml">
+                <tree string="Loan Control">
+                    <field name="name"/>
+                    <field name="journal_id"/>
+                    <field name="payment_type"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id='lc_direct_transfer_form' model='ir.ui.view'>
+            <field name="name">lc.direct.transfer.tree</field>
+            <field name="model">lc.direct.transfer</field>
+            <field name="arch" type="xml">
+                <form string="LC Direct Transfer">
+                    <header>
+                        <button name="button_confirm" states="draft" string="Confirm" type="object" class="btn-primary"/>
+                        <button name="button_post" states="confirm" string="Payment" type="object" class="btn-primary"/>
+                        <button name="button_cancel" states="draft,confirm,paid" string="Cancel" type="object" class="btn-primary"/>
+                        <field name="state"  widget="statusbar" statusbar_visible="draft,confirm,cancel"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                             <button name="view_journal_entry" type="object" class="oe_stat_button" icon="fa-edit" attrs="{'invisible': [('move_count', '=', 0)]}">
+                                <field name="move_count" widget="statinfo" string="Journal Entry"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="journal_id" required="1" domain="[('type', 'in', ('cash', 'bank'))]"/>
+                                <field name="payment_type" widget='radio'/>
+                            </group>
+                            <group>
+                                <field name="date"/>
+                                <field name="currency_id"/>
+                                <field name="ref"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Lines">
+                                <field name="line_ids">
+                                    <tree editable="bottom">
+                                        <field name="ref" required="1"/>
+                                        <field name="partner_id"/>
+                                        <field name="account_ids" widget='many2many_tags' invisible='1'/> 
+                                        <field name="account_id" required="1" domain="[('id', 'in', account_ids)]"/>
+                                        <field name="currency_id" required="1"/>
+                                        <field name="amount" required="1"/>
+                                        <field name="lc_transfer_id" invisible="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string='Notes'>
+                                <field name="note"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="lc_direct_transfer_filter" model="ir.ui.view">
+            <field name="name">lc.direct.transfer.select</field>
+            <field name="model">lc.direct.transfer</field>
+            <field name="arch" type="xml">
+                <search string="Transfer">
+                    <field name="journal_id"/>
+                    <field name="payment_type"/>
+                    <field name="state"/>
+                    <group expand="0" name="group_by" string="Group By">
+                        <filter name="group_journal_id" string="Journal" domain="[]" context="{'group_by' : 'journal_id'}" />
+                        <filter name="group_payment_type" string="Payment Type" context="{'group_by': 'payment_type'}"/>
+                        <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id='lc_direct_transfer_action' model='ir.actions.act_window'>
+            <field name="name">Direct Transfer</field>
+            <field name="res_model">lc.direct.transfer</field>
+            <field name="view_mode">tree,form</field>
+             <field name="search_view_id" ref="lc_direct_transfer_filter"/>
+            <field name="help" type="html">
+                <p>
+                    Let's create direct transfer.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="lc_direct_transfer_menu"
+            action="lc_direct_transfer_action" 
+            parent="account.menu_finance_receivables"
+            sequence="115"/>
+    </data>
+</odoo>
